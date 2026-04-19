@@ -3,153 +3,342 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opus System | Edge Node Control</title>
-    <!-- Bootstrap 5 & Icons -->
+    <title>Opus Hub | Canalqb</title>
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        :root { --opus-blue: #0ea5e9; --opus-dark: #0f172a; --opus-card: #1e293b; }
-        body { background-color: var(--opus-dark); color: #f8fafc; font-family: 'Inter', sans-serif; }
-        .navbar { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .hero { padding: 60px 0; background: linear-gradient(180deg, rgba(14, 165, 233, 0.1) 0%, rgba(15, 23, 42, 0) 100%); }
-        .card-opus { background: var(--opus-card); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; transition: transform 0.2s; height: 100%; }
-        .card-opus:hover { transform: translateY(-5px); border-color: var(--opus-blue); }
-        .nav-pills .nav-link { color: #94a3b8; border-radius: 10px; margin-bottom: 5px; }
-        .nav-pills .nav-link.active { background-color: var(--opus-blue); color: white; }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-        .form-control, .form-select { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 10px; }
-        .form-control:focus { background: rgba(0,0,0,0.3); color: white; border-color: var(--opus-blue); box-shadow: none; }
-        .btn-opus { background: var(--opus-blue); border: none; border-radius: 10px; padding: 10px 20px; font-weight: 600; }
-        .btn-opus:hover { background: #0284c7; }
-        .module-badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 20px; background: rgba(14, 165, 233, 0.2); color: var(--opus-blue); }
+        :root {
+            --luci-blue: #0066cc;
+            --luci-bg: #f5f7fa;
+            --luci-sidebar: #343a40;
+            --luci-text: #333;
+        }
+        body { background-color: var(--luci-bg); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: var(--luci-text); }
+        
+        /* Sidebar Style LuCI */
+        #sidebar {
+            min-width: 240px;
+            max-width: 240px;
+            background: var(--luci-sidebar);
+            color: #fff;
+            transition: all 0.3s;
+            min-height: 100vh;
+        }
+        #sidebar .sidebar-header { padding: 20px; background: #23272b; text-align: center; }
+        #sidebar ul.components { padding: 20px 0; }
+        #sidebar ul li a {
+            padding: 12px 20px;
+            display: block;
+            color: #adb5bd;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+        #sidebar ul li a:hover { color: #fff; background: #495057; }
+        #sidebar ul li.active > a { color: #fff; background: var(--luci-blue); }
+        
+        /* Content Area */
+        .main-content { width: 100%; padding: 25px; }
+        .breadcrumb-luci { background: #fff; padding: 10px 15px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 25px; font-size: 0.9rem; }
+        
+        .card-luci { background: #fff; border: 1px solid #dee2e6; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card-luci .card-header { background: #f8f9fa; border-bottom: 1px solid #dee2e6; padding: 10px 15px; font-weight: bold; color: #495057; display: flex; align-items: center; justify-content: space-between; }
+        .card-luci .card-body { padding: 15px; }
+        
+        /* LuCI Table Style */
+        .table-luci { width: 100%; margin-bottom: 0; }
+        .table-luci td { padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+        .table-luci tr:last-child td { border-bottom: none; }
+        .table-luci .label { width: 35%; color: #6c757d; font-weight: 500; }
+        
+        .status-badge { padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; }
+        .badge-online { background: #d4edda; color: #155724; }
+        
+        .footer-luci { margin-top: 50px; text-align: center; color: #999; font-size: 0.85rem; border-top: 1px solid #dee2e6; padding-top: 20px; }
+        
+        /* Donation Card */
+        .donation-box { background: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 4px; margin-top: 20px; }
+        
+        .nav-tabs .nav-link { color: #495057; border-radius: 4px 4px 0 0; }
+        .nav-tabs .nav-link.active { background-color: #fff; border-bottom-color: transparent; font-weight: bold; color: var(--luci-blue); }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        @media (max-width: 768px) {
+            #sidebar { margin-left: -240px; position: fixed; z-index: 1000; }
+            #sidebar.active { margin-left: 0; }
+            .main-content { padding: 15px; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <i class="bi bi-cpu-fill text-info me-2 fs-3"></i>
-                <span class="fw-bold tracking-tight">OPUS <span class="text-info">SYSTEM</span></span>
-            </a>
-            <div class="d-flex align-items-center">
-                <span class="badge bg-success d-none d-md-flex align-items-center me-3">
-                    <span class="status-dot bg-white"></span> V12 ONLINE
-                </span>
-                <span id="espIpDisplay" class="text-muted small">IP: 0.0.0.0</span>
+<div class="d-flex">
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h5 class="mb-0">Opus Hub</h5>
+            <small class="text-muted">por Canalqb</small>
+        </div>
+
+        <ul class="list-unstyled components">
+            <li class="active">
+                <a href="#" onclick="showSection('status')"><i class="bi bi-cpu me-2"></i> Status Geral</a>
+            </li>
+            <li>
+                <a href="#" onclick="showSection('rede')"><i class="bi bi-wifi me-2"></i> Rede & Wi-Fi</a>
+            </li>
+            <li>
+                <a href="#" onclick="showSection('marketplace')"><i class="bi bi-shop me-2"></i> Marketplace</a>
+            </li>
+            <li>
+                <a href="#" onclick="showSection('chat')"><i class="bi bi-chat-dots me-2"></i> Chat Opus</a>
+            </li>
+            <li>
+                <a href="#" onclick="showSection('config')"><i class="bi bi-gear me-2"></i> Configurações</a>
+            </li>
+            <li>
+                <a href="https://www.canalqb.com.br" target="_blank"><i class="bi bi-link-45deg me-2"></i> Visite o Blog</a>
+            </li>
+        </ul>
+
+        <div class="px-3 mt-5">
+            <div class="donation-box">
+                <h6 class="text-dark">Apoie o Projeto ☕</h6>
+                <p style="font-size: 0.8rem; margin-bottom: 10px; color:#664d03;">Gostou do sistema? Ajude o Canalqb a continuar criando conteúdos tranquilos e úteis para a comunidade!</p>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-sm btn-outline-dark" onclick="copyPix()">Pix: qrodrigob@gmail.com</button>
+                    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=qrodrigob@gmail.com&currency_code=BRL" class="btn btn-sm btn-primary" target="_blank">PayPal</a>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero -->
-    <header class="hero text-center">
-        <div class="container">
-            <h1 class="display-4 fw-bold mb-3">Ambiente de Controle Opus</h1>
-            <p class="lead text-muted mx-auto" style="max-width: 700px;">
-                Gerencie seu nó de borda industrial, configure integrações na nuvem e instale módulos inteligentes com um clique.
-            </p>
+    <!-- Page Content -->
+    <div class="main-content">
+        <!-- Top Bar / Breadcrumb -->
+        <div class="breadcrumb-luci d-flex justify-content-between align-items-center">
+            <div>
+                <i class="bi bi-house-door-fill me-2"></i> <span id="sectionTitle">Visão Geral</span>
+            </div>
+            <div id="wsStatus">
+                <span class="status-badge badge-online">Sistema Online</span>
+            </div>
         </div>
-    </header>
 
-    <div class="container pb-5">
-        <div class="row">
-            <!-- Sidebar Navigation -->
-            <div class="col-lg-3 mb-4">
-                <div class="nav flex-column nav-pills card-opus p-3 shadow-sm" id="v-pills-tab" role="tablist">
-                    <button class="nav-link active text-start" data-bs-toggle="pill" data-bs-target="#tab-dash"><i class="bi bi-speedometer2 me-2"></i> Dashboard</button>
-                    <button class="nav-link text-start" data-bs-toggle="pill" data-bs-target="#tab-drive"><i class="bi bi-google me-2"></i> Google Drive</button>
-                    <button class="nav-link text-start" data-bs-toggle="pill" data-bs-target="#tab-ai"><i class="bi bi-robot me-2"></i> Inteligência Artificial</button>
-                    <button class="nav-link text-start" data-bs-toggle="pill" data-bs-target="#tab-market"><i class="bi bi-shop me-2"></i> Loja de Módulos</button>
-                    <button class="nav-link text-start" data-bs-toggle="pill" data-bs-target="#tab-sys"><i class="bi bi-gear-fill me-2"></i> Sistema e Rede</button>
+        <!-- SEÇÃO: STATUS GERAL -->
+        <div id="section-status" class="content-section">
+            <div class="card-luci">
+                <div class="card-header">
+                    <span><i class="bi bi-info-circle me-2"></i> Informações do Sistema</span>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small">Aqui você encontra um resumo tranquilo de como o seu dispositivo está operando agora. Tudo em ordem!</p>
+                    <table class="table-luci">
+                        <tr><td class="label">Nome do Dispositivo</td><td>Opus Hub V16</td></tr>
+                        <tr><td class="label">Versão do Firmware</td><td>Estável V16.2</td></tr>
+                        <tr><td class="label">Tempo de Atividade</td><td id="uptime">Online agora</td></tr>
+                        <tr><td class="label">Endereço IP</td><td id="localIp">--</td></tr>
+                        <tr><td class="label">Memória Livre</td><td>248 KB (RAM)</td></tr>
+                    </table>
                 </div>
             </div>
 
-            <!-- Content Area -->
-            <div class="col-lg-9">
-                <div class="tab-content" id="v-pills-tabContent">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card-luci">
+                        <div class="card-header">Conexão Local</div>
+                        <div class="card-body">
+                            <table class="table-luci">
+                                <tr><td class="label">SSID Atual</td><td id="ssidDisplay">--</td></tr>
+                                <tr><td class="label">Sinal</td><td id="rssi">Excelente</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card-luci">
+                        <div class="card-header">Nuvem e Drive</div>
+                        <div class="card-body">
+                            <table class="table-luci">
+                                <tr><td class="label">Status</td><td><span class="status-badge badge-online">Tudo salvo no Drive</span></td></tr>
+                                <tr><td class="label">Sincronia</td><td>Ativada</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: REDE -->
+        <div id="section-rede" class="content-section d-none">
+            <div class="card-luci">
+                <div class="card-header">Configurações de Rede</div>
+                <div class="card-body">
+                    <p class="small text-muted">Ajuste as configurações de Wi-Fi para manter o seu Hub sempre conectado.</p>
+                    <label class="form-label">Rede Wi-Fi</label>
+                    <div class="input-group mb-3">
+                        <select id="wifiSelect" class="form-select"></select>
+                        <button class="btn btn-outline-secondary" onclick="scanWifi()">Buscar Redes</button>
+                    </div>
+                    <label class="form-label">Senha</label>
+                    <input type="password" id="wifiPass" class="form-control mb-3" placeholder="Senha da rede">
+                    <button class="btn btn-primary" onclick="saveWifi()">Salvar e Conectar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: MARKETPLACE -->
+        <div id="section-marketplace" class="content-section d-none">
+            <div class="card-luci">
+                <div class="card-header">Loja de Módulos Opus</div>
+                <div class="card-body">
+                    <p class="text-muted small">Escolha novos módulos para expandir as habilidades do seu sistema de forma tranquila. Novos plugins do Canalqb aparecem aqui.</p>
+                    <div id="marketList" class="row">
+                        <div class="col-12 text-center p-5">Buscando módulos no GitHub...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: CHAT -->
+        <div id="section-chat" class="content-section d-none">
+            <div class="card-luci">
+                <div class="card-header">Conversa com Opus</div>
+                <div class="card-body">
+                    <div id="chatBox" style="height: 350px; overflow-y: auto; background: #fff; border: 1px solid #eee; border-radius: 4px; padding: 20px; margin-bottom: 15px;">
+                        <div class="mb-3"><strong>Opus:</strong> Olá! Que bom ter você por aqui no nosso ambiente tranquilo. Como posso te ajudar hoje?</div>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="chatInput" class="form-control" placeholder="Escreva algo bacana..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                        <button class="btn btn-primary" onclick="sendMessage()">Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: CONFIG -->
+        <div id="section-config" class="content-section d-none">
+            <div class="card-luci">
+                <div class="card-header">Configurações do Sistema</div>
+                <div class="card-body">
+                    <h6 class="mb-3">Google Cloud & Drive</h6>
+                    <label class="small text-muted">ID da Pasta Raiz</label>
+                    <input type="text" id="id_pasta" class="form-control mb-2" placeholder="ID da pasta no Drive">
+                    <label class="small text-muted">OAuth Credentials</label>
+                    <input type="text" id="g_client_id" class="form-control mb-2" placeholder="Client ID">
+                    <input type="password" id="g_client_secret" class="form-control mb-3" placeholder="Client Secret">
                     
-                    <!-- Tab: Dashboard -->
-                    <div class="tab-pane fade show active" id="tab-dash">
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <div class="card-opus p-4 text-center">
-                                    <i class="bi bi-broadcast fs-1 text-info mb-2"></i>
-                                    <h5>Sinal Wi-Fi</h5>
-                                    <h3 id="wifiSignal">-65 dBm</h3>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card-opus p-4 text-center">
-                                    <i class="bi bi-hdd-network fs-1 text-success mb-2"></i>
-                                    <h5>Drive Status</h5>
-                                    <h3 class="text-success">Conectado</h3>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card-opus p-4 text-center">
-                                    <i class="bi bi-chat-dots fs-1 text-warning mb-2"></i>
-                                    <h5>Mensagens</h5>
-                                    <h3 id="msgCount">124</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tab: Google Drive -->
-                    <div class="tab-pane fade" id="tab-drive">
-                        <div class="card-opus p-4">
-                            <h3><i class="bi bi-google me-2"></i> Configuração Google Drive</h3>
-                            <p class="text-muted small">O Drive é usado para persistência de históricos e arquivos de sistema.</p>
-                            <div class="row g-3 mt-2">
-                                <div class="col-md-12">
-                                    <label class="form-label">ID da Pasta Raiz</label>
-                                    <input type="text" id="id_pasta" class="form-control" placeholder="ID da pasta no Google Drive">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Client ID</label>
-                                    <input type="text" id="g_client_id" class="form-control">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Client Secret</label>
-                                    <input type="password" id="g_client_secret" class="form-control">
-                                </div>
-                                <div class="col-12">
-                                    <button class="btn btn-opus w-100">Salvar e Inicializar Drive</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tab: Marketplace -->
-                    <div class="tab-pane fade" id="tab-market">
-                        <div class="row g-3" id="marketList">
-                            <!-- Injetado via JS -->
-                        </div>
-                    </div>
-
+                    <h6 class="mb-3">Inteligência Artificial</h6>
+                    <label class="small text-muted">Claude API Key (Anthropic)</label>
+                    <input type="password" id="api_key" class="form-control mb-4" placeholder="sk-ant-...">
+                    
+                    <button class="btn btn-success w-100" onclick="saveFullConfig()">Atualizar Tudo</button>
                 </div>
             </div>
+        </div>
+
+        <div class="footer-luci">
+            Hub de Controle Opus &copy; 2026 | Um projeto feito com carinho pelo <a href="https://www.canalqb.com.br" target="_blank" style="color:var(--luci-blue); text-decoration:none;">Canalqb</a>.
         </div>
     </div>
+</div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const ESP_IP = urlParams.get('ip') || window.location.hostname;
-        document.getElementById('espIpDisplay').innerText = `IP: ${ESP_IP}`;
+<!-- JS Logic -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let espIp = new URLSearchParams(window.location.search).get('ip') || window.location.hostname;
+    let ws;
 
-        // Lógica de comunicação com a API do ESP32 ficaria aqui
-        async function loadData() {
-            try {
-                const res = await fetch(`http://${ESP_IP}/api/config`);
-                const d = await res.json();
-                // Preencher campos...
-            } catch(e) { console.error("Não foi possível conectar ao ESP32 local."); }
-        }
-        
-        loadData();
-    </script>
+    function showSection(id) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.add('d-none'));
+        document.getElementById('section-' + id).classList.remove('d-none');
+        document.querySelectorAll('#sidebar li').forEach(li => li.classList.remove('active'));
+        event.currentTarget.parentElement.classList.add('active');
+        document.getElementById('sectionTitle').innerText = event.currentTarget.innerText.trim();
+    }
+
+    function copyPix() {
+        navigator.clipboard.writeText('qrodrigob@gmail.com');
+        alert('E-mail Pix copiado! Muito obrigado por apoiar o Canalqb e este projeto. ☕');
+    }
+
+    async function loadStatus() {
+        try {
+            const res = await fetch(`http://${espIp}/api/status`);
+            const data = await res.json();
+            document.getElementById('localIp').innerText = data.local_ip;
+            document.getElementById('ssidDisplay').innerText = data.ssid || 'Desconectado';
+        } catch(e) { console.error('Erro ao ler status'); }
+    }
+
+    async function scanWifi() {
+        const btn = event.target;
+        btn.innerText = 'Buscando...';
+        try {
+            const res = await fetch(`http://${espIp}/api/scan`);
+            const data = await res.json();
+            const select = document.getElementById('wifiSelect');
+            select.innerHTML = '';
+            data.forEach(n => {
+                select.innerHTML += `<option value="${n.ssid}">${n.ssid} (${n.rssi}dBm)</option>`;
+            });
+        } catch(e) {}
+        btn.innerText = 'Buscar Redes';
+    }
+
+    async function loadMarket() {
+        const list = document.getElementById('marketList');
+        try {
+            const res = await fetch('https://raw.githubusercontent.com/canalqb/modulos_ESP/main/market.json');
+            const data = await res.json();
+            list.innerHTML = '';
+            data.modules.forEach(m => {
+                list.innerHTML += `
+                    <div class="col-md-4 mb-3">
+                        <div class="card-luci h-100">
+                            <div class="card-body text-center">
+                                <h6 class="mb-2">${m.name}</h6>
+                                <p class="text-muted x-small" style="font-size:0.8rem;">${m.desc}</p>
+                                <button class="btn btn-sm btn-outline-primary" onclick="installModule('${m.slug}', '${m.url}')">Instalar</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        } catch(e) { list.innerHTML = '<div class="col-12 text-center p-5 text-danger">Ainda não conseguimos carregar os módulos. Tente atualizar a página!</div>'; }
+    }
+
+    function initWS() {
+        ws = new WebSocket(`ws://${espIp}:81`);
+        ws.onmessage = (e) => {
+            const box = document.getElementById('chatBox');
+            box.innerHTML += `<div class="mb-3"><strong>Opus:</strong> ${e.data}</div>`;
+            box.scrollTop = box.scrollHeight;
+        };
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('chatInput');
+        if(!input.value) return;
+        const box = document.getElementById('chatBox');
+        box.innerHTML += `<div class="mb-3 text-primary"><strong>Você:</strong> ${input.value}</div>`;
+        ws.send(JSON.stringify({type: 'message', text: input.value}));
+        input.value = '';
+        box.scrollTop = box.scrollHeight;
+    }
+
+    window.onload = () => {
+        loadStatus();
+        loadMarket();
+        initWS();
+    };
+</script>
 </body>
 </html>
