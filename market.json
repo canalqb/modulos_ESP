@@ -1,0 +1,28 @@
+{
+  "modules": [
+    {
+      "slug": "whatsapp",
+      "name": "WhatsApp Bridge v1.5",
+      "desc": "Ponte Node.js com persistencia na nuvem.",
+      "url": "https://raw.githubusercontent.com/canalqb/modulos_ESP/main/whatsapp/plugin.js"
+    },
+    {
+      "slug": "agendador",
+      "name": "Agendador de Rotinas",
+      "desc": "Agende mensagens e acoes via voz ou chat.",
+      "url": "https://raw.githubusercontent.com/canalqb/modulos_ESP/main/scheduler/plugin.js"
+    },
+    {
+      "slug": "alexa",
+      "name": "Alexa Link Pro",
+      "desc": "Controle sua casa e o ESP32 via Alexa.",
+      "url": "https://raw.githubusercontent.com/canalqb/modulos_ESP/main/alexa/plugin.js"
+    },
+    {
+      "slug": "samsung_tv",
+      "name": "Samsung TV Control",
+      "desc": "Controle sua Smart TV via UPnP/DLNA.",
+      "url": "https://raw.githubusercontent.com/canalqb/modulos_ESP/main/samsung/plugin.js"
+    }
+  ]
+}
