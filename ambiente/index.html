@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opus System | Edge Node Control</title>
+    <!-- Bootstrap 5 & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root { --opus-blue: #0ea5e9; --opus-dark: #0f172a; --opus-card: #1e293b; }
+        body { background-color: var(--opus-dark); color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .navbar { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .hero { padding: 60px 0; background: linear-gradient(180deg, rgba(14, 165, 233, 0.1) 0%, rgba(15, 23, 42, 0) 100%); }
+        .card-opus { background: var(--opus-card); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; transition: transform 0.2s; height: 100%; }
+        .card-opus:hover { transform: translateY(-5px); border-color: var(--opus-blue); }
+        .nav-pills .nav-link { color: #94a3b8; border-radius: 10px; margin-bottom: 5px; }
+        .nav-pills .nav-link.active { background-color: var(--opus-blue); color: white; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .form-control, .form-select { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 10px; }
+        .form-control:focus { background: rgba(0,0,0,0.3); color: white; border-color: var(--opus-blue); box-shadow: none; }
+        .btn-opus { background: var(--opus-blue); border: none; border-radius: 10px; padding: 10px 20px; font-weight: 600; }
+        .btn-opus:hover { background: #0284c7; }
+        .module-badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 20px; background: rgba(14, 165, 233, 0.2); color: var(--opus-blue); }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="bi bi-cpu-fill text-info me-2 fs-3"></i>
+                <span class="fw-bold tracking-tight">OPUS <span class="text-info">SYSTEM</span></span>
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-success d-none d-md-flex align-items-center me-3">
+                    <span class="status-dot bg-white"></span> V12 ONLINE
+                </span>
+                <span id="espIpDisplay" class="text-muted small">IP: 0.0.0.0</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3">Ambiente de Controle Opus</h1>
+            <p class="lead text-muted mx-auto" style="max-width: 700px;">
+                Gerencie seu nó de borda industrial, configure integrações na nuvem e instale módulos inteligentes com um clique.
+            </p>
+        </div>
+    </header>
+
+    <div class="container pb-5">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <div class="col-lg-3 mb-4">
+                <div class="nav flex-column nav-pills card-opus p-3 shadow-sm" id="v-pills-tab" role="tablist">
+                    <button class="nav-link active text-start" data-bs-toggle="pill" data-bs-target="#tab-dash"><i class="bi bi-speedometer2 me-2"></i> Dashboard</button>
+                    <button class="nav-link text-start" data-bs-toggle="pill" data-bs-target="#tab-drive"><i class="bi bi-google me-2"></i> Google Drive</button>
+                    <button class="nav-link text-start" data-bs-toggle="pill" data-bs-target="#tab-ai"><i class="bi bi-robot me-2"></i> Inteligência Artificial</button>
+                    <button class="nav-link text-start" data-bs-toggle="pill" data-bs-target="#tab-market"><i class="bi bi-shop me-2"></i> Loja de Módulos</button>
+                    <button class="nav-link text-start" data-bs-toggle="pill" data-bs-target="#tab-sys"><i class="bi bi-gear-fill me-2"></i> Sistema e Rede</button>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="col-lg-9">
+                <div class="tab-content" id="v-pills-tabContent">
+                    
+                    <!-- Tab: Dashboard -->
+                    <div class="tab-pane fade show active" id="tab-dash">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="card-opus p-4 text-center">
+                                    <i class="bi bi-broadcast fs-1 text-info mb-2"></i>
+                                    <h5>Sinal Wi-Fi</h5>
+                                    <h3 id="wifiSignal">-65 dBm</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card-opus p-4 text-center">
+                                    <i class="bi bi-hdd-network fs-1 text-success mb-2"></i>
+                                    <h5>Drive Status</h5>
+                                    <h3 class="text-success">Conectado</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card-opus p-4 text-center">
+                                    <i class="bi bi-chat-dots fs-1 text-warning mb-2"></i>
+                                    <h5>Mensagens</h5>
+                                    <h3 id="msgCount">124</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Google Drive -->
+                    <div class="tab-pane fade" id="tab-drive">
+                        <div class="card-opus p-4">
+                            <h3><i class="bi bi-google me-2"></i> Configuração Google Drive</h3>
+                            <p class="text-muted small">O Drive é usado para persistência de históricos e arquivos de sistema.</p>
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-12">
+                                    <label class="form-label">ID da Pasta Raiz</label>
+                                    <input type="text" id="id_pasta" class="form-control" placeholder="ID da pasta no Google Drive">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Client ID</label>
+                                    <input type="text" id="g_client_id" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Client Secret</label>
+                                    <input type="password" id="g_client_secret" class="form-control">
+                                </div>
+                                <div class="col-12">
+                                    <button class="btn btn-opus w-100">Salvar e Inicializar Drive</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Marketplace -->
+                    <div class="tab-pane fade" id="tab-market">
+                        <div class="row g-3" id="marketList">
+                            <!-- Injetado via JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const ESP_IP = urlParams.get('ip') || window.location.hostname;
+        document.getElementById('espIpDisplay').innerText = `IP: ${ESP_IP}`;
+
+        // Lógica de comunicação com a API do ESP32 ficaria aqui
+        async function loadData() {
+            try {
+                const res = await fetch(`http://${ESP_IP}/api/config`);
+                const d = await res.json();
+                // Preencher campos...
+            } catch(e) { console.error("Não foi possível conectar ao ESP32 local."); }
+        }
+        
+        loadData();
+    </script>
+</body>
+</html>
