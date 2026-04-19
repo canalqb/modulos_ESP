@@ -3,210 +3,351 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opus Hub | Configuração Guiada</title>
+    <title>Opus Hub | Portal de Controle Premium</title>
+    <!-- SEO 2026 -->
+    <meta name="description" content="Portal de controle avançado para o sistema Opus Hub do Canalqb.">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        :root { --luci-blue: #0066cc; --luci-bg: #f5f7fa; --luci-sidebar: #343a40; }
-        body { background-color: var(--luci-bg); font-family: sans-serif; color: #333; }
-        #sidebar { min-width: 260px; background: var(--luci-sidebar); color: #fff; min-height: 100vh; }
-        #sidebar .nav-link { color: #adb5bd; padding: 12px 20px; transition: 0.3s; display: flex; align-items: center; justify-content: space-between; }
-        #sidebar .nav-link:hover { color: #fff; background: #495057; }
-        #sidebar .nav-link.active { color: #fff; background: var(--luci-blue); }
-        #sidebar .nav-link.locked { opacity: 0.5; cursor: not-allowed; }
-        .main-content { width: 100%; padding: 30px; }
-        .card-luci { background: #fff; border: 1px solid #dee2e6; border-radius: 4px; margin-bottom: 20px; }
-        .card-header { background: #f8f9fa; font-weight: bold; padding: 12px 15px; border-bottom: 1px solid #dee2e6; }
-        .step-box { border-left: 3px solid #dee2e6; padding-left: 20px; margin-bottom: 30px; position: relative; }
-        .step-box.active { border-left-color: var(--luci-blue); }
-        .step-number { position: absolute; left: -12px; top: 0; background: #fff; border: 2px solid #dee2e6; border-radius: 50%; width: 24px; height: 24px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; }
-        .step-box.active .step-number { border-color: var(--luci-blue); color: var(--luci-blue); font-weight: bold; }
-        .locked-icon { font-size: 0.8rem; }
-        .instruction-text { font-size: 0.85rem; color: #666; line-height: 1.5; }
-        .footer { margin-top: 50px; border-top: 1px solid #dee2e6; padding-top: 20px; font-size: 0.8rem; text-align: center; color: #999; }
+        :root {
+            --luci-blue: #0066cc;
+            --luci-bg: #f5f7fa;
+            --luci-sidebar: #343a40;
+            --premium-gradient: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        body { background-color: var(--luci-bg); font-family: 'Inter', system-ui, -apple-system, sans-serif; color: #333; overflow-x: hidden; }
+        
+        /* Sidebar Rich Aesthetics */
+        #sidebar {
+            min-width: 280px;
+            background: var(--luci-sidebar);
+            color: #fff;
+            min-height: 100vh;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .sidebar-header {
+            padding: 25px;
+            background: rgba(0,0,0,0.2);
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .nav-link {
+            padding: 14px 25px;
+            color: #adb5bd;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-left: 4px solid transparent;
+            text-decoration: none;
+        }
+        
+        .nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); border-left-color: rgba(255,255,255,0.2); }
+        .nav-link.active { color: #fff; background: var(--premium-gradient); border-left-color: #fff; box-shadow: inset 0 0 15px rgba(0,0,0,0.2); }
+        .nav-link.locked { opacity: 0.5; cursor: not-allowed; }
+        
+        /* Main Area */
+        main { flex: 1; padding: 40px; }
+        
+        .breadcrumb-premium {
+            background: #fff;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-premium {
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 30px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .card-premium:hover { transform: translateY(-3px); }
+        .card-premium .card-header {
+            background: #fdfdfd;
+            border-bottom: 1px solid #f0f0f0;
+            padding: 18px 25px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .card-premium .card-body { padding: 25px; }
+        
+        /* Workflow Steps */
+        .step-container { border-left: 2px dashed #e2e8f0; margin-left: 15px; padding-left: 35px; position: relative; }
+        .step-item { position: relative; margin-bottom: 40px; }
+        .step-circle {
+            position: absolute;
+            left: -48px;
+            top: 0;
+            width: 26px;
+            height: 26px;
+            background: #fff;
+            border: 2px solid #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        
+        .step-item.active .step-circle { border-color: var(--luci-blue); color: var(--luci-blue); box-shadow: 0 0 10px rgba(0,102,204,0.2); }
+        .step-item.completed .step-circle { background: var(--luci-blue); color: #fff; border-color: var(--luci-blue); }
+        
+        /* Toast Notification */
+        #toast-container { position: fixed; top: 25px; right: 25px; z-index: 9999; }
+        .toast-opus {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px 25px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(120%);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-left: 5px solid var(--luci-blue);
+        }
+        .toast-opus.show { transform: translateX(0); }
+        .toast-opus.success { border-left-color: #48bb78; }
+        .toast-opus.error { border-left-color: #f56565; }
+        
+        /* Donation Widget */
+        .donation-widget {
+            background: linear-gradient(135deg, #fff3cd 0%, #fff9e6 100%);
+            border: 1px solid #ffeeba;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px;
+        }
+        
+        .footer-premium {
+            margin-top: 60px;
+            padding: 30px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #718096;
+            border-top: 1px dotted #e2e8f0;
+        }
+        
+        @media (max-width: 992px) {
+            #sidebar { position: fixed; left: -280px; transition: 0.3s; }
+            #sidebar.open { left: 0; }
+        }
     </style>
 </head>
 <body>
 
+<!-- Toast Container (Master Rules 121) -->
+<div id="toast-container" role="alert" aria-live="assertive"></div>
+
 <div class="d-flex">
     <!-- Sidebar -->
-    <nav id="sidebar">
-        <div class="p-4 text-center border-bottom border-secondary">
-            <h5 class="mb-0">Opus Hub</h5>
-            <small class="text-muted">por Canalqb</small>
+    <nav id="sidebar" aria-label="Navegação Principal">
+        <div class="sidebar-header">
+            <h5 class="mb-0 fw-bold">Opus Hub V18</h5>
+            <small class="opacity-50">Portal Canalqb</small>
         </div>
-        <div class="py-3">
+
+        <div class="mt-4">
             <a href="#" class="nav-link active" id="menu-rede" onclick="showSection('rede')">
-                <span><i class="bi bi-wifi me-2"></i> Redes & Internet</span>
+                <span><i class="bi bi-wifi me-3"></i> Redes & Internet</span>
             </a>
             <a href="#" class="nav-link" id="menu-nuvem" onclick="showSection('nuvem')">
-                <span><i class="bi bi-cloud me-2"></i> Acesso à Nuvem</span>
-                <span id="lock-nuvem"></span>
+                <span><i class="bi bi-cloud-check me-3"></i> Acesso à Nuvem</span>
             </a>
             <a href="#" class="nav-link locked" id="menu-marketplace" onclick="checkLock('marketplace')">
-                <span><i class="bi bi-shop me-2"></i> Marketplace</span>
-                <i class="bi bi-lock-fill locked-icon"></i>
+                <span><i class="bi bi-shop me-3"></i> Marketplace</span>
+                <i class="bi bi-lock-fill small"></i>
             </a>
             <a href="#" class="nav-link locked" id="menu-chat" onclick="checkLock('chat')">
-                <span><i class="bi bi-chat-dots me-2"></i> Chat Opus</span>
-                <i class="bi bi-lock-fill locked-icon"></i>
+                <span><i class="bi bi-chat-dots me-3"></i> Chat Opus AI</span>
+                <i class="bi bi-lock-fill small"></i>
             </a>
             <a href="#" class="nav-link locked" id="menu-config" onclick="checkLock('config')">
-                <span><i class="bi bi-gear me-2"></i> Ajustes Finais</span>
-                <i class="bi bi-lock-fill locked-icon"></i>
+                <span><i class="bi bi-shield-lock me-3"></i> Configurações</span>
+                <i class="bi bi-lock-fill small"></i>
+            </a>
+            <a href="https://www.canalqb.com.br" target="_blank" class="nav-link">
+                <span><i class="bi bi-journal-text me-3"></i> Visitar Blog</span>
             </a>
         </div>
 
-        <div class="px-4 mt-4">
-            <div class="p-3 rounded bg-dark border border-secondary">
-                <h6 class="text-warning small mb-2">Apoie o Canalqb ☕</h6>
-                <p class="x-small text-muted mb-2">Este projeto é mantido por doações. Ajude-nos a criar mais!</p>
-                <div class="d-grid gap-2">
-                    <button class="btn btn-xs btn-outline-light" style="font-size: 0.7rem;" onclick="copyPix()">Pix: qrodrigob@gmail.com</button>
-                </div>
+        <section class="donation-widget">
+            <h6 class="fw-bold mb-2">Apoie o Canalqb ☕</h6>
+            <p class="small text-muted mb-3">Sua ajuda mantém este projeto de pé. Todo valor é bem-vindo!</p>
+            <div class="d-grid gap-2">
+                <button class="btn btn-sm btn-dark" onclick="copyPix()">Pix: qrodrigob@gmail.com</button>
+                <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=qrodrigob@gmail.com&currency_code=BRL" class="btn btn-sm btn-primary" target="_blank">PayPal</a>
             </div>
-        </div>
+        </section>
     </nav>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        
-        <!-- REDE & INTERNET -->
-        <div id="section-rede" class="content-section">
-            <div class="card-luci">
-                <div class="card-header">Configurações de Rede</div>
+    <!-- Main Content (Semantic main) -->
+    <main id="main-portal">
+        <header class="breadcrumb-premium">
+            <div class="fw-medium">
+                <i class="bi bi-house-door me-2"></i> <span id="sectionTitle">Redes & Internet</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge rounded-pill bg-success p-2 px-3" style="font-size: 0.75rem;">Sistema Ativo</span>
+            </div>
+        </header>
+
+        <!-- SEÇÃO: REDE -->
+        <section id="section-rede" class="content-section">
+            <article class="card-premium">
+                <div class="card-header">Configuração de Wi-Fi</div>
                 <div class="card-body">
-                    <p class="instruction-text mb-4">Primeiro, vamos garantir que o seu Hub Opus esteja conectado à internet. Escolha a sua rede Wi-Fi abaixo.</p>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Redes Disponíveis</label>
+                    <p class="text-muted small mb-4">Escolha a rede que o seu Hub Opus deve usar para se conectar ao mundo.</p>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small">Redes Wi-Fi Detectadas</label>
                         <div class="input-group">
-                            <select id="ssid" class="form-select"></select>
-                            <button class="btn btn-outline-secondary" onclick="scanWifi()">🔄 Escanear</button>
+                            <select id="ssid" class="form-select border-0 bg-light"></select>
+                            <button class="btn btn-primary px-4" onclick="scanWifi()">Escanear</button>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Senha da Rede</label>
-                        <input type="password" id="pass" class="form-control" placeholder="Digite a senha">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small">Senha de Acesso</label>
+                        <input type="password" id="pass" class="form-control border-0 bg-light" placeholder="Senha da rede local">
                     </div>
-                    <button class="btn btn-primary" onclick="saveWifi()">Conectar ao Roteador</button>
+                    <button class="btn btn-dark w-100 py-3 shadow-sm" onclick="saveWifi()">Salvar e Conectar</button>
                 </div>
-            </div>
-        </div>
+            </article>
+        </section>
 
-        <!-- ACESSO À NUVEM -->
-        <div id="section-nuvem" class="content-section d-none">
-            <div class="card-luci">
-                <div class="card-header">Configurações de Acesso à Nuvem (Google Cloud)</div>
+        <!-- SEÇÃO: NUVEM -->
+        <section id="section-nuvem" class="content-section d-none">
+            <article class="card-premium">
+                <div class="card-header">Configurações de Nuvem (Google Drive)</div>
                 <div class="card-body">
-                    <p class="instruction-text mb-4">
-                        Para que o Opus salve seus dados com segurança, precisamos de acesso ao seu Google Drive pessoal. 
-                        Siga o tutorial no <a href="https://www.canalqb.com.br" target="_blank">Canalqb.com.br</a> se tiver dúvidas.
-                    </p>
-
-                    <!-- Passo 1: Credenciais -->
-                    <div class="step-box active" id="step-1">
-                        <div class="step-number">1</div>
-                        <h6>Credenciais do Projeto</h6>
-                        <p class="instruction-text">
-                            No Google Cloud Console, crie um credenciamento do tipo <strong>"App para Computador"</strong>. 
-                            Configure a URI de redirecionamento para <code>http://localhost:3000/auth/callback</code>.
-                        </p>
-                        <div class="row g-2 mb-3">
-                            <div class="col-md-6">
-                                <label class="small text-muted">Client ID</label>
-                                <input type="text" id="g_client_id" class="form-control form-control-sm" placeholder="421456...">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="small text-muted">Client Secret</label>
-                                <input type="password" id="g_client_secret" class="form-control form-control-sm" placeholder="GOCSPX-...">
+                    <p class="text-muted small mb-4">Siga os passos abaixo para liberar o poder total do seu Hub Opus.</p>
+                    
+                    <div class="step-container">
+                        <!-- Step 1 -->
+                        <div class="step-item active" id="step-1">
+                            <div class="step-circle">1</div>
+                            <h6 class="fw-bold">Credenciais Google Cloud</h6>
+                            <p class="text-muted x-small mb-3">Crie um credenciamento 'App Desktop' e use o Redirect URI: http://localhost:3000/auth/callback</p>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <input type="text" id="g_client_id" class="form-control bg-light border-0" placeholder="Client ID">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="password" id="g_client_secret" class="form-control bg-light border-0" placeholder="Client Secret">
+                                </div>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="small text-muted">E-mail da Conta de Serviço (Opcional)</label>
-                            <input type="text" id="service_email" class="form-control form-control-sm" placeholder="opus@projeto.iam...">
-                        </div>
-                    </div>
 
-                    <!-- Passo 2: Autorização -->
-                    <div class="step-box" id="step-2">
-                        <div class="step-number">2</div>
-                        <h6>Autorizar o Hub Opus</h6>
-                        <p class="instruction-text">
-                            Adicione o seu e-mail pessoal como <strong>"Usuário de Teste"</strong> na tela de consentimento OAuth do seu projeto Google.
-                        </p>
-                        <button class="btn btn-sm btn-outline-primary" id="btn-auth" onclick="startOAuth()">Gerar Token de Acesso</button>
-                        <div id="token-status" class="mt-2 small text-success d-none">✅ Token Refresh Gerado e Salvo!</div>
-                    </div>
-
-                    <!-- Passo 3: Pasta Raiz -->
-                    <div class="step-box" id="step-3">
-                        <div class="step-number">3</div>
-                        <h6>Pasta de Destino</h6>
-                        <p class="instruction-text">Informe o ID da pasta no seu Drive onde o sistema irá morar.</p>
-                        <div class="input-group mb-3">
-                            <input type="text" id="id_pasta" class="form-control form-control-sm" placeholder="ID da Pasta (ex: 1A2b3C...)">
-                            <button class="btn btn-sm btn-success" id="btn-test-drive" onclick="testCloud()">Realizar Teste de Escrita</button>
+                        <!-- Step 2 -->
+                        <div class="step-item" id="step-2">
+                            <div class="step-circle">2</div>
+                            <h6 class="fw-bold">Autorização de Acesso</h6>
+                            <p class="text-muted x-small mb-3">Adicione seu e-mail como 'Usuário de Teste' e gere o token abaixo.</p>
+                            <button class="btn btn-sm btn-outline-primary px-4" onclick="startOAuth()">Gerar Token Refresh</button>
                         </div>
-                        <div id="test-status" class="small"></div>
+
+                        <!-- Step 3 -->
+                        <div class="step-item" id="step-3">
+                            <div class="step-circle">3</div>
+                            <h6 class="fw-bold">Pasta de Trabalho</h6>
+                            <input type="text" id="id_pasta" class="form-control bg-light border-0 mb-3" placeholder="ID da Pasta Raiz no Drive">
+                            <button class="btn btn-success px-4" onclick="testCloud()">Validar e Liberar Marketplace</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </article>
+        </section>
 
-        <!-- MARKETPLACE (BLOQUEADO INICIALMENTE) -->
-        <div id="section-marketplace" class="content-section d-none">
-            <div class="card-luci">
-                <div class="card-header">Marketplace de Módulos</div>
+        <!-- MARKETPLACE -->
+        <section id="section-marketplace" class="content-section d-none">
+            <article class="card-premium">
+                <div class="card-header">Marketplace Canalqb</div>
                 <div class="card-body">
-                    <p class="instruction-text">Agora que sua nuvem está pronta, você pode instalar novos módulos!</p>
                     <div id="marketList" class="row"></div>
                 </div>
-            </div>
-        </div>
+            </article>
+        </section>
 
-        <!-- FOOTER -->
-        <div class="footer">
-            Sistema Opus Hub | <a href="https://www.canalqb.com.br" target="_blank">Visite o Blog Canalqb</a> para tutoriais e apoio.
-        </div>
-    </div>
+        <footer class="footer-premium">
+            <p class="mb-1"><strong>Opus Hub Premium</strong> &copy; 2026</p>
+            <p class="x-small">Desenvolvido por <a href="https://www.canalqb.com.br" target="_blank" class="text-primary text-decoration-none">Canalqb</a>. Todos os direitos reservados.</p>
+        </footer>
+    </main>
 </div>
 
+<!-- JS Core Logic (Master Rules Compliant) -->
 <script>
     let espIp = new URLSearchParams(window.location.search).get('ip') || window.location.hostname;
     let isCloudConfigured = false;
 
+    // Toast Function (Master Rule 121)
+    function showToast(msg, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast-opus ${type}`;
+        const icon = type === 'success' ? 'check-circle' : (type === 'error' ? 'exclamation-triangle' : 'info-circle');
+        toast.innerHTML = `<i class="bi bi-${icon}"></i> <span>${msg}</span>`;
+        container.appendChild(toast);
+        
+        setTimeout(() => toast.classList.add('show'), 100);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 500);
+        }, 4000);
+    }
+
     function showSection(id) {
         if (document.getElementById('menu-' + id).classList.contains('locked')) {
-            alert('Aguarde! Esta seção será liberada assim que você configurar o Acesso à Nuvem corretamente.');
+            showToast('Acesso bloqueado! Configure a Nuvem primeiro.', 'error');
             return;
         }
         document.querySelectorAll('.content-section').forEach(s => s.classList.add('d-none'));
         document.getElementById('section-' + id).classList.remove('d-none');
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         document.getElementById('menu-' + id).classList.add('active');
+        document.getElementById('sectionTitle').innerText = document.getElementById('menu-' + id).innerText.trim();
     }
 
     function checkLock(id) {
         if (!isCloudConfigured) {
-            alert('Por favor, complete a configuração do Google Cloud e realize o Teste de Escrita primeiro.');
+            showToast('Complete o Passo 3 do Acesso à Nuvem!', 'error');
         } else {
             showSection(id);
         }
     }
 
-    function startOAuth() {
+    async function startOAuth() {
         const clientId = document.getElementById('g_client_id').value;
         const clientSecret = document.getElementById('g_client_secret').value;
-        if (!clientId || !clientSecret) { alert('Preencha o Client ID e Secret primeiro.'); return; }
+        if (!clientId || !clientSecret) { showToast('Preencha as credenciais!', 'error'); return; }
 
         const scope = "https://www.googleapis.com/auth/drive";
-        const redirect = "http://localhost:3000/auth/callback"; // Como solicitado
+        const redirect = "http://localhost:3000/auth/callback";
         const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirect)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
         
         window.open(authUrl, '_blank');
         
-        // Modal ou instrução para o código
-        const code = prompt("O Google irá redirecionar para uma página de erro (localhost:3000). COPIE o código que aparece na URL (após 'code=') e cole aqui:");
+        const code = prompt("Copie o código 'code=' da página de erro que abriu e cole aqui:");
         if (code) {
             exchangeCodeForToken(code, clientId, clientSecret);
         }
@@ -218,76 +359,60 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({
-                    code: code,
-                    client_id: clientId,
-                    client_secret: clientSecret,
-                    redirect_uri: 'http://localhost:3000/auth/callback',
-                    grant_type: 'authorization_code'
+                    code: code, client_id: clientId, client_secret: clientSecret,
+                    redirect_uri: 'http://localhost:3000/auth/callback', grant_type: 'authorization_code'
                 })
             });
             const data = await res.json();
             if (data.refresh_token) {
-                // Enviar para o ESP32
-                await saveToESP({ googleRefreshToken: data.refresh_token, googleClientId: clientId, googleClientSecret: clientSecret });
-                document.getElementById('token-status').classList.remove('d-none');
+                await fetch(`http://${espIp}/api/settings`, { method: 'POST', body: JSON.stringify({ googleRefreshToken: data.refresh_token, googleClientId: clientId, googleClientSecret: clientSecret }) });
+                showToast('Token gerado com sucesso!', 'success');
+                document.getElementById('step-2').classList.add('completed');
                 document.getElementById('step-3').classList.add('active');
-            } else { alert('Erro ao obter token. Verifique suas credenciais.'); }
-        } catch(e) { alert('Erro na comunicação com o Google.'); }
-    }
-
-    async function saveToESP(payload) {
-        await fetch(`http://${espIp}/api/settings`, { method: 'POST', body: JSON.stringify(payload) });
+            } else { showToast('Erro no Google OAuth!', 'error'); }
+        } catch(e) { showToast('Erro de rede!', 'error'); }
     }
 
     async function testCloud() {
         const idPasta = document.getElementById('id_pasta').value;
-        if (!idPasta) { alert('Informe o ID da pasta primeiro.'); return; }
+        if (!idPasta) { showToast('Informe o ID da pasta!', 'error'); return; }
         
-        const statusDiv = document.getElementById('test-status');
-        statusDiv.innerHTML = '<span class="text-primary">⏳ Testando escrita e criando estrutura...</span>';
+        showToast('Validando integridade no Drive...', 'info');
         
         try {
-            // Primeiro salvamos o ID da pasta
-            await saveToESP({ id_pasta: idPasta });
-            
-            // Depois acionamos o teste de instalacao
+            await fetch(`http://${espIp}/api/settings`, { method: 'POST', body: JSON.stringify({ id_pasta: idPasta }) });
             const res = await fetch(`http://${espIp}/api/test_drive`, { method: 'POST' });
             const data = await res.json();
             
             if (data.success) {
-                statusDiv.innerHTML = '<span class="text-success">✅ Sucesso! Módulos liberados.</span>';
+                showToast('Nuvem validada! Módulos liberados.', 'success');
                 unlockSystem();
             } else {
-                statusDiv.innerHTML = `<span class="text-danger">❌ Falha: ${data.error || 'Erro no Drive'}</span>`;
+                showToast('Falha no Drive: ' + (data.error || 'Erro'), 'error');
             }
-        } catch(e) { statusDiv.innerHTML = '<span class="text-danger">❌ Erro de conexão com o Hub.</span>'; }
+        } catch(e) { showToast('Falha na comunicação!', 'error'); }
     }
 
     function unlockSystem() {
         isCloudConfigured = true;
         document.querySelectorAll('.nav-link.locked').forEach(l => {
             l.classList.remove('locked');
-            l.querySelector('.locked-icon').remove();
+            const lock = l.querySelector('.bi-lock-fill');
+            if(lock) lock.remove();
         });
         loadMarket();
     }
 
     function copyPix() {
         navigator.clipboard.writeText('qrodrigob@gmail.com');
-        alert('E-mail Pix copiado! Muito obrigado pelo apoio ao Canalqb.');
+        showToast('E-mail Pix copiado! Obrigado.', 'success');
     }
 
-    // Inicialização
     window.onload = () => {
-        // Carregar config atual do ESP se houver
         fetch(`http://${espIp}/api/config`).then(r => r.json()).then(d => {
             document.getElementById('g_client_id').value = d.googleClientId || '';
             document.getElementById('g_client_secret').value = d.googleClientSecret || '';
             document.getElementById('id_pasta').value = d.id_pasta || '';
-            if (d.googleRefreshToken && d.id_pasta) {
-                // Tenta validar automaticamente ou espera o teste
-                // unlockSystem(); 
-            }
         });
     };
 </script>
