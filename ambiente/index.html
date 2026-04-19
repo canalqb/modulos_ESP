@@ -1118,6 +1118,69 @@
             }
         }
 
+        /* ── MODAL CUSTOM (Master Rules 121) ─────────────────── */
+        .cqb-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .cqb-modal-overlay.show { display: flex; }
+
+        .cqb-modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: modalFadeUp 0.3s var(--anim);
+        }
+
+        @keyframes modalFadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cqb-modal-header {
+            padding: 24px 24px 12px;
+            text-align: center;
+        }
+
+        .cqb-modal-header i {
+            font-size: 2.5rem;
+            color: var(--cqb-red);
+            margin-bottom: 16px;
+        }
+
+        .cqb-modal-title {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        .cqb-modal-body {
+            padding: 0 24px 24px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .cqb-modal-footer {
+            padding: 16px 24px 24px;
+            display: flex;
+            gap: 12px;
+        }
+
         /* ── SPINNER ───────────────────────────────────────────── */
         .cqb-spin {
             animation: spin 0.8s linear infinite;
@@ -1152,6 +1215,23 @@
 
     <!-- TOAST CONTAINER -->
     <div id="cqb-toasts" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+    <!-- MODAL CONTAINER (Master Rules 121) -->
+    <div class="cqb-modal-overlay" id="cqb-modal-overlay">
+        <div class="cqb-modal">
+            <div class="cqb-modal-header">
+                <i class="fas fa-triangle-exclamation"></i>
+                <div class="cqb-modal-title" id="modal-title">Confirmar Ação</div>
+            </div>
+            <div class="cqb-modal-body" id="modal-body">
+                Deseja realmente prosseguir com esta operação?
+            </div>
+            <div class="cqb-modal-footer">
+                <button class="cqb-btn cqb-btn-ghost cqb-btn-block" onclick="closeCqbModal()">Cancelar</button>
+                <button class="cqb-btn cqb-btn-primary cqb-btn-block" id="modal-confirm-btn" style="background:var(--cqb-red);">Confirmar</button>
+            </div>
+        </div>
+    </div>
 
     <!-- MOBILE OVERLAY -->
     <div class="cqb-overlay" id="cqb-overlay" onclick="closeSidebar()"></div>
@@ -2058,30 +2138,42 @@
       </div>`).join('');
             }
 
-            /* ── RESET DE FÁBRICA ─────────────────────────────── */
-            window.factoryReset = async function() {
-                const conf1 = confirm("⚠️ ATENÇÃO: Isso apagará TODAS as configurações (Wi-Fi, Google, Módulos). Deseja continuar?");
-                if(!conf1) return;
-                
-                const conf2 = confirm("ESTA AÇÃO É IRREVERSÍVEL. Você precisará reconfigurar o dispositivo do zero. Confirmar?");
-                if(!conf2) return;
+            /* ── MODAL SYSTEM ─────────────────────────────────── */
+            function openCqbModal(title, body, onConfirm) {
+                document.getElementById('modal-title').textContent = title;
+                document.getElementById('modal-body').innerHTML = body;
+                const btn = document.getElementById('modal-confirm-btn');
+                btn.onclick = () => {
+                    closeCqbModal();
+                    onConfirm();
+                };
+                document.getElementById('cqb-modal-overlay').classList.add('show');
+            }
+            window.closeCqbModal = function() {
+                document.getElementById('cqb-modal-overlay').classList.remove('show');
+            };
 
-                showToast('Iniciando Reset de Fábrica...', 'warn');
-                
-                try {
-                    const res = await fetch(`http://${S.espIp}/api/factory_reset`, { method: 'POST' });
-                    const data = await res.json();
-                    if(data.success) {
-                        showToast('Reset concluído! O dispositivo irá reiniciar.', 'success');
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 5000);
-                    } else {
-                        showToast('Erro ao resetar: ' + (data.error || 'Desconhecido'), 'error');
+            /* ── RESET DE FÁBRICA ─────────────────────────────── */
+            window.factoryReset = function() {
+                openCqbModal(
+                    "⚠️ RESET DE FÁBRICA", 
+                    "Isso apagará <strong>TODAS</strong> as configurações (Wi-Fi, Google, Módulos).<br><br>Esta ação é irreversível. O dispositivo voltará ao estado original de fábrica.", 
+                    async () => {
+                        showToast('Iniciando Reset de Fábrica...', 'warn');
+                        try {
+                            const res = await fetch(`http://${S.espIp}/api/factory_reset`, { method: 'POST' });
+                            const data = await res.json();
+                            if(data.success) {
+                                showToast('Reset concluído! O dispositivo irá reiniciar.', 'success');
+                                setTimeout(() => { window.location.reload(); }, 5000);
+                            } else {
+                                showToast('Erro ao resetar!', 'error');
+                            }
+                        } catch(e) {
+                            showToast('O dispositivo parou de responder. O reset deve estar em curso.', 'info');
+                        }
                     }
-                } catch(e) {
-                    showToast('O dispositivo parou de responder. O reset deve estar em curso.', 'info');
-                }
+                );
             };
 
             /* ── PIX ───────────────────────────────────────────── */
