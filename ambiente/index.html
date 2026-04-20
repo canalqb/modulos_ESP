@@ -911,6 +911,10 @@
                         document.getElementById('bt-enable-switch').checked = data.bt_enabled;
                         document.getElementById('bt-name-input').value = data.bt_name || 'Canalqb - ESP32';
                         document.getElementById('bt-pin-input').value = data.bt_pin || '1234';
+                    } else if (data.bluetooth && data.bluetooth.enabled !== undefined) {
+                        document.getElementById('bt-enable-switch').checked = data.bluetooth.enabled;
+                        document.getElementById('bt-name-input').value = data.bluetooth.name || 'Canalqb - ESP32';
+                        document.getElementById('bt-pin-input').value = data.bluetooth.pin || '1234';
                     }
                 } catch (_) { /* ESP32 offline */ }
             }
@@ -918,7 +922,7 @@
             /* ── BLUETOOTH ─────────────────────────────────────── */
             window.updateBtStatus = function() {
                 const en = document.getElementById('bt-enable-switch').checked;
-                showToast(en ? 'Bluetooth será ativado no reinício.' : 'Bluetooth será desativado no reinício.', 'info');
+                showToast(en ? 'O Bluetooth será ativado imediatamente ao salvar.' : 'O Bluetooth será desativado imediatamente ao salvar.', 'info');
             };
             window.saveBtConfig = async function() {
                 const enabled = document.getElementById('bt-enable-switch').checked;
