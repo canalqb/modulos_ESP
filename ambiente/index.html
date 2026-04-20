@@ -318,64 +318,66 @@
                         <div class="cqb-steps">
 
                             <!-- STEP 1: Credenciais -->
-                            <div class="cqb-step active" id="gstep-1">
+                            <article class="cqb-step active" id="gstep-1">
                                 <div class="cqb-step-dot">1</div>
-                                <p class="cqb-step-title">Credenciais do Google Cloud</p>
-                                <p class="cqb-step-desc">Cole o <strong>Client ID</strong> e a <strong>Chave Secreta
-                                        (Client Secret)</strong> obtidos no Console do Google Cloud em <em>APIs e
-                                        Serviços → Credenciais</em>.</p>
-                                <div class="row g-3">
-                                    <div class="col-12 col-md-6">
-                                        <label class="cqb-label" for="g-client-id">Client ID</label>
-                                        <input type="text" id="g-client-id" class="cqb-input"
-                                            placeholder="...apps.googleusercontent.com" oninput="evalGoogleStep1()">
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="cqb-label" for="g-client-secret">Client Secret</label>
-                                        <input type="password" id="g-client-secret" class="cqb-input"
-                                            placeholder="GOCSPX-..." oninput="evalGoogleStep1()">
+                                <div class="cqb-step-content">
+                                    <h3 class="cqb-step-title">Credenciais do Google Cloud</h3>
+                                    <p class="cqb-step-desc">Cole o <strong>Client ID</strong> e a <strong>Chave Secreta
+                                            (Client Secret)</strong> obtidos no Console do Google Cloud em <em>APIs e
+                                            Serviços → Credenciais</em>.</p>
+                                    <div class="cqb-form-row">
+                                        <div class="cqb-form-group">
+                                            <label class="cqb-label" for="g-client-id">
+                                                <i class="fas fa-id-badge"></i> Client ID
+                                            </label>
+                                            <input type="text" id="g-client-id" class="cqb-input"
+                                                placeholder="...apps.googleusercontent.com" oninput="evalGoogleStep1()">
+                                        </div>
+                                        <div class="cqb-form-group">
+                                            <label class="cqb-label" for="g-client-secret">
+                                                <i class="fas fa-lock"></i> Client Secret
+                                            </label>
+                                            <input type="password" id="g-client-secret" class="cqb-input"
+                                                placeholder="GOCSPX-..." oninput="evalGoogleStep1()">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </article>
 
                             <!-- STEP 2: Service Account + OAuth -->
                             <div class="cqb-step" id="gstep-2">
                                 <div class="cqb-step-dot">2</div>
-                                <p class="cqb-step-title">E-mail de Conta de Serviço &amp; Geração do Token</p>
-                                <p class="cqb-step-desc">
-                                    Informe o e-mail que foi adicionado como <strong>Usuário de Teste</strong> no OAuth
-                                    consent screen.
-                                    Em seguida, clique em <strong>Iniciar Autorização</strong> — uma nova aba abrirá
-                                    para você conceder permissão ao Drive.
-                                </p>
-                                <div class="row g-3 mb-3">
-                                    <div class="col-12">
-                                        <label class="cqb-label" for="g-svc-email">E-mail de Conta de Serviço (Usuário
-                                            de Teste)</label>
+                                <div class="cqb-step-content">
+                                    <h3 class="cqb-step-title">Autorização OAuth</h3>
+                                    <p class="cqb-step-desc">
+                                        Informe o e-mail adicionado como <strong>Usuário de Teste</strong> no OAuth
+                                        consent screen e inicie a autorização para gerar o token de acesso ao Drive.
+                                    </p>
+                                    <div class="cqb-form-group">
+                                        <label class="cqb-label" for="g-svc-email">
+                                            <i class="fas fa-envelope"></i> E-mail de Teste OAuth
+                                        </label>
                                         <input type="email" id="g-svc-email" class="cqb-input"
                                             placeholder="seuemail@gmail.com" oninput="evalGoogleStep1()">
                                     </div>
-                                </div>
-                                <button class="cqb-btn cqb-btn-primary" id="btn-oauth" onclick="startOAuth()" disabled>
-                                    <i class="fas fa-arrow-up-right-from-square"></i> Iniciar Autorização OAuth
-                                </button>
-
-                                <!-- Code input box (aparece após clicar) -->
-                                <div class="cqb-code-box" id="oauth-code-box">
-                                    <p>
-                                        <i class="fas fa-circle-info"
-                                            style="color:var(--cqb-blue);margin-right:6px;"></i>
-                                        Uma nova aba foi aberta. Após aceitar as permissões, a URL mostrará
-                                        <code>?code=4/0A...</code> — copie apenas o valor do parâmetro <code>code</code>
-                                        e cole abaixo.
-                                    </p>
-                                    <div style="display:flex;gap:8px;margin-top:10px;">
-                                        <input type="text" id="oauth-code-input" class="cqb-input"
-                                            placeholder="4/0AanRRrsBq... (cole o código aqui)">
-                                        <button class="cqb-btn cqb-btn-success" onclick="exchangeToken()"
-                                            style="flex-shrink:0;">
-                                            <i class="fas fa-key"></i> Trocar por Token
-                                        </button>
+                                    <button class="cqb-btn cqb-btn-primary" id="btn-oauth" onclick="startOAuth()" disabled>
+                                        <i class="fas fa-arrow-up-right-from-square"></i> Iniciar Autorização OAuth
+                                    </button>
+                                    <!-- Code input box (aparece após clicar) -->
+                                    <div class="cqb-code-box" id="oauth-code-box">
+                                        <p>
+                                            <i class="fas fa-circle-info" style="color:var(--cqb-blue);margin-right:6px;"></i>
+                                            Uma nova aba foi aberta. Após aceitar as permissões, a URL mostrará
+                                            <code>?code=4/0A...</code> &mdash; copie apenas o valor do parâmetro <code>code</code>
+                                            e cole abaixo.
+                                        </p>
+                                        <div style="display:flex;gap:12px;margin-top:12px;">
+                                            <input type="text" id="oauth-code-input" class="cqb-input"
+                                                placeholder="4/0AanRRrsBq...">
+                                            <button class="cqb-btn cqb-btn-success" onclick="exchangeToken()" style="flex-shrink:0;">
+                                                <i class="fas fa-key"></i> Trocar
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -383,32 +385,31 @@
                             <!-- STEP 3: Drive Folder -->
                             <div class="cqb-step" id="gstep-3">
                                 <div class="cqb-step-dot">3</div>
-                                <p class="cqb-step-title">Pasta Raiz no Google Drive</p>
-                                <p class="cqb-step-desc">
-                                    Abra o Google Drive, acesse a pasta que deseja usar como raiz e copie o <strong>ID
-                                        da pasta</strong> da URL
-                                    (parte após <code>/folders/</code>). Cole abaixo e clique em <strong>Testar
-                                        Conexão</strong>.
-                                </p>
-                                <div class="row g-3 align-items-end">
-                                    <div class="col-12 col-sm-8">
-                                        <label class="cqb-label" for="g-folder-id">ID da Pasta Raiz</label>
-                                        <input type="text" id="g-folder-id" class="cqb-input"
-                                            placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs..." disabled>
+                                <div class="cqb-step-content">
+                                    <h3 class="cqb-step-title">Pasta Raiz no Drive</h3>
+                                    <p class="cqb-step-desc">
+                                        Informe o ID da pasta raiz do Google Drive (obtido via URL após <code>/folders/</code>).
+                                    </p>
+                                    <div class="cqb-form-row">
+                                        <div class="cqb-form-group" style="flex:2;min-width:0;">
+                                            <label class="cqb-label" for="g-folder-id">
+                                                <i class="fas fa-folder-tree"></i> ID da Pasta Raiz
+                                            </label>
+                                            <input type="text" id="g-folder-id" class="cqb-input"
+                                                placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs..." disabled>
+                                        </div>
+                                        <div class="cqb-form-group" style="flex:1;min-width:140px;">
+                                            <label class="cqb-label">&nbsp;</label>
+                                            <button class="cqb-btn cqb-btn-outline cqb-btn-block" id="btn-test-drive"
+                                                onclick="testDriveSetup()" disabled>
+                                                <i class="fas fa-circle-check"></i> Testar Conexão
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="col-12 col-sm-4">
-                                        <button class="cqb-btn cqb-btn-outline cqb-btn-block" id="btn-test-drive"
-                                            onclick="testDriveSetup()" disabled>
-                                            <i class="fas fa-circle-check"></i> Testar Conexão
-                                        </button>
+                                    <div class="cqb-alert cqb-alert-info" style="display:none;" id="drive-test-info">
+                                        <i class="fas fa-folder-open"></i>
+                                        <span>Conexão bem sucedida! Os módulos do Hub foram liberados.</span>
                                     </div>
-                                </div>
-                                <div class="cqb-alert cqb-alert-info" style="margin-top:14px;display:none;"
-                                    id="drive-test-info">
-                                    <i class="fas fa-folder-open"></i>
-                                    <span>O sistema irá criar a pasta <strong>Canalqb_Config</strong> e um arquivo
-                                        <strong>teste.txt</strong> — sem duplicatas. Ao concluir com sucesso, os módulos
-                                        serão liberados.</span>
                                 </div>
                             </div>
 
@@ -556,29 +557,32 @@
                             <span>O Bluetooth permite que o dispositivo seja localizado por outros aparelhos. O PIN
                                 padrão é <strong>1234</strong>.</span>
                         </div>
-                        <div class="row g-4">
-                            <div class="col-12">
-                                <div class="form-check form-switch cqb-switch-wrap">
-                                    <input class="form-check-input cqb-switch" type="checkbox" id="bt-enable-switch"
-                                        onchange="updateBtStatus()">
-                                    <label class="form-check-label" for="bt-enable-switch"
-                                        style="font-weight:600;margin-left:10px;">Ativar Bluetooth</label>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <label class="cqb-label">Nome do Dispositivo Bluetooth</label>
+                        
+                        <div class="cqb-switch-wrap">
+                            <label class="cqb-label" for="bt-enable-switch" style="margin:0;">
+                                <i class="fab fa-bluetooth-b"></i> Ativar Visibilidade Bluetooth
+                            </label>
+                            <input class="cqb-switch" type="checkbox" id="bt-enable-switch" onchange="updateBtStatus()">
+                        </div>
+
+                        <div class="cqb-form-row">
+                            <div class="cqb-form-group">
+                                <label class="cqb-label">
+                                    <i class="fas fa-tag"></i> Nome do Dispositivo
+                                </label>
                                 <input type="text" id="bt-name-input" class="cqb-input" placeholder="Canalqb - ESP32">
                             </div>
-                            <div class="col-12 col-md-6">
-                                <label class="cqb-label">PIN de Pareamento</label>
+                            <div class="cqb-form-group">
+                                <label class="cqb-label">
+                                    <i class="fas fa-key"></i> PIN de Pareamento
+                                </label>
                                 <input type="text" id="bt-pin-input" class="cqb-input" placeholder="1234" maxlength="4">
                             </div>
-                            <div class="col-12">
-                                <button class="cqb-btn cqb-btn-primary cqb-btn-block" onclick="saveBtConfig()">
-                                    <i class="fas fa-floppy-disk"></i> Salvar e Aplicar Bluetooth
-                                </button>
-                            </div>
                         </div>
+
+                        <button class="cqb-btn cqb-btn-primary cqb-btn-block" onclick="saveBtConfig()" style="margin-top:8px;">
+                            <i class="fas fa-floppy-disk"></i> Salvar e Aplicar Configurações
+                        </button>
                     </div>
                 </div>
             </section>
