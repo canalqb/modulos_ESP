@@ -1,0 +1,29 @@
+{
+  "name": "canalqb-esp32-cdn",
+  "version": "1.0.0",
+  "built": "2026-04-20T14:59:33.837Z",
+  "modules": [
+    {
+      "name": "bootstrap",
+      "version": "5.3.3",
+      "files": [
+        "css/bootstrap.min.css",
+        "js/bootstrap.bundle.min.js"
+      ]
+    },
+    {
+      "name": "@fortawesome/fontawesome-free",
+      "version": "6.5.0",
+      "files": [
+        "css/fontawesome.min.css",
+        "js/fontawesome.min.js"
+      ]
+    },
+    {
+      "name": "google-fonts",
+      "files": [
+        "css/google-fonts.css"
+      ]
+    }
+  ]
+}

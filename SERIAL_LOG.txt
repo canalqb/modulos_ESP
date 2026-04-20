@@ -1,0 +1,10 @@
+--- MONITORAMENTO SMART LOADER V3 (CDN + CONFIG API) ---
+
+=== CanalQb ESP32 Hub ===
+Versão: 1.0
+Entrando em modo AP...
+Modo AP iniciado
+SSID: CanalQb-ESP32
+IP: 192.168.4.1
+Servidor web iniciado
+Setup concluído
