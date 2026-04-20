@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opus Hub | Portal de Controle — @CanalQb</title>
+    <title>Opus Hub | Portal de Controle - @CanalQb</title>
     <meta name="description" content="Portal de controle avançado para o sistema Opus Hub do @CanalQb.">
     <meta name="author" content="@CanalQb">
     <meta name="copyright" content="@CanalQb 2026">
@@ -13,7 +13,7 @@
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2316191f'/><text x='16' y='22' text-anchor='middle' font-size='18' font-family='sans-serif' fill='%2328a745'>Q</text></svg>">
 
     <!-- Custom CSS Framework - Bootstrap Free -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@c75fb59/ambiente/style.css">
     <!-- Font Awesome 6.5 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -23,7 +23,7 @@
         href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
 
-    <!-- Patch: vanilla collapse para .cqb-guide-collapse (independente do Bootstrap JS) -->
+    <!-- Patch: vanilla collapse para .cqb-guide-collapse -->
     <style>
         .cqb-guide-collapse {
             display: none;
@@ -40,7 +40,7 @@
     <!-- TOAST CONTAINER -->
     <div id="cqb-toasts" role="alert" aria-live="assertive" aria-atomic="true"></div>
 
-    <!-- MODAL CONTAINER (Master Rules 121) -->
+    <!-- MODAL CONTAINER -->
     <div class="cqb-modal-overlay" id="cqb-modal-overlay">
         <div class="cqb-modal">
             <div class="cqb-modal-header">
@@ -68,7 +68,7 @@
 
     <div class="cqb-wrapper">
 
-        <!-- ════════════ SIDEBAR ════════════ -->
+        <!-- SIDEBAR -->
         <nav id="cqb-sidebar" aria-label="Navegação Principal">
             <div class="cqb-sidebar-head">
                 <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgtt2Q0QwGuJ3OI0G29twmGKYmZvab5d8AV6fJd_HUdevW7fofyH2lDRAv39LAtg0A2x46Im5VwUT-1cfm0b4g7jgY9IKC_BbqqEV9bew_OhkddtGzaFlM4uL0LUeqS8nxK83Yufp3E6SOycslOyDA6O14vPpHRiPkTCSbb5H05NTE/w350/1QB.png"
@@ -152,7 +152,7 @@
             </div>
         </nav>
 
-        <!-- ════════════ MAIN ════════════ -->
+        <!-- MAIN -->
         <main id="cqb-main">
             <div class="cqb-container">
 
@@ -185,7 +185,7 @@
                     </div>
                 </div>
 
-                <!-- ══ SEÇÃO: REDES ══════════════════════════════════ -->
+                <!-- SEÇÃO: REDES -->
                 <section id="section-rede" class="cqb-section">
                     <div class="cqb-tabs">
                         <button class="cqb-tab active" id="tab-wifi" onclick="showTab('rede','wifi')">
@@ -235,22 +235,20 @@
                                     <div class="col-12">
                                         <label class="cqb-label" for="wifi-pass">Senha</label>
                                         <div style="display:flex;gap:8px;">
-                                            <input type="password" id="wifi-pass" class="cqb-input"
-                                                placeholder="Senha da rede...">
-                                            <button class="cqb-btn cqb-btn-ghost cqb-btn-sm" onclick="togglePass()"
-                                                style="flex-shrink:0;min-width:44px;">
+                                            <input type="password" id="wifi-pass" class="cqb-input" placeholder="Digite a senha...">
+                                            <button class="cqb-btn cqb-btn-ghost" onclick="togglePass()" id="eye-btn" style="flex-shrink:0;">
                                                 <i class="fas fa-eye" id="eye-icon"></i>
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="col-6">
-                                        <button class="cqb-btn cqb-btn-ghost cqb-btn-block" onclick="scanWifi()">
-                                            <i class="fas fa-magnifying-glass"></i> Escanear
+                                    <div class="col-12">
+                                        <button class="cqb-btn cqb-btn-primary cqb-btn-block" onclick="scanWifi()">
+                                            <i class="fas fa-search"></i> Escanear Redes
                                         </button>
                                     </div>
-                                    <div class="col-6">
-                                        <button class="cqb-btn cqb-btn-dark cqb-btn-block" onclick="saveWifi()">
-                                            <i class="fas fa-floppy-disk"></i> Salvar e Conectar
+                                    <div class="col-12">
+                                        <button class="cqb-btn cqb-btn-success cqb-btn-block" onclick="saveWifi()">
+                                            <i class="fas fa-wifi"></i> Conectar à Rede
                                         </button>
                                     </div>
                                 </div>
@@ -258,11 +256,11 @@
                         </div>
                     </div>
 
-                    <!-- SSID Avançado -->
+                    <!-- SSID Config -->
                     <div id="pane-ssid" class="cqb-tab-pane">
                         <div class="cqb-card">
                             <div class="cqb-card-header">
-                                <i class="fas fa-signal hd-icon"></i> Configurações de SSID
+                                <i class="fas fa-signal hd-icon"></i> Configurações Avançadas de SSID
                             </div>
                             <div class="cqb-card-body">
                                 <div class="cqb-alert cqb-alert-warn">
@@ -271,37 +269,33 @@
                                         @CanalQb, validamos que erros aqui podem derrubar a conectividade do Hub.</span>
                                 </div>
                                 <div class="row g-3">
-                                    <div class="col-12 col-md-6">
-                                        <input type="text" class="cqb-input" id="dev-hostname"
-                                            placeholder="canalqb_esp32" value="canalqb_esp32">
+                                    <div class="col-12">
+                                        <label class="cqb-label" for="dev-hostname">Hostname do Dispositivo</label>
+                                        <input type="text" id="dev-hostname" class="cqb-input" placeholder="canalqb_esp32">
                                     </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="cqb-label">Canal Wi-Fi</label>
-                                        <input type="number" class="cqb-input" id="dev-channel" placeholder="Auto (0)"
-                                            value="0" min="0" max="13">
+                                    <div class="col-12 col-sm-4">
+                                        <label class="cqb-label" for="dev-channel">Canal WiFi</label>
+                                        <input type="number" id="dev-channel" class="cqb-input" placeholder="0 (Auto)" min="1" max="14">
                                     </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="cqb-label">IP Estático (opcional)</label>
-                                        <input type="text" class="cqb-input" id="dev-ip" placeholder="192.168.1.100">
+                                    <div class="col-12 col-sm-8">
+                                        <label class="cqb-label" for="dev-ip">IP Estático (Opcional)</label>
+                                        <input type="text" id="dev-ip" class="cqb-input" placeholder="192.168.1.100">
                                     </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="cqb-label">Gateway</label>
-                                        <input type="text" class="cqb-input" id="dev-gw" placeholder="192.168.1.1">
+                                    <div class="col-12 col-sm-4">
+                                        <label class="cqb-label" for="dev-gw">Gateway</label>
+                                        <input type="text" id="dev-gw" class="cqb-input" placeholder="192.168.1.1">
                                     </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="cqb-label">DNS Primário</label>
-                                        <input type="text" class="cqb-input" id="dev-dns1" placeholder="8.8.8.8"
-                                            value="8.8.8.8">
+                                    <div class="col-12 col-sm-4">
+                                        <label class="cqb-label" for="dev-dns1">DNS Primário</label>
+                                        <input type="text" id="dev-dns1" class="cqb-input" placeholder="8.8.8.8">
                                     </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="cqb-label">DNS Secundário</label>
-                                        <input type="text" class="cqb-input" id="dev-dns2" placeholder="8.8.4.4"
-                                            value="8.8.4.4">
+                                    <div class="col-12 col-sm-4">
+                                        <label class="cqb-label" for="dev-dns2">DNS Secundário</label>
+                                        <input type="text" id="dev-dns2" class="cqb-input" placeholder="8.8.4.4">
                                     </div>
                                     <div class="col-12">
-                                        <button class="cqb-btn cqb-btn-primary cqb-btn-block"
-                                            onclick="saveSsidConfig()">
-                                            <i class="fas fa-floppy-disk"></i> Salvar Configurações de SSID
+                                        <button class="cqb-btn cqb-btn-primary cqb-btn-block" onclick="saveSsidConfig()">
+                                            <i class="fas fa-save"></i> Salvar Configurações de SSID
                                         </button>
                                     </div>
                                 </div>
@@ -310,87 +304,68 @@
                     </div>
                 </section>
 
-                <!-- ══ SEÇÃO: GOOGLE CONFIG ══════════════════════════ -->
-                <!-- ══ SEÇÃO: GOOGLE CONFIG ══════════════════════════ -->
+                <!-- SEÇÃO: GOOGLE -->
                 <section id="section-google" class="cqb-section d-none">
-
-                    <!-- STEPS GOOGLE CONFIG (ORDEM CORRETA: CARD PRIMEIRO) -->
                     <div class="cqb-card">
                         <div class="cqb-card-header">
-                            <i class="fas fa-key hd-icon"></i>
-                            Credenciais &amp; Autorização OAuth
+                            <i class="fab fa-google hd-icon"></i> Configuração Google Drive
                         </div>
                         <div class="cqb-card-body">
                             <div class="cqb-steps">
 
                                 <!-- STEP 1: Credenciais -->
-                                <article class="cqb-step active" id="gstep-1">
+                                <div class="cqb-step active" id="gstep-1">
                                     <div class="cqb-step-dot">1</div>
-                                    <div class="cqb-step-content">
-                                        <h3 class="cqb-step-title">Credenciais do Google Cloud</h3>
-                                        <p class="cqb-step-desc">Cole o <strong>Client ID</strong> e a <strong>Chave
-                                                Secreta
-                                                (Client Secret)</strong> obtidos no Console do Google Cloud em <em>APIs
-                                                e
-                                                Serviços → Credenciais</em>.</p>
-                                        <div class="cqb-form-row">
-                                            <div class="cqb-form-group">
-                                                <label class="cqb-label" for="g-client-id">
-                                                    <i class="fas fa-id-badge"></i> Client ID
-                                                </label>
-                                                <input type="text" id="g-client-id" class="cqb-input"
-                                                    placeholder="...apps.googleusercontent.com"
-                                                    oninput="evalGoogleStep1()">
-                                            </div>
-                                            <div class="cqb-form-group">
-                                                <label class="cqb-label" for="g-client-secret">
-                                                    <i class="fas fa-lock"></i> Client Secret
-                                                </label>
-                                                <input type="password" id="g-client-secret" class="cqb-input"
-                                                    placeholder="GOCSPX-..." oninput="evalGoogleStep1()">
-                                            </div>
+                                    <p class="cqb-step-title">Credenciais do Google Cloud</p>
+                                    <p class="cqb-step-desc">Cole o <strong>Client ID</strong> e a <strong>Chave Secreta
+                                        (Client Secret)</strong> obtidos no Console do Google Cloud em <em>APIs e
+                                        Serviços -> Credenciais</em>.</p>
+                                    <div class="row g-3">
+                                        <div class="col-12 col-sm-6">
+                                            <label class="cqb-label" for="g-client-id">Client ID</label>
+                                            <input type="text" id="g-client-id" class="cqb-input" placeholder="...apps.googleusercontent.com" oninput="evalGoogleStep1()">
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <label class="cqb-label" for="g-client-secret">Client Secret</label>
+                                            <input type="password" id="g-client-secret" class="cqb-input" placeholder="GOCSPX-..." oninput="evalGoogleStep1()">
                                         </div>
                                     </div>
-                                </article>
+                                </div>
 
                                 <!-- STEP 2: Service Account + OAuth -->
                                 <div class="cqb-step" id="gstep-2">
                                     <div class="cqb-step-dot">2</div>
-                                    <div class="cqb-step-content">
-                                        <h3 class="cqb-step-title">Autorização OAuth</h3>
-                                        <p class="cqb-step-desc">
-                                            Informe o e-mail adicionado como <strong>Usuário de Teste</strong> no OAuth
-                                            consent screen e inicie a autorização para gerar o token de acesso ao Drive.
-                                        </p>
-                                        <div class="cqb-form-group">
-                                            <label class="cqb-label" for="g-svc-email">
-                                                <i class="fas fa-envelope"></i> E-mail de Teste OAuth
-                                            </label>
-                                            <input type="email" id="g-svc-email" class="cqb-input"
-                                                placeholder="seuemail@gmail.com" oninput="evalGoogleStep1()">
+                                    <p class="cqb-step-title">E-mail de Conta de Serviço &amp; Geração do Token</p>
+                                    <p class="cqb-step-desc">
+                                        Informe o e-mail que foi adicionado como <strong>Usuário de Teste</strong> no OAuth
+                                        consent screen.
+                                        Em seguida, clique em <strong>Iniciar Autorização</strong> - uma nova aba abrirá
+                                        para você conceder permissão ao Drive.
+                                    </p>
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-12">
+                                            <label class="cqb-label" for="g-svc-email">E-mail de Conta de Serviço (Usuário
+                                                de Teste)</label>
+                                            <input type="email" id="g-svc-email" class="cqb-input" placeholder="seuemail@gmail.com" oninput="evalGoogleStep1()">
                                         </div>
-                                        <button class="cqb-btn cqb-btn-primary" id="btn-oauth" onclick="startOAuth()"
-                                            disabled>
-                                            <i class="fas fa-arrow-up-right-from-square"></i> Iniciar Autorização OAuth
-                                        </button>
-                                        <!-- Code input box (aparece após clicar) -->
-                                        <div class="cqb-code-box" id="oauth-code-box">
-                                            <p>
-                                                <i class="fas fa-circle-info"
-                                                    style="color:var(--cqb-blue);margin-right:6px;"></i>
-                                                Uma nova aba foi aberta. Após aceitar as permissões, a URL mostrará
-                                                <code>?code=4/0A...</code> &mdash; copie apenas o valor do parâmetro
-                                                <code>code</code>
-                                                e cole abaixo.
-                                            </p>
-                                            <div style="display:flex;gap:12px;margin-top:12px;">
-                                                <input type="text" id="oauth-code-input" class="cqb-input"
-                                                    placeholder="4/0AanRRrsBq...">
-                                                <button class="cqb-btn cqb-btn-success" onclick="exchangeToken()"
-                                                    style="flex-shrink:0;">
-                                                    <i class="fas fa-key"></i> Trocar
-                                                </button>
-                                            </div>
+                                    </div>
+                                    <button class="cqb-btn cqb-btn-primary" id="btn-oauth" onclick="startOAuth()" disabled>
+                                        <i class="fas fa-arrow-up-right-from-square"></i> Iniciar Autorização OAuth
+                                    </button>
+
+                                    <!-- Code input box -->
+                                    <div class="cqb-code-box" id="oauth-code-box" style="display:none; margin-top: 16px; padding: 16px; background: var(--bg-input); border-radius: var(--radius); border: 1px solid var(--border);">
+                                        <p>
+                                            <i class="fas fa-circle-info" style="color:var(--cqb-blue);margin-right:6px;"></i>
+                                            Uma nova aba foi aberta. Após aceitar as permissões, a URL mostrará
+                                            <code>?code=4/0A...</code> - copie apenas o valor do parâmetro <code>code</code>
+                                            e cole abaixo.
+                                        </p>
+                                        <div style="display:flex;gap:8px;margin-top:10px;">
+                                            <input type="text" id="oauth-code-input" class="cqb-input" placeholder="4/0AanRRrsBq... (cole o código aqui)">
+                                            <button class="cqb-btn cqb-btn-success" onclick="exchangeToken()" style="flex-shrink:0;">
+                                                <i class="fas fa-key"></i> Trocar por Token
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -398,75 +373,64 @@
                                 <!-- STEP 3: Drive Folder -->
                                 <div class="cqb-step" id="gstep-3">
                                     <div class="cqb-step-dot">3</div>
-                                    <div class="cqb-step-content">
-                                        <h3 class="cqb-step-title">Pasta Raiz no Drive</h3>
-                                        <p class="cqb-step-desc">
-                                            Informe o ID da pasta raiz do Google Drive (obtido via URL após
-                                            <code>/folders/</code>).
-                                        </p>
-                                        <div class="cqb-form-row">
-                                            <div class="cqb-form-group" style="flex:2;min-width:0;">
-                                                <label class="cqb-label" for="g-folder-id">
-                                                    <i class="fas fa-folder-tree"></i> ID da Pasta Raiz
-                                                </label>
-                                                <input type="text" id="g-folder-id" class="cqb-input"
-                                                    placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs..." disabled>
-                                            </div>
-                                            <div class="cqb-form-group" style="flex:1;min-width:140px;">
-                                                <label class="cqb-label">&nbsp;</label>
-                                                <button class="cqb-btn cqb-btn-outline cqb-btn-block"
-                                                    id="btn-test-drive" onclick="testDriveSetup()" disabled>
-                                                    <i class="fas fa-circle-check"></i> Testar Conexão
-                                                </button>
-                                            </div>
+                                    <p class="cqb-step-title">Pasta Raiz no Google Drive</p>
+                                    <p class="cqb-step-desc">
+                                        Abra o Google Drive, acesse a pasta que deseja usar como raiz e copie o <strong>ID
+                                        da pasta</strong> da URL
+                                        (parte após <code>/folders/</code>). Cole abaixo e clique em <strong>Testar
+                                        Conexão</strong>.
+                                    </p>
+                                    <div class="row g-3 align-items-end">
+                                        <div class="col-12 col-sm-8">
+                                            <label class="cqb-label" for="g-folder-id">ID da Pasta Raiz</label>
+                                            <input type="text" id="g-folder-id" class="cqb-input" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs..." disabled>
                                         </div>
-                                        <div class="cqb-alert cqb-alert-info" style="display:none;"
-                                            id="drive-test-info">
-                                            <i class="fas fa-folder-open"></i>
-                                            <span>Conexão bem sucedida! Os módulos do Hub foram liberados.</span>
+                                        <div class="col-12 col-sm-4">
+                                            <button class="cqb-btn cqb-btn-outline cqb-btn-block" id="btn-test-drive" onclick="testDriveSetup()" disabled>
+                                                <i class="fas fa-circle-check"></i> Testar Conexão
+                                            </button>
                                         </div>
                                     </div>
+                                    <div class="cqb-alert cqb-alert-info" style="margin-top:14px;display:none;" id="drive-test-info">
+                                        <i class="fas fa-folder-open"></i>
+                                        <span>O sistema irá criar a pasta <strong>CanalQb_Config</strong> e um arquivo
+                                        <strong>teste.txt</strong> - sem duplicatas. Ao concluir com sucesso, os módulos
+                                        serão liberados.</span>
+                                    </div>
                                 </div>
-
-                            </div><!-- /steps -->
+                            </div>
                         </div>
                     </div>
 
-                    <!-- GUIA COLAPSÍVEL (TUTORIAL NO FINAL) - Card com head e body -->
+                    <!-- GUIA DE CONFIGURAÇÃO -->
                     <div class="cqb-guide-card" id="guide-card">
                         <div class="cqb-guide-head" onclick="toggleGuide()">
                             <div class="cqb-guide-title">
-                                <i class="fas fa-circle-question" style="color:var(--cqb-blue);"></i>
-                                Como configurar seu OAuth no Google Cloud
+                                <i class="fas fa-book"></i> Guia Completo de Configuração
                             </div>
                             <i class="fas fa-chevron-down cqb-guide-arrow" id="guide-arr"></i>
                         </div>
                         <div class="cqb-guide-collapse" id="guide-body">
                             <div class="cqb-guide-body">
-                                <p
-                                    style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--text-primary);margin-bottom:14px;">
-                                    <i class="fas fa-cloud" style="color:var(--cqb-blue);margin-right:6px;"></i>
-                                    Configurações de Acesso à Nuvem - Google Cloud Console
+                                <p style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--text-primary);margin-bottom:14px;">
+                                    Siga estes passos para configurar o Google Drive corretamente:
                                 </p>
 
                                 <!-- Passo 1 -->
                                 <div class="cqb-guide-step">
                                     <span class="cqb-guide-num">1</span>
-                                    <div>Acesse <a href="https://console.cloud.google.com" target="_blank"
-                                            rel="noopener noreferrer"
-                                            style="color:var(--cqb-blue);">console.cloud.google.com</a> e <strong>crie
-                                            um
-                                            projeto novo</strong> ou selecione um existente no seletor do topo da
-                                        página.</div>
+                                    <div>
+                                        Acesse o <strong>Console do Google Cloud</strong> e crie um novo projeto ou use um existente.
+                                        Vá para <strong>APIs e Serviços -> Biblioteca</strong> e habilite a <strong>Google Drive API</strong>.
+                                    </div>
                                 </div>
 
                                 <!-- Passo 2 -->
                                 <div class="cqb-guide-step">
                                     <span class="cqb-guide-num">2</span>
-                                    <div>No menu lateral, vá em <strong>APIs e Serviços -> Biblioteca</strong>. Busque
-                                        por
-                                        <strong>Google Drive API</strong>, clique no resultado e depois em
-                                        <strong>Ativar</strong>.
+                                    <div>
+                                        Em <strong>APIs e Serviços -> Tela de consentimento OAuth</strong>, configure o aplicativo
+                                        como <strong>Externo</strong>, adicione os escopos necessários e salve.
                                     </div>
                                 </div>
 
@@ -474,12 +438,8 @@
                                 <div class="cqb-guide-step">
                                     <span class="cqb-guide-num">3</span>
                                     <div>
-                                        Ainda em <strong>APIs e Serviços</strong>, clique em <strong>Tela de permissão
-                                            OAuth</strong>.
-                                        Em <em>Tipo de usuário</em>, escolha <strong>Externo</strong> e clique em Criar.
-                                        Preencha o nome do app e o e-mail de suporte. Em <strong>Tipo de
-                                            aplicativo</strong>,
-                                        escolha <strong>App para computador</strong>. Salve.
+                                        Em <strong>APIs e Serviços -> Credenciais</strong>, crie uma nova <strong>ID do cliente OAuth</strong>.
+                                        Selecione <strong>Aplicativo da Web</strong> como tipo de aplicativo.
                                     </div>
                                 </div>
 
@@ -487,14 +447,16 @@
                                 <div class="cqb-guide-step">
                                     <span class="cqb-guide-num">4</span>
                                     <div>
-                                        Na mesma tela de permissão OAuth, clique na aba <strong>Público-alvo</strong>
-                                        (ou "Test
-                                        users").
-                                        Clique em <strong>Adicionar Usuários</strong> e insira o seu e-mail Google que
-                                        terá
-                                        acesso ao Drive.
-                                        <em>Este mesmo e-mail você usará no campo "E-mail de Conta de Serviço"
-                                            abaixo.</em>
+                                        Adicione os URIs de redirecionamento autorizados:
+                                        <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px;">
+                                            <code style="display:block;padding:6px 10px;background:rgba(33,150,243,0.08);border-radius:6px;font-size:0.82rem;">http://localhost:3000/auth/callback</code>
+                                            <div id="guide-esp-uri" style="display:flex;align-items:center;gap:8px;">
+                                                <code id="guide-esp-uri-code" style="display:block;padding:6px 10px;background:rgba(40,167,69,0.08);border-radius:6px;font-size:0.82rem;flex:1;">http://&lt;ip-do-esp32&gt;/auth/callback</code>
+                                                <button type="button" onclick="copyEspUri()" class="cqb-btn cqb-btn-ghost cqb-btn-sm" style="flex-shrink:0;">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -502,11 +464,8 @@
                                 <div class="cqb-guide-step">
                                     <span class="cqb-guide-num">5</span>
                                     <div>
-                                        Vá em <strong>Credenciais -> Criar Credencial -> Conta de Serviço</strong>.
-                                        Dê um nome, clique em <strong>Criar e Continuar</strong> e finalize.
-                                        <strong>Anote o e-mail gerado</strong> - ele termina em
-                                        <code>@...iam.gserviceaccount.com</code>.
-                                        Este é o e-mail que você adicionou como usuário de teste no passo anterior.
+                                        Copie o <strong>Client ID</strong> e a <strong>Chave Secreta</strong> gerados e cole nos campos
+                                        correspondentes na seção acima.
                                     </div>
                                 </div>
 
@@ -514,15 +473,8 @@
                                 <div class="cqb-guide-step">
                                     <span class="cqb-guide-num">6</span>
                                     <div>
-                                        Ainda em <strong>Credenciais</strong>, clique em <strong>Criar Credencial -> ID
-                                            do
-                                            Cliente OAuth</strong>.
-                                        Em <em>Tipo de aplicativo</em>, selecione <strong>App para computador</strong>.
-                                        Clique
-                                        em Criar.
-                                        Na tela seguinte, copie o <strong>ID do cliente</strong> e a <strong>Chave
-                                            secreta do
-                                            cliente</strong> - guarde bem esses dois valores.
+                                        Preencha o campo de e-mail e clique em <strong>Iniciar Autorização OAuth</strong>.
+                                        Uma nova aba abrirá para você conceder permissão ao Google Drive.
                                     </div>
                                 </div>
 
@@ -530,25 +482,8 @@
                                 <div class="cqb-guide-step">
                                     <span class="cqb-guide-num">7</span>
                                     <div>
-                                        Edite a credencial OAuth recém-criada e, em <strong>URIs de redirecionamento
-                                            autorizados</strong>, adicione <strong>os dois</strong> URIs abaixo:
-                                        <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px;">
-                                            <code
-                                                style="display:block;padding:6px 10px;background:rgba(33,150,243,0.08);border-radius:6px;font-size:0.82rem;">http://localhost:3000/auth/callback</code>
-                                            <div id="guide-esp-uri" style="display:flex;align-items:center;gap:8px;">
-                                                <code id="guide-esp-uri-code"
-                                                    style="display:block;padding:6px 10px;background:rgba(40,167,69,0.08);border-radius:6px;font-size:0.82rem;flex:1;">http://&lt;ip-do-esp32&gt;/auth/callback</code>
-                                                <button type="button" onclick="copyEspUri()"
-                                                    class="cqb-btn cqb-btn-ghost cqb-btn-sm" style="flex-shrink:0;"
-                                                    title="Copiar URI do ESP32"><i class="fas fa-copy"></i></button>
-                                            </div>
-                                        </div>
-                                        <small style="color:var(--text-sub);display:block;margin-top:6px;"><i
-                                                class="fas fa-circle-info" style="color:var(--cqb-blue);"></i> O segundo
-                                            URI (IP
-                                            do ESP32) permite a captura automática do código OAuth - sem precisar copiar
-                                            da
-                                            URL.</small>
+                                        Após autorizar, copie o código da URL e cole no campo fornecido, ou aguarde a captura
+                                        automática. O sistema irá gerar o token de acesso.
                                     </div>
                                 </div>
 
@@ -556,18 +491,8 @@
                                 <div class="cqb-guide-step">
                                     <span class="cqb-guide-num">8</span>
                                     <div>
-                                        Preencha o <strong>Client ID</strong>, <strong>Client Secret</strong> e o
-                                        <strong>e-mail</strong> nos campos da seção acima.
-                                        Clique em <strong>Iniciar Autorização OAuth</strong>. Uma nova aba abrirá para
-                                        você
-                                        conceder permissão ao Drive.
-                                        Após autorizar, o sistema tentará capturar o código automaticamente.
-                                        Se não conseguir, a URL exibirá algo como:
-                                        <code
-                                            style="display:block;margin-top:6px;padding:6px 10px;background:rgba(0,0,0,0.04);border-radius:6px;font-size:0.79rem;word-break:break-all;">http://localhost:3000/auth/callback?...&amp;code=4/0Aci98...&amp;scope=...</code>
-                                        Copie apenas o valor entre <code>&amp;code=</code> e o próximo
-                                        <code>&amp;</code> e cole
-                                        no campo abaixo.
+                                        No Google Drive, escolha a pasta raiz para os arquivos e copie o ID da pasta.
+                                        Cole no campo correspondente e clique em <strong>Testar Conexão</strong>.
                                     </div>
                                 </div>
                             </div>
@@ -575,7 +500,7 @@
                     </div>
                 </section>
 
-                <!-- ══ SEÇÃO: BLUETOOTH ═════════════════════════════ -->
+                <!-- SEÇÃO: BLUETOOTH -->
                 <section id="section-bluetooth" class="cqb-section d-none">
                     <div class="cqb-card">
                         <div class="cqb-card-header">
@@ -592,8 +517,7 @@
                                 <label class="cqb-label" for="bt-enable-switch" style="margin:0;">
                                     <i class="fab fa-bluetooth-b"></i> Ativar Visibilidade Bluetooth
                                 </label>
-                                <input class="cqb-switch" type="checkbox" id="bt-enable-switch"
-                                    onchange="updateBtStatus()">
+                                <input class="cqb-switch" type="checkbox" id="bt-enable-switch" onchange="updateBtStatus()">
                             </div>
 
                             <div class="cqb-form-row">
@@ -601,25 +525,24 @@
                                     <label class="cqb-label">
                                         <i class="fas fa-tag"></i> Nome do Dispositivo
                                     </label>
-                                    <input type="text" id="bt-name-input" class="cqb-input"
-                                        placeholder="Canalqb - ESP32">
+                                    <input type="text" id="bt-name-input" class="cqb-input" placeholder="Canalqb - ESP32">
                                 </div>
                                 <div class="cqb-form-group">
                                     <label class="cqb-label">
                                         <i class="fas fa-key"></i> PIN de Pareamento
                                     </label>
-                                    <input type="text" id="bt-pin-input" class="cqb-input" placeholder="1234"
-                                        maxlength="4">
+                                    <input type="text" id="bt-pin-input" class="cqb-input" placeholder="1234" maxlength="4">
                                 </div>
                             </div>
 
-                            <button class="cqb-btn cqb-btn-primary cqb-btn-block" onclick="saveBtConfig()"
-                                style="margin-top:8px;">
+                            <button class="cqb-btn cqb-btn-primary cqb-btn-block" onclick="saveBtConfig()" style="margin-top:8px;">
                                 <i class="fas fa-floppy-disk"></i> Salvar e Aplicar Configurações
                             </button>
                         </div>
                     </div>
                 </section>
+
+                <!-- SEÇÃO: MARKETPLACE -->
                 <section id="section-marketplace" class="cqb-section d-none">
                     <div class="cqb-card">
                         <div class="cqb-card-header">
@@ -635,7 +558,7 @@
                     </div>
                 </section>
 
-                <!-- ══ SEÇÃO: CHAT ════════════════════════════════════ -->
+                <!-- SEÇÃO: CHAT -->
                 <section id="section-chat" class="cqb-section d-none">
                     <div class="cqb-card">
                         <div class="cqb-card-header">
@@ -645,14 +568,13 @@
                             <div class="cqb-empty">
                                 <div class="cqb-empty-icon"><i class="fas fa-robot"></i></div>
                                 <p class="cqb-empty-title">Em Desenvolvimento</p>
-                                <p class="cqb-empty-sub">O módulo de Chat Opus AI chega em breve.<br>Fique ligado no
-                                    @CanalQb!</p>
+                                <p class="cqb-empty-sub">O módulo de Chat Opus AI chega em breve.<br>Fique ligado no @CanalQb!</p>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- ══ SEÇÃO: CONFIG ══════════════════════════════════ -->
+                <!-- SEÇÃO: CONFIG -->
                 <section id="section-config" class="cqb-section d-none">
                     <div class="cqb-card">
                         <div class="cqb-card-header">
@@ -709,12 +631,12 @@
                     </div>
                 </section>
 
-                <!-- ══ FOOTER ══════════════════════════════════════════ -->
+                <!-- FOOTER -->
                 <footer class="cqb-footer">
                     <div class="cqb-footer-donation">
                         <div class="don-text">
                             <h6><i class="fas fa-mug-hot" style="margin-right:6px;color:var(--cqb-yellow);"></i>Apoie o
-                                @CanalQb ☕</h6>
+                                @CanalQb</h6>
                             <p>Sua ajuda mantém o projeto ativo. Todo apoio é bem-vindo!</p>
                         </div>
                         <div class="don-btns">
@@ -738,16 +660,16 @@
                         &nbsp;·&nbsp; &copy; 2026 @CanalQb. Todos os direitos reservados.
                     </div>
                 </footer>
-            </div><!-- /container -->
+            </div>
         </main>
-    </div><!-- /wrapper -->
+    </div>
 
-    <!-- Bootstrap JS Bundle removido - 100% Vanilla JS -->
+    <!-- 100% Vanilla JS -->
     <script>
         (function () {
             'use strict';
 
-            /* ── STATE ─────────────────────────────────────────── */
+            /* STATE */
             const S = {
                 espIp: new URLSearchParams(window.location.search).get('ip') || window.location.hostname,
                 clientId: '',
@@ -759,11 +681,11 @@
                 theme: localStorage.getItem('cqb-theme') || 'light',
             };
 
-            /* ── INIT ──────────────────────────────────────────── */
+            /* INIT */
             document.getElementById('cqb-ip').textContent = S.espIp;
             applyTheme(S.theme);
 
-            /* guide - vanilla collapse, sem Bootstrap */
+            /* guide - vanilla collapse */
             window.toggleGuide = function () {
                 const card = document.getElementById('guide-card');
                 const body = document.getElementById('guide-body');
@@ -773,7 +695,7 @@
                 arr.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
             };
 
-            /* Inicializa setas dos submenus já abertos na carga da página */
+            /* Inicializa setas dos submenus */
             document.querySelectorAll('.cqb-submenu.cqb-sub-open').forEach(function (submenu) {
                 const trigger = document.querySelector('[onclick*="' + submenu.id + '"]');
                 if (trigger) {
@@ -782,7 +704,7 @@
                 }
             });
 
-            /* preenche o URI do ESP32 no guia assim que S.espIp estiver disponível */
+            /* preenche o URI do ESP32 no guia */
             (function updateGuideUri() {
                 const uri = `http://${S.espIp}/auth/callback`;
                 const el = document.getElementById('guide-esp-uri-code');
@@ -798,7 +720,7 @@
 
             loadSavedConfig();
 
-            /* ── TOAST ─────────────────────────────────────────── */
+            /* TOAST */
             function showToast(msg, type = 'info') {
                 const icons = { success: 'fas fa-circle-check', error: 'fas fa-circle-xmark', info: 'fas fa-circle-info', warn: 'fas fa-triangle-exclamation' };
                 const el = document.createElement('div');
@@ -810,7 +732,7 @@
             }
             window.showToast = showToast;
 
-            /* ── THEME ─────────────────────────────────────────── */
+            /* THEME */
             function applyTheme(t) {
                 document.documentElement.setAttribute('data-theme', t);
                 document.getElementById('theme-icon').className = t === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
@@ -819,7 +741,7 @@
             }
             window.toggleTheme = () => applyTheme(S.theme === 'light' ? 'dark' : 'light');
 
-            /* ── SIDEBAR ───────────────────────────────────────── */
+            /* SIDEBAR */
             window.toggleSidebar = function () {
                 const s = document.getElementById('cqb-sidebar');
                 const o = document.getElementById('cqb-overlay');
@@ -829,7 +751,7 @@
                 b.setAttribute('aria-expanded', String(open));
             };
 
-            /* sub-menu vanilla toggle (independente do Bootstrap JS) */
+            /* sub-menu vanilla toggle */
             window.toggleSubMenu = function (id, trigger) {
                 const el = document.getElementById(id);
                 if (!el) return;
@@ -846,7 +768,7 @@
                 document.getElementById('cqb-burger').setAttribute('aria-expanded', 'false');
             };
 
-            /* ── NAVIGATION ────────────────────────────────────── */
+            /* NAVIGATION */
             window.showSection = function (id) {
                 const m = document.getElementById('menu-' + id);
                 if (m && m.classList.contains('locked')) { showToast('Configure o Google Drive primeiro!', 'error'); return; }
@@ -877,14 +799,14 @@
                 });
             };
 
-            /* ── SISTEMA ATIVO ─────────────────────────────────── */
+            /* SISTEMA ATIVO */
             function updateSystemStatus() {
                 const ok = S.clientId && S.clientSecret && S.svcEmail && S.driveConfigured;
                 document.getElementById('badge-sistema').classList.toggle('visible', !!ok);
                 document.getElementById('google-ok').style.display = ok ? 'inline-block' : 'none';
             }
 
-            /* ── PROGRESS BAR ──────────────────────────────────── */
+            /* PROGRESS BAR */
             function updateProgress() {
                 const steps = [!!S.clientId, !!S.clientSecret, !!S.svcEmail, !!S.refreshToken, !!S.folderId, !!S.driveConfigured];
                 const pct = Math.round((steps.filter(Boolean).length / steps.length) * 100);
@@ -892,7 +814,7 @@
                 document.getElementById('progress-pct').textContent = pct + '%';
             }
 
-            /* ── STEP EVAL ─────────────────────────────────────── */
+            /* STEP EVAL */
             window.evalGoogleStep1 = function () {
                 S.clientId = document.getElementById('g-client-id').value.trim();
                 S.clientSecret = document.getElementById('g-client-secret').value.trim();
@@ -905,7 +827,7 @@
                 updateProgress();
             };
 
-            /* ── OAUTH FLOW — captura automática via popup same-origin ─── */
+            /* OAUTH FLOW */
             window.startOAuth = function () {
                 S.clientId = document.getElementById('g-client-id').value.trim();
                 S.clientSecret = document.getElementById('g-client-secret').value.trim();
@@ -915,8 +837,6 @@
                 }
 
                 const scope = 'https://www.googleapis.com/auth/drive';
-                /* Tenta captura automática usando o próprio ESP32 como redirect_uri (same-origin).
-                   Para funcionar, adicione http://{ip}/auth/callback nas URIs autorizadas do Google Cloud. */
                 const autoRedirect = `http://${S.espIp}/auth/callback`;
                 const manualRedirect = 'http://localhost:3000/auth/callback';
 
@@ -929,7 +849,6 @@
                     prompt: 'consent'
                 }).toString();
 
-                /* --- tenta modo automático (ESP32 same-origin) --- */
                 let popup;
                 try {
                     popup = window.open(buildUrl(autoRedirect), 'oauth_auto', 'width=520,height=640,noopener=0');
@@ -939,12 +858,11 @@
                     showToast('Nova aba aberta. Aguardando autorização...', 'info');
                     document.getElementById('oauth-code-box').classList.add('show');
 
-                    /* Polling: lê popup.location.href (funciona só se same-origin) */
                     S._oauthRedirect = autoRedirect;
                     let attempts = 0;
                     const timer = setInterval(() => {
                         attempts++;
-                        if (attempts > 240) { clearInterval(timer); return; } /* timeout 2 min */
+                        if (attempts > 240) { clearInterval(timer); return; }
                         try {
                             const url = popup.location.href;
                             if (url && url.includes('/auth/callback') && url.includes('code=')) {
@@ -954,15 +872,13 @@
                                 if (code) {
                                     document.getElementById('oauth-code-input').value = code;
                                     showToast('Código capturado automaticamente! Trocando por token...', 'success');
-                                    /* dispara o exchange automaticamente */
                                     setTimeout(() => exchangeToken(autoRedirect), 400);
                                 }
                             }
-                        } catch (_) { /* cross-origin ainda — aguarda */ }
+                        } catch (_) { }
                         if (popup.closed) { clearInterval(timer); }
                     }, 500);
                 } else {
-                    /* fallback: abre como _blank e pede cópia manual */
                     S._oauthRedirect = manualRedirect;
                     window.open(buildUrl(manualRedirect), '_blank', 'noopener,noreferrer');
                     document.getElementById('oauth-code-box').classList.add('show');
@@ -974,7 +890,6 @@
                 const code = document.getElementById('oauth-code-input').value.trim();
                 if (!code) { showToast('Cole o código OAuth primeiro!', 'error'); return; }
 
-                /* usa o redirect_uri correto para o grant (deve ser idêntico ao usado na autorização) */
                 const redirect = redirectOverride || S._oauthRedirect || 'http://localhost:3000/auth/callback';
 
                 const btn = document.querySelector('[onclick="exchangeToken()"]') ||
@@ -1017,7 +932,7 @@
                 }
             };
 
-            /* ── DRIVE TEST (no-duplicate logic) ───────────────── */
+            /* DRIVE TEST */
             window.testDriveSetup = async function () {
                 S.folderId = document.getElementById('g-folder-id').value.trim();
                 if (!S.folderId) { showToast('Informe o ID da pasta!', 'error'); return; }
@@ -1029,7 +944,6 @@
                 showToast('Conectando ao Google Drive...', 'info');
 
                 try {
-                    /* 1. Obter access token */
                     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -1039,26 +953,24 @@
                     if (!tokenData.access_token) throw new Error('access_token indisponível');
                     const access = tokenData.access_token;
 
-                    /* 2. Verificar/criar pasta CanalQbHub_Config (sem duplicata) */
-                    const folderQ = `'${S.folderId}' in parents and name='CanalQbHub_Config' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+                    const folderQ = `'${S.folderId}' in parents and name='CanalQb_Config' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
                     const folderSR = await driveList(access, folderQ);
                     let configId;
                     if (folderSR.files.length > 0) {
                         configId = folderSR.files[0].id;
-                        showToast('Pasta CanalQbHub_Config já existe — reutilizando.', 'info');
+                        showToast('Pasta CanalQb_Config já existe - reutilizando.', 'info');
                     } else {
-                        const cRes = await driveCreate(access, { name: 'CanalQbHub_Config', mimeType: 'application/vnd.google-apps.folder', parents: [S.folderId] });
+                        const cRes = await driveCreate(access, { name: 'CanalQb_Config', mimeType: 'application/vnd.google-apps.folder', parents: [S.folderId] });
                         configId = cRes.id;
-                        showToast('Pasta CanalQbHub_Config criada!', 'success');
+                        showToast('Pasta CanalQb_Config criada!', 'success');
                     }
 
-                    /* 3. Verificar/criar teste.txt (sem duplicata) */
                     const fileQ = `'${configId}' in parents and name='teste.txt' and trashed=false`;
                     const fileSR = await driveList(access, fileQ);
                     if (fileSR.files.length > 0) {
-                        showToast('Arquivo teste.txt já existe — sem duplicata.', 'info');
+                        showToast('Arquivo teste.txt já existe - sem duplicata.', 'info');
                     } else {
-                        const content = `CanalQb CanalQbHub Config Test\nData: ${new Date().toISOString()}\nSite: https://canalqb.com.br\nDevice IP: ${S.espIp}`;
+                        const content = `CanalQb CanalQb Config Test\nData: ${new Date().toISOString()}\nSite: https://canalqb.com.br\nDevice IP: ${S.espIp}`;
                         const boundary = 'cqb_boundary_2026';
                         const meta = JSON.stringify({ name: 'teste.txt', parents: [configId] });
                         const body = `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${meta}\r\n--${boundary}\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n${content}\r\n--${boundary}--`;
@@ -1070,7 +982,6 @@
                         showToast('Arquivo teste.txt criado com sucesso!', 'success');
                     }
 
-                    /* 4. Salvar folder + marcar como configurado */
                     await saveToEsp({ iddepastadodrive: S.folderId, driveConfigFolderId: configId });
                     S.driveConfigured = true;
                     unlockModules();
@@ -1101,7 +1012,7 @@
                 return res.json();
             }
 
-            /* ── UNLOCK ────────────────────────────────────────── */
+            /* UNLOCK */
             function unlockModules() {
                 ['marketplace', 'chat', 'config'].forEach(id => {
                     const m = document.getElementById('menu-' + id);
@@ -1113,7 +1024,7 @@
                 loadMarket();
             }
 
-            /* ── ESP32 SAVE ────────────────────────────────────── */
+            /* ESP32 SAVE */
             async function saveToEsp(payload) {
                 try {
                     await fetch(`http://${S.espIp}/api/settings`, {
@@ -1121,10 +1032,10 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
-                } catch (_) { /* ESP32 offline — ignora silenciosamente */ }
+                } catch (_) { }
             }
 
-            /* ── LOAD SAVED CONFIG ─────────────────────────────── */
+            /* LOAD SAVED CONFIG */
             async function loadSavedConfig() {
                 try {
                     const res = await fetch(`http://${S.espIp}/api/config`);
@@ -1152,33 +1063,25 @@
                         document.getElementById('bt-pin-input').value = data.bluetooth.pin || '1234';
                     }
                     
-                    // Carregar status de configuração do Drive
                     if (data.driveConfigured !== undefined) {
                         S.driveConfigured = data.driveConfigured;
                     } else if (data.iddepastadodrive && data.refreshclient) {
-                        // Se tiver pasta e refresh token, considerar configurado
                         S.driveConfigured = true;
                     } else if (data.refreshclient && data.iddepastadodrive) {
-                        // Detecção automática: se tiver token e pasta, está configurado
                         S.driveConfigured = true;
                     } else if (data.refreshclient && !data.iddepastadodrive) {
-                        // Se só tiver token, mas não pasta, não está configurado
                         S.driveConfigured = false;
                     } else if (!data.refreshclient && !data.iddepastadodrive) {
-                        // Se não tiver nem token nem pasta, não está configurado
                         S.driveConfigured = false;
                     }
                     
-                    // Atualizar status do sistema após carregar configurações
                     updateSystemStatus();
                     updateProgress();
                     
-                    // Se estiver tudo configurado, desbloquear módulos
                     if (S.clientId && S.clientSecret && S.svcEmail && S.driveConfigured) {
                         unlockModules();
                     }
 
-                    // Tentar obter status da conexão (IP e SSID)
                     try {
                         const statusRes = await fetch(`http://${S.espIp}/api/status`);
                         if (statusRes.ok) {
@@ -1202,7 +1105,7 @@
                 }
             }
 
-            /* ── BLUETOOTH ─────────────────────────────────────── */
+            /* BLUETOOTH */
             window.updateBtStatus = function () {
                 const en = document.getElementById('bt-enable-switch').checked;
                 showToast(en ? 'O Bluetooth será ativado imediatamente ao salvar.' : 'O Bluetooth será desativado imediatamente ao salvar.', 'info');
@@ -1228,14 +1131,13 @@
                 }
             };
 
-            /* ── WIFI ──────────────────────────────────────────── */
+            /* WIFI */
             let selectedSsid = '';
             let scanInterval = null;
             let scanAttempts = 0;
             const MAX_SCAN_ATTEMPTS = 5;
 
             window.scanWifi = async function () {
-                // Limpa scan anterior
                 if (scanInterval) {
                     clearInterval(scanInterval);
                     scanInterval = null;
@@ -1254,7 +1156,6 @@
                 console.log(`Tentando scan WiFi em: ${apiUrl}`);
                 
                 try {
-                    // Primeiro, verificar se o ESP32 está online
                     const healthRes = await fetch(`http://${S.espIp}/api/config`, {
                         method: 'GET',
                         timeout: 5000
@@ -1278,7 +1179,6 @@
                     console.log(`Resposta do scan: ${res.status}`);
 
                     if (res.status === 202) {
-                        // Scan em andamento, tentar novamente
                         scanAttempts++;
                         if (scanAttempts < MAX_SCAN_ATTEMPTS) {
                             showToast(`Scan em andamento (${scanAttempts}/${MAX_SCAN_ATTEMPTS})...`, 'info');
@@ -1308,8 +1208,6 @@
                 } catch (error) {
                     console.error('Erro ao escanear WiFi:', error);
                     showToast(`Erro ao escanear redes: ${error.message}`, 'error');
-                    
-                    // Não mostrar redes de teste - apenas mostrar erro
                     renderWifi([]);
                     showToast('Não foi possível detectar redes WiFi. Verifique o ESP32.', 'error');
                 }
@@ -1339,7 +1237,6 @@
                     return;
                 }
 
-                // Ordenar por RSSI (sinal mais forte primeiro)
                 nets.sort((a, b) => a.rssi - b.rssi);
 
                 list.innerHTML = nets.map((n, index) => {
@@ -1356,7 +1253,6 @@
       </div>`;
                 }).join('');
 
-                // Adicionar evento de teclado para acessibilidade
                 list.querySelectorAll('.cqb-wifi-row').forEach(row => {
                     row.addEventListener('keypress', (e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
@@ -1372,15 +1268,12 @@
                 selectedSsid = ssid;
                 document.getElementById('ssid-manual').value = ssid;
 
-                // Atualizar UI de seleção
                 document.querySelectorAll('.cqb-wifi-row').forEach(r => r.classList.remove('selected'));
                 el.classList.add('selected');
 
-                // Focar no campo de senha
                 const passField = document.getElementById('wifi-pass');
                 passField.focus();
 
-                // Mostrar feedback
                 const rssi = el.dataset.rssi;
                 const auth = el.dataset.auth === 'true';
                 let message = `Rede "${ssid}" selecionada`;
@@ -1391,7 +1284,6 @@
 
                 showToast(message, 'info');
 
-                // Se a rede for aberta, limpar campo de senha
                 if (!auth) {
                     passField.value = '';
                     passField.placeholder = 'Rede aberta (sem senha)';
@@ -1411,129 +1303,93 @@
                 const pass = document.getElementById('wifi-pass').value;
 
                 if (!ssid) {
-                    showToast('Selecione ou digite o SSID!', 'error');
-                    document.getElementById('ssid-manual').focus();
+                    showToast('Selecione ou digite o nome da rede!', 'error');
                     return;
                 }
 
-                // Verificar se a rede selecionada requer senha
-                const selectedRow = document.querySelector('.cqb-wifi-row.selected');
-                const isSecure = selectedRow?.dataset.auth === 'true';
-
-                if (isSecure && !pass) {
-                    showToast('Esta rede é protegida. Digite a senha!', 'error');
-                    document.getElementById('wifi-pass').focus();
-                    return;
-                }
-
-                showToast('Salvando configuração Wi-Fi...', 'info');
-                console.log(`Tentando conectar à rede: ${ssid}`);
+                showToast('Conectando à rede...', 'info');
 
                 try {
-                    // Primeiro verificar se o ESP32 está online
-                    const healthRes = await fetch(`http://${S.espIp}/api/config`, {
-                        method: 'GET',
-                        timeout: 5000
+                    const res = await fetch(`http://${S.espIp}/api/connect`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ssid, password: pass })
                     });
+                    const status = await res.json();
                     
-                    if (!healthRes.ok) {
-                        throw new Error(`ESP32 offline: HTTP ${healthRes.status}`);
-                    }
-                    
-                    // Tentar conectar via API do ESP32
-                    const connectUrl = `http://${S.espIp}/api/connect?ssid=${encodeURIComponent(ssid)}&pass=${encodeURIComponent(pass)}`;
-                    console.log(`Conectando via: ${connectUrl}`);
-                    
-                    const response = await fetch(connectUrl, {
-                        method: 'GET',
-                        timeout: 15000
-                    });
-
-                    console.log(`Resposta da conexão: ${response.status}`);
-
-                    if (response.ok) {
-                        const result = await response.json();
-                        console.log('Resultado da conexão:', result);
-                        
-                        if (result.status === 'success') {
-                            showToast(`Conectando a "${ssid}"...`, 'success');
-                            // Salvar configuração localmente
-                            await saveToEsp({ ssid, password: pass });
-
-                            // Aguardar conexão e verificar status
-                            setTimeout(async () => {
-                                try {
-                                    const statusRes = await fetch(`http://${S.espIp}/api/status`);
-                                    const status = await statusRes.json();
-                                    console.log('Status da conexão:', status);
-                                    
-                                    if (status.connected) {
-                                        showToast('Conectado com sucesso!', 'success');
-                                        document.getElementById('current-ssid-label').textContent = status.ssid || ssid;
-                                        document.getElementById('current-ip-label').textContent = status.ip || 'Desconhecido';
-                                        document.getElementById('wifi-status-alert').style.display = 'flex';
-                                    } else {
-                                        showToast('Falha na conexão. Verifique a senha.', 'error');
-                                    }
-                                } catch (e) {
-                                    console.log('Erro ao verificar status:', e);
-                                    showToast('Configuração salva. Verificando conexão...', 'info');
-                                }
-                            }, 5000);
-                        } else {
-                            showToast('Erro ao conectar: ' + (result.message || 'desconhecido'), 'error');
-                        }
+                    if (status.connected) {
+                        showToast('Conectado com sucesso!', 'success');
+                        document.getElementById('current-ssid-label').textContent = status.ssid || ssid;
+                        document.getElementById('current-ip-label').textContent = status.ip || 'Desconhecido';
+                        document.getElementById('wifi-status-alert').style.display = 'flex';
                     } else {
-                        throw new Error(`HTTP ${response.status}`);
+                        showToast('Falha na conexão. Verifique a senha.', 'error');
                     }
                 } catch (error) {
-                    console.error('Erro ao conectar WiFi:', error);
-                    showToast(`Erro: ${error.message}. Salvando configuração...`, 'warn');
-                    
-                    // Fallback para método antigo
-                    try {
-                        await saveToEsp({ ssid, password: pass });
-                        showToast(`Configuração salva. Reiniciando para conectar a "${ssid}"...`, 'info');
-                    } catch (saveError) {
-                        console.error('Erro ao salvar configuração:', saveError);
-                        showToast('Erro ao salvar configuração', 'error');
-                    }
+                    showToast('Erro ao conectar: ' + error.message, 'error');
                 }
             };
 
             window.saveSsidConfig = async function () {
-                const cfg = {
-                    hostname: document.getElementById('dev-hostname').value,
-                    channel: parseInt(document.getElementById('dev-channel').value) || 0,
-                    staticIp: document.getElementById('dev-ip').value,
-                    gateway: document.getElementById('dev-gw').value,
-                    dns1: document.getElementById('dev-dns1').value,
-                    dns2: document.getElementById('dev-dns2').value,
-                };
-                await saveToEsp(cfg);
-                showToast('Configurações de SSID salvas!', 'success');
+                const hostname = document.getElementById('dev-hostname').value.trim();
+                const channel = parseInt(document.getElementById('dev-channel').value) || 0;
+                const staticIp = document.getElementById('dev-ip').value.trim();
+                const gateway = document.getElementById('dev-gw').value.trim();
+                const dns1 = document.getElementById('dev-dns1').value.trim();
+                const dns2 = document.getElementById('dev-dns2').value.trim();
+
+                showToast('Salvando configurações avançadas...', 'info');
+
+                try {
+                    const payload = { hostname, channel };
+                    if (staticIp) {
+                        payload.static_ip = staticIp;
+                        payload.gateway = gateway;
+                        payload.dns1 = dns1;
+                        payload.dns2 = dns2;
+                    }
+
+                    const res = await fetch(`http://${S.espIp}/api/ssid_config`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+
+                    if (data.status === 'success') {
+                        showToast('Configurações avançadas salvas!', 'success');
+                    } else {
+                        showToast('Erro ao salvar configurações: ' + (data.message || 'desconhecido'), 'error');
+                    }
+                } catch (error) {
+                    showToast('Erro ao conectar: ' + error.message, 'error');
+                }
             };
 
-            /* ── MARKETPLACE ───────────────────────────────────── */
+            /* MARKETPLACE */
             function loadMarket() {
+                const list = document.getElementById('market-list');
                 const items = [
-                    { icon: 'fas fa-rotate', name: 'Auto-Sync Drive', desc: 'Sincroniza arquivos automaticamente com o Google Drive.', tag: 'Ativo' },
-                    { icon: 'fas fa-chart-line', name: 'Dashboard Métricas', desc: 'Painel em tempo real de dados do seu Hub Opus.', tag: 'Novo' },
-                    { icon: 'fas fa-bell', name: 'Notificações Opus', desc: 'Alertas via Telegram e e-mail para eventos críticos.', tag: 'Beta' },
-                    { icon: 'fas fa-shield-halved', name: 'Vault de Chaves', desc: 'Gerenciador seguro de credenciais e tokens OAuth.', tag: 'Ativo' },
+                    { ico: 'fas fa-code', title: 'Script Monitoramento', desc: 'Monitora status do sistema em tempo real', tag: 'Premium' },
+                    { ico: 'fas fa-chart-line', title: 'Dashboard Analytics', desc: 'Visualização de dados e métricas', tag: 'Pro' },
+                    { ico: 'fas fa-robot', title: 'Auto Backup', desc: 'Backup automático agendado', tag: 'Free' },
+                    { ico: 'fas fa-shield-halved', title: 'Security Suite', desc: 'Proteção avançada do sistema', tag: 'Premium' },
+                    { ico: 'fas fa-bell', title: 'Notificações Push', desc: 'Alertas em tempo real', tag: 'Pro' },
+                    { ico: 'fas fa-database', title: 'Data Logger', desc: 'Registro completo de eventos', tag: 'Free' }
                 ];
-                document.getElementById('market-list').innerHTML = items.map(i => `
-      <div class="col-12 col-sm-6 col-lg-3">
-        <div class="cqb-market-card">
-          <div class="cqb-market-ico"><i class="${i.icon}" style="color:var(--cqb-blue);"></i></div>
-          <p class="cqb-market-title">${i.name}</p>
-          <p class="cqb-market-desc">${i.desc}</p>
-          <span style="display:inline-block;background:rgba(40,167,69,0.1);color:#1a7a35;border:1px solid rgba(40,167,69,0.2);font-size:0.68rem;font-weight:700;padding:3px 10px;border-radius:12px;">${i.tag}</span>
-        </div>
-      </div>`).join('');
+
+                list.innerHTML = items.map(item => `
+                    <div class="col-12 col-sm-6">
+                        <div class="cqb-market-card">
+                            <div class="cqb-market-ico">${item.ico}</div>
+                            <div class="cqb-market-title">${item.title}</div>
+                            <div class="cqb-market-desc">${item.desc}</div>
+                            <span class="cqb-badge" style="background:${item.tag === 'Premium' ? 'var(--cqb-yellow)' : item.tag === 'Pro' ? 'var(--cqb-blue)' : 'var(--cqb-green)'};color:white;font-size:0.7rem;padding:4px 8px;border-radius:4px;">${item.tag}</span>
+                        </div>
+                    </div>`).join('');
             }
 
-            /* ── MODAL SYSTEM ─────────────────────────────────── */
+            /* MODAL SYSTEM */
             function openCqbModal(title, body, onConfirm) {
                 document.getElementById('modal-title').textContent = title;
                 document.getElementById('modal-body').innerHTML = body;
@@ -1544,45 +1400,43 @@
                 };
                 document.getElementById('cqb-modal-overlay').classList.add('show');
             }
+            window.openCqbModal = openCqbModal;
             window.closeCqbModal = function () {
                 document.getElementById('cqb-modal-overlay').classList.remove('show');
             };
 
-            /* ── RESET DE FÁBRICA ─────────────────────────────── */
+            /* RESET DE FÁBRICA */
             window.factoryReset = function () {
                 openCqbModal(
-                    "⚠️ RESET DE FÁBRICA",
+                    "Reset de Fábrica",
                     "Isso apagará <strong>TODAS</strong> as configurações (Wi-Fi, Google, Módulos).<br><br>Esta ação é irreversível. O dispositivo voltará ao estado original de fábrica.",
                     async () => {
-                        showToast('Iniciando Reset de Fábrica...', 'warn');
                         try {
                             const res = await fetch(`http://${S.espIp}/api/factory_reset`, { method: 'POST' });
                             const data = await res.json();
-                            if (data.success) {
-                                showToast('Reset concluído! O dispositivo irá reiniciar.', 'success');
-                                setTimeout(() => { window.location.reload(); }, 5000);
+                            if (data.status === 'success') {
+                                showToast('Reset de fábrica realizado! Reiniciando...', 'success');
+                                setTimeout(() => location.reload(), 3000);
                             } else {
-                                showToast('Erro ao resetar!', 'error');
+                                showToast('Erro no reset: ' + (data.message || 'desconhecido'), 'error');
                             }
-                        } catch (e) {
-                            showToast('O dispositivo parou de responder. O reset deve estar em curso.', 'info');
+                        } catch (error) {
+                            showToast('Falha na comunicação com ESP32', 'error');
                         }
                     }
                 );
             };
 
-            /* ── CONFIG BACKUP/RESTORE ──────────────────────────── */
+            /* EXPORT/IMPORT CONFIG */
             window.exportConfig = async function () {
                 try {
                     showToast('Coletando configurações...', 'info');
                     
-                    // Buscar configurações do ESP32 diretamente
                     const espConfigRes = await fetch(`http://${S.espIp}/api/config`);
                     if (!espConfigRes.ok) throw new Error('Falha ao obter config do ESP32');
                     
                     const config = await espConfigRes.json();
                     
-                    // Adicionar metadados da interface
                     config._ui = {
                         timestamp: new Date().toISOString(),
                         version: '1.0',
@@ -1590,24 +1444,20 @@
                         theme: S.theme
                     };
 
-                    // Criar blob e download
                     const jsonString = JSON.stringify(config, null, 2);
                     const blob = new Blob([jsonString], { type: 'application/json' });
                     const url = URL.createObjectURL(blob);
-                    
-                    const filename = `opus-hub-config-${new Date().toISOString().split('T')[0]}.json`;
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = filename;
+                    a.download = `canalqb-esp32-config-${new Date().toISOString().split('T')[0]}.json`;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
 
-                    // Atualizar info do último backup
-                    updateLastBackupInfo();
-                    
                     showToast('Configurações exportadas com sucesso!', 'success');
+                    document.getElementById('last-backup-info').textContent = new Date().toLocaleString('pt-BR');
+                    
                     console.log('Configurações exportadas:', config);
 
                 } catch (error) {
@@ -1619,19 +1469,16 @@
             window.importConfig = function (event) {
                 const file = event.target.files[0];
                 if (!file) return;
-
                 const reader = new FileReader();
                 reader.onload = async function(e) {
                     try {
                         const config = JSON.parse(e.target.result);
                         console.log('Configurações importadas:', config);
 
-                        // Validar estrutura
                         if (!config) {
                             throw new Error('Arquivo de configuração inválido ou corrompido');
                         }
 
-                        // Confirmar restauração
                         openCqbModal(
                             'Confirmar Restauração',
                             `Deseja restaurar as configurações deste backup?<br><br>
@@ -1640,15 +1487,11 @@
                                 await restoreConfig(config);
                             }
                         );
-
                     } catch (error) {
-                        console.error('Erro ao ler arquivo:', error);
                         showToast('Erro ao ler arquivo de configurações: ' + error.message, 'error');
                     }
                 };
                 reader.readAsText(file);
-                
-                // Limpar input para permitir selecionar o mesmo arquivo novamente
                 event.target.value = '';
             };
 
@@ -1659,15 +1502,12 @@
                     const uiConfig = config._ui;
                     delete config._ui;
 
-                    // Enviar todas as chaves mapeadas de volta para o ESP32
                     await saveToEsp(config);
 
-                    // Restaurar tema se existir
                     if (uiConfig && uiConfig.theme) {
                         applyTheme(uiConfig.theme);
                     }
 
-                    // Recarregar configurações para atualizar a interface
                     await loadSavedConfig();
 
                     showToast(`Configurações restauradas com sucesso!`, 'success');
@@ -1679,38 +1519,12 @@
                 }
             }
 
-            function updateLastBackupInfo() {
-                const now = new Date();
-                const info = `Último backup: ${now.toLocaleDateString('pt-BR')} ${now.toLocaleTimeString('pt-BR')}`;
-                const element = document.getElementById('last-backup-info');
-                if (element) {
-                    element.textContent = info;
-                    element.style.color = 'var(--cqb-green)';
-                }
-                
-                // Salvar no localStorage
-                localStorage.setItem('lastBackup', now.toISOString());
-            }
-
-            // Carregar info do último backup ao iniciar
-            (function loadLastBackupInfo() {
-                const lastBackup = localStorage.getItem('lastBackup');
-                if (lastBackup) {
-                    const date = new Date(lastBackup);
-                    const info = `Último backup: ${date.toLocaleDateString('pt-BR')} ${date.toLocaleTimeString('pt-BR')}`;
-                    const element = document.getElementById('last-backup-info');
-                    if (element) {
-                        element.textContent = info;
-                        element.style.color = 'var(--cqb-green)';
-                    }
-                }
-            })();
-
-            /* ── PIX ───────────────────────────────────────────── */
+            /* UTILIDADES */
             window.copyPix = function () {
-                navigator.clipboard.writeText('qrodrigob@gmail.com')
-                    .then(() => showToast('E-mail Pix copiado! Obrigado pelo apoio ao @CanalQb. ?', 'success'))
-                    .catch(() => showToast('Copie manualmente: qrodrigob@gmail.com', 'info'));
+                const pix = 'qrodrigob@gmail.com';
+                navigator.clipboard.writeText(pix)
+                    .then(() => showToast('Pix copiado: ' + pix, 'success'))
+                    .catch(() => showToast('Copie manualmente: ' + pix, 'info'));
             };
 
         })();
@@ -1719,4 +1533,3 @@
 </body>
 
 </html>
-<!-- cache bust jsdelivr: v18.1 -->
