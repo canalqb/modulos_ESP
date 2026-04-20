@@ -1168,7 +1168,10 @@
                     if (S.clientId && S.clientSecret && S.svcEmail && S.driveConfigured) {
                         unlockModules();
                     }
-                } catch (_) { /* ESP32 offline */ }
+                } catch (error) { 
+                    console.error('Erro ao carregar configurações do ESP32:', error);
+                    showToast('Erro ao carregar configurações salvas: ' + error.message, 'warn');
+                }
             }
 
             /* ── BLUETOOTH ─────────────────────────────────────── */
