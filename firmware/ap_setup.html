@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CanalQb ESP32 - Configuração Wi-Fi</title>
+    <meta name="author" content="@CanalQb">
+    <meta name="copyright" content="@CanalQb 2026">
+    
+    <style>
+        :root {
+            --primary: #0062ff;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --border: #334155;
+            --terminal-bg: #000000;
+            --terminal-text: #00ff00;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-family: 'Arial Black', sans-serif;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 1rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .wifi-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            margin-bottom: 16px;
+        }
+
+        .wifi-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .wifi-item:last-child {
+            border-bottom: none;
+        }
+
+        .wifi-item:hover {
+            background: rgba(0, 98, 255, 0.1);
+        }
+
+        .wifi-signal {
+            font-size: 1.2rem;
+            color: var(--success);
+            width: 20px;
+            text-align: center;
+        }
+
+        .wifi-locked {
+            color: var(--warning);
+            font-size: 0.9rem;
+        }
+
+        .wifi-name {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 44px;
+        }
+
+        .btn:hover {
+            background: #0052cc;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-secondary {
+            background: var(--muted);
+        }
+
+        .btn-secondary:hover {
+            background: #64748b;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-input {
+            flex: 1;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 1rem;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+        }
+
+        .input-toggle {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            padding: 4px;
+            font-size: 1.1rem;
+        }
+
+        .input-toggle:hover {
+            color: var(--text);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .terminal {
+            background: var(--terminal-bg);
+            color: var(--terminal-text);
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            padding: 16px;
+            border-radius: 10px;
+            height: 120px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            margin-top: 16px;
+        }
+
+        .terminal-line {
+            margin-bottom: 4px;
+            word-break: break-all;
+        }
+
+        .success-modal .modal-title {
+            color: var(--success);
+        }
+
+        .countdown {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--muted);
+            border-top: 2px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">🚀 CanalQb</div>
+            <div class="subtitle">Configuração Wi-Fi ESP32</div>
+        </header>
+
+        <main>
+            <div class="card">
+                <h2 class="card-title">
+                    <span>📡</span>
+                    Redes Wi-Fi Disponíveis
+                </h2>
+                
+                <div class="wifi-list" id="wifiList">
+                    <div style="padding: 20px; text-align: center; color: var(--muted);">
+                        <div class="loading"></div>
+                        Escaneando redes...
+                    </div>
+                </div>
+                
+                <button class="btn btn-block" onclick="scanNetworks()">
+                    <span>🔄</span>
+                    Atualizar Redes
+                </button>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">
+                    <span>📟</span>
+                    Terminal
+                </h2>
+                <div class="terminal" id="terminal">
+                    <div class="terminal-line">Sistema iniciado. Aguardando comandos...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Senha -->
+    <div class="modal" id="passwordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Conectar à Rede</h3>
+                <div class="modal-subtitle" id="modalSubtitle">Digite a senha para:</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Senha Wi-Fi</label>
+                <div class="input-group">
+                    <input type="password" class="form-input" id="passwordInput" placeholder="Digite a senha">
+                    <button class="input-toggle" onclick="togglePassword()">
+                        <span id="eyeIcon">👁️</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closePasswordModal()">
+                    Cancelar
+                </button>
+                <button class="btn" onclick="connectToWifi()">
+                    <span>🔗</span>
+                    Conectar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Sucesso -->
+    <div class="modal success-modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">✅ Conectado com Sucesso!</h3>
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <div style="margin-bottom: 16px;">
+                    <strong>IP:</strong> <span id="successIP"></span>
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <strong>MAC:</strong> <span id="successMAC"></span>
+                </div>
+                <div class="countdown" id="countdown">15</div>
+                <div style="color: var(--muted); font-size: 0.9rem;">
+                    Redirecionando em segundos...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedSSID = '';
+        let countdownInterval;
+
+        // Inicia scan automático após 1 segundo
+        setTimeout(scanNetworks, 1000);
+
+        function log(message) {
+            const terminal = document.getElementById('terminal');
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
+            line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        async function scanNetworks() {
+            log('Iniciando scan de redes Wi-Fi...');
+            
+            try {
+                const response = await fetch('/api/scan');
+                
+                if (response.status === 202) {
+                    log('Ainda escaneando...');
+                    setTimeout(scanNetworks, 2000);
+                    return;
+                }
+                
+                const networks = await response.json();
+                displayNetworks(networks);
+                log(`Encontradas ${networks.length} redes`);
+                
+            } catch (error) {
+                log('Erro ao escanear redes: ' + error.message);
+                showError('Falha ao escanear redes. Tente novamente.');
+            }
+        }
+
+        function displayNetworks(networks) {
+            const wifiList = document.getElementById('wifiList');
+            
+            if (networks.length === 0) {
+                wifiList.innerHTML = `
+                    <div style="padding: 20px; text-align: center; color: var(--muted);">
+                        Nenhuma rede encontrada
+                    </div>
+                `;
+                return;
+            }
+            
+            wifiList.innerHTML = networks.map(network => `
+                <div class="wifi-item" onclick="selectNetwork('${network.ssid}', '${network.auth || ''}')">
+                    <div class="wifi-signal">
+                        ${getSignalIcon(network.rssi || -50)}
+                    </div>
+                    <div class="wifi-name">${escapeHtml(network.ssid)}</div>
+                    ${network.auth && network.auth !== 'OPEN' ? '<div class="wifi-locked">🔒</div>' : ''}
+                </div>
+            `).join('');
+        }
+
+        function getSignalIcon(rssi) {
+            if (rssi > -50) return '📶';
+            if (rssi > -60) return '📶';
+            if (rssi > -70) return '📱';
+            return '📶';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function selectNetwork(ssid, auth) {
+            selectedSSID = ssid;
+            document.getElementById('modalSubtitle').textContent = `Digite a senha para: ${ssid}`;
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordModal').classList.add('show');
+            document.getElementById('passwordInput').focus();
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('show');
+            selectedSSID = '';
+        }
+
+        function togglePassword() {
+            const input = document.getElementById('passwordInput');
+            const icon = document.getElementById('eyeIcon');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                icon.textContent = '👁️';
+            }
+        }
+
+        async function connectToWifi() {
+            const password = document.getElementById('passwordInput').value.trim();
+            
+            if (!password) {
+                showError('Digite a senha da rede');
+                return;
+            }
+            
+            closePasswordModal();
+            log(`Tentando conectar em ${selectedSSID}...`);
+            
+            try {
+                const response = await fetch(`/api/connect?ssid=${encodeURIComponent(selectedSSID)}&pass=${encodeURIComponent(password)}`);
+                const data = await response.json();
+                
+                if (data.error) {
+                    log(`Erro: ${data.error}`);
+                    showError('Senha inválida ou falha na conexão. Tente novamente.');
+                    // Limpa cache e reinicia scan
+                    setTimeout(() => {
+                        scanNetworks();
+                    }, 2000);
+                    return;
+                }
+                
+                // Sucesso
+                log(`Conectado! IP: ${data.ip}, MAC: ${data.mac}`);
+                showSuccessModal(data.ip, data.mac);
+                
+            } catch (error) {
+                log('Falha na conexão: ' + error.message);
+                showError('Falha na conexão. Verifique a senha e tente novamente.');
+                setTimeout(scanNetworks, 2000);
+            }
+        }
+
+        function showSuccessModal(ip, mac) {
+            document.getElementById('successIP').textContent = ip;
+            document.getElementById('successMAC').textContent = mac;
+            document.getElementById('successModal').classList.add('show');
+            
+            // Inicia countdown de 15 segundos para redirecionamento
+            let countdown = 15;
+            countdownInterval = setInterval(() => {
+                countdown--;
+                document.getElementById('countdown').textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    window.location.href = `http://${ip}`;
+                }
+            }, 1000);
+            
+            // Após 1 segundo, aciona reinicialização do ESP32
+            setTimeout(() => {
+                fetch('/api/restart');
+            }, 1000);
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            
+            const firstCard = document.querySelector('.card');
+            firstCard.insertBefore(errorDiv, firstCard.firstChild);
+            
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+
+        // Enter no campo de senha aciona a conexão
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                connectToWifi();
+            }
+        });
+
+        // ESC fecha o modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePasswordModal();
+            }
+        });
+    </script>
+</body>
+</html>
