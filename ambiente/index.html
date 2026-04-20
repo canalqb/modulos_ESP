@@ -20,6 +20,11 @@
 
     <!-- CSS Principal (Carregado via CDN no ESP32 ou Localmente) -->
     <link rel="stylesheet" href="style.css">
+    <!-- Patch: vanilla collapse para .cqb-guide-collapse (independente do Bootstrap JS) -->
+    <style>
+        .cqb-guide-collapse          { display: none; }
+        .cqb-guide-collapse.open     { display: block; }
+    </style>
 </head>
 
 <body>
@@ -398,70 +403,100 @@
                     </div>
                 </div>
 
-                <!-- GUIA COLAPSÍVEL (TUTORIAL NO FINAL) -->
-                <button class="cqb-guide-toggle" id="guide-toggle-btn" data-bs-toggle="collapse"
-                    data-bs-target="#guide-body" aria-expanded="false" style="margin-top:20px;">
+                <!-- GUIA COLAPSÍVEL (TUTORIAL NO FINAL) — vanilla JS, sem dependência Bootstrap -->
+                <button class="cqb-guide-toggle" id="guide-toggle-btn" type="button"
+                    onclick="toggleGuide()" aria-expanded="false" style="margin-top:20px;">
                     <span><i class="fas fa-circle-question" style="margin-right:8px;color:var(--cqb-blue);"></i>
                         Como configurar seu OAuth no Google Cloud</span>
                     <i class="fas fa-chevron-down" id="guide-arr" style="transition:transform 0.25s;"></i>
                 </button>
-                <div class="collapse" id="guide-body">
+                <div class="cqb-guide-collapse" id="guide-body">
                     <div class="cqb-guide-body">
-                        <p
-                            style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--text-primary);margin-bottom:14px;">
+                        <p style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--text-primary);margin-bottom:14px;">
                             <i class="fas fa-cloud" style="color:var(--cqb-blue);margin-right:6px;"></i>
                             Configurações de Acesso à Nuvem — Google Cloud Console
                         </p>
 
+                        <!-- Passo 1 -->
                         <div class="cqb-guide-step">
                             <span class="cqb-guide-num">1</span>
-                            <div>Acesse <a href="https://console.cloud.google.com" target="_blank"
-                                    rel="noopener noreferrer"
-                                    style="color:var(--cqb-blue);">console.cloud.google.com</a> e <strong>crie um
-                                    projeto novo</strong> ou selecione um existente.</div>
+                            <div>Acesse <a href="https://console.cloud.google.com" target="_blank" rel="noopener noreferrer" style="color:var(--cqb-blue);">console.cloud.google.com</a> e <strong>crie um projeto novo</strong> ou selecione um existente no seletor do topo da página.</div>
                         </div>
+
+                        <!-- Passo 2 -->
                         <div class="cqb-guide-step">
                             <span class="cqb-guide-num">2</span>
-                            <div>No menu lateral, vá em <strong>APIs e Serviços → Biblioteca</strong>. Busque por
-                                <strong>Google Drive API</strong> e clique em <strong>Ativar</strong>.</div>
+                            <div>No menu lateral, vá em <strong>APIs e Serviços → Biblioteca</strong>. Busque por <strong>Google Drive API</strong>, clique no resultado e depois em <strong>Ativar</strong>.</div>
                         </div>
+
+                        <!-- Passo 3 -->
                         <div class="cqb-guide-step">
                             <span class="cqb-guide-num">3</span>
-                            <div>Ainda em <strong>APIs e Serviços</strong>, clique em <strong>Tela de consentimento
-                                    OAuth</strong>. Selecione <strong>Externo</strong>, preencha nome do app e e-mail de
-                                suporte. Salve e clique em <strong>Continuar</strong>.</div>
+                            <div>
+                                Ainda em <strong>APIs e Serviços</strong>, clique em <strong>Tela de permissão OAuth</strong>.
+                                Em <em>Tipo de usuário</em>, escolha <strong>Externo</strong> e clique em Criar.
+                                Preencha o nome do app e o e-mail de suporte. Em <strong>Tipo de aplicativo</strong>, escolha <strong>App para computador</strong>. Salve.
+                            </div>
                         </div>
+
+                        <!-- Passo 4 -->
                         <div class="cqb-guide-step">
                             <span class="cqb-guide-num">4</span>
-                            <div>Na aba <strong>Público-alvo</strong> (ou "Test users"), clique em <strong>Adicionar
-                                    Usuários</strong> e insira o e-mail da conta que terá acesso ao Drive. <em>Este é o
-                                    "E-mail de Conta de Serviço" abaixo.</em></div>
+                            <div>
+                                Na mesma tela de permissão OAuth, clique na aba <strong>Público-alvo</strong> (ou "Test users").
+                                Clique em <strong>Adicionar Usuários</strong> e insira o seu e-mail Google que terá acesso ao Drive.
+                                <em>Este mesmo e-mail você usará no campo "E-mail de Conta de Serviço" abaixo.</em>
+                            </div>
                         </div>
+
+                        <!-- Passo 5 -->
                         <div class="cqb-guide-step">
                             <span class="cqb-guide-num">5</span>
-                            <div>Vá em <strong>Credenciais → Criar Credencial → ID do Cliente OAuth</strong>. Em
-                                <strong>Tipo de aplicativo</strong>, selecione <strong>App para computador</strong>.
-                                Clique em Criar.</div>
+                            <div>
+                                Vá em <strong>Credenciais → Criar Credencial → Conta de Serviço</strong>.
+                                Dê um nome, clique em <strong>Criar e Continuar</strong> e finalize.
+                                <strong>Anote o e-mail gerado</strong> — ele termina em <code>@...iam.gserviceaccount.com</code>.
+                                Este é o e-mail que você adicionou como usuário de teste no passo anterior.
+                            </div>
                         </div>
+
+                        <!-- Passo 6 -->
                         <div class="cqb-guide-step">
                             <span class="cqb-guide-num">6</span>
-                            <div>Na tela de credencial criada, copie o <strong>ID do cliente</strong> e a <strong>Chave
-                                    secreta do cliente</strong>. O URI de redirecionamento padrão já estará configurado;
-                                caso precise adicionar manualmente, use:
-                                <code>http://localhost:3000/auth/callback</code></div>
+                            <div>
+                                Ainda em <strong>Credenciais</strong>, clique em <strong>Criar Credencial → ID do Cliente OAuth</strong>.
+                                Em <em>Tipo de aplicativo</em>, selecione <strong>App para computador</strong>. Clique em Criar.
+                                Na tela seguinte, copie o <strong>ID do cliente</strong> e a <strong>Chave secreta do cliente</strong> — guarde bem esses dois valores.
+                            </div>
                         </div>
+
+                        <!-- Passo 7 -->
                         <div class="cqb-guide-step">
                             <span class="cqb-guide-num">7</span>
-                            <div>Cole o <strong>Client ID</strong> e o <strong>Client Secret</strong> nos campos abaixo.
-                                Adicione o e-mail que autorizou o acesso no campo <strong>E-mail de Conta de
-                                    Serviço</strong>. Depois clique em <strong>Iniciar Autorização OAuth</strong> — uma
-                                nova aba será aberta para você aceitar as permissões.</div>
+                            <div>
+                                Edite a credencial OAuth recém-criada e, em <strong>URIs de redirecionamento autorizados</strong>, adicione <strong>os dois</strong> URIs abaixo:
+                                <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px;">
+                                    <code style="display:block;padding:6px 10px;background:rgba(33,150,243,0.08);border-radius:6px;font-size:0.82rem;">http://localhost:3000/auth/callback</code>
+                                    <div id="guide-esp-uri" style="display:flex;align-items:center;gap:8px;">
+                                        <code id="guide-esp-uri-code" style="display:block;padding:6px 10px;background:rgba(40,167,69,0.08);border-radius:6px;font-size:0.82rem;flex:1;">http://&lt;ip-do-esp32&gt;/auth/callback</code>
+                                        <button type="button" onclick="copyEspUri()" class="cqb-btn cqb-btn-ghost cqb-btn-sm" style="flex-shrink:0;" title="Copiar URI do ESP32"><i class="fas fa-copy"></i></button>
+                                    </div>
+                                </div>
+                                <small style="color:var(--text-sub);display:block;margin-top:6px;"><i class="fas fa-circle-info" style="color:var(--cqb-blue);"></i> O segundo URI (IP do ESP32) permite a captura automática do código OAuth — sem precisar copiar da URL.</small>
+                            </div>
                         </div>
+
+                        <!-- Passo 8 -->
                         <div class="cqb-guide-step">
                             <span class="cqb-guide-num">8</span>
-                            <div>Após aceitar, a aba mostrará uma página de erro (localhost:3000). Isso é esperado.
-                                Copie o valor <strong>code=</strong> da URL e cole no campo abaixo para gerar o Token
-                                Refresh permanente.</div>
+                            <div>
+                                Preencha o <strong>Client ID</strong>, <strong>Client Secret</strong> e o <strong>e-mail</strong> nos campos da seção acima.
+                                Clique em <strong>Iniciar Autorização OAuth</strong>. Uma nova aba abrirá para você conceder permissão ao Drive.
+                                Após autorizar, o sistema tentará capturar o código automaticamente.
+                                Se não conseguir, a URL exibirá algo como:
+                                <code style="display:block;margin-top:6px;padding:6px 10px;background:rgba(0,0,0,0.04);border-radius:6px;font-size:0.79rem;word-break:break-all;">http://localhost:3000/auth/callback?...&amp;code=4/0Aci98...&amp;scope=...</code>
+                                Copie apenas o valor entre <code>&amp;code=</code> e o próximo <code>&amp;</code> e cole no campo abaixo.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -610,9 +645,29 @@
             document.getElementById('cqb-ip').textContent = S.espIp;
             applyTheme(S.theme);
 
-            /* guide chevron sync */
-            document.getElementById('guide-body').addEventListener('show.bs.collapse', () => document.getElementById('guide-arr').style.transform = 'rotate(180deg)');
-            document.getElementById('guide-body').addEventListener('hide.bs.collapse', () => document.getElementById('guide-arr').style.transform = 'rotate(0deg)');
+            /* guide — vanilla collapse, sem Bootstrap */
+            window.toggleGuide = function () {
+                const body = document.getElementById('guide-body');
+                const arr  = document.getElementById('guide-arr');
+                const btn  = document.getElementById('guide-toggle-btn');
+                const open = body.classList.toggle('open');
+                arr.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
+                btn.setAttribute('aria-expanded', String(open));
+            };
+
+            /* preenche o URI do ESP32 no guia assim que S.espIp estiver disponível */
+            (function updateGuideUri() {
+                const uri = `http://${S.espIp}/auth/callback`;
+                const el  = document.getElementById('guide-esp-uri-code');
+                if (el) el.textContent = uri;
+            })();
+
+            window.copyEspUri = function () {
+                const uri = `http://${S.espIp}/auth/callback`;
+                navigator.clipboard.writeText(uri)
+                    .then(() => showToast('URI copiado: ' + uri, 'success'))
+                    .catch(() => showToast('Copie manualmente: ' + uri, 'info'));
+            };
 
             loadSavedConfig();
 
@@ -711,37 +766,81 @@
                 updateProgress();
             };
 
-            /* ── OAUTH FLOW (converted from setup_oauth.py) ────── */
+            /* ── OAUTH FLOW — captura automática via popup same-origin ─── */
             window.startOAuth = function () {
-                S.clientId = document.getElementById('g-client-id').value.trim();
+                S.clientId     = document.getElementById('g-client-id').value.trim();
                 S.clientSecret = document.getElementById('g-client-secret').value.trim();
-                S.svcEmail = document.getElementById('g-svc-email').value.trim();
+                S.svcEmail     = document.getElementById('g-svc-email').value.trim();
                 if (!S.clientId || !S.clientSecret || !S.svcEmail) {
                     showToast('Preencha Client ID, Client Secret e E-mail!', 'error'); return;
                 }
-                const scope = 'https://www.googleapis.com/auth/drive';
-                const redirect = 'http://localhost:3000/auth/callback';
-                const authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({
-                    client_id: S.clientId,
-                    redirect_uri: redirect,
+
+                const scope        = 'https://www.googleapis.com/auth/drive';
+                /* Tenta captura automática usando o próprio ESP32 como redirect_uri (same-origin).
+                   Para funcionar, adicione http://{ip}/auth/callback nas URIs autorizadas do Google Cloud. */
+                const autoRedirect = `http://${S.espIp}/auth/callback`;
+                const manualRedirect = 'http://localhost:3000/auth/callback';
+
+                const buildUrl = (redirect) => 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({
+                    client_id:     S.clientId,
+                    redirect_uri:  redirect,
                     response_type: 'code',
-                    scope: scope,
-                    access_type: 'offline',
-                    prompt: 'consent'
+                    scope,
+                    access_type:   'offline',
+                    prompt:        'consent'
                 }).toString();
 
-                window.open(authUrl, '_blank', 'noopener,noreferrer');
-                document.getElementById('oauth-code-box').classList.add('show');
-                showToast('Nova aba aberta. Autorize e copie o código da URL!', 'info');
+                /* --- tenta modo automático (ESP32 same-origin) --- */
+                let popup;
+                try {
+                    popup = window.open(buildUrl(autoRedirect), 'oauth_auto', 'width=520,height=640,noopener=0');
+                } catch(_) { popup = null; }
+
+                if (popup) {
+                    showToast('Nova aba aberta. Aguardando autorização...', 'info');
+                    document.getElementById('oauth-code-box').classList.add('show');
+
+                    /* Polling: lê popup.location.href (funciona só se same-origin) */
+                    S._oauthRedirect = autoRedirect;
+                    let attempts = 0;
+                    const timer = setInterval(() => {
+                        attempts++;
+                        if (attempts > 240) { clearInterval(timer); return; } /* timeout 2 min */
+                        try {
+                            const url = popup.location.href;
+                            if (url && url.includes('/auth/callback') && url.includes('code=')) {
+                                clearInterval(timer);
+                                popup.close();
+                                const code = new URL(url).searchParams.get('code');
+                                if (code) {
+                                    document.getElementById('oauth-code-input').value = code;
+                                    showToast('Código capturado automaticamente! Trocando por token...', 'success');
+                                    /* dispara o exchange automaticamente */
+                                    setTimeout(() => exchangeToken(autoRedirect), 400);
+                                }
+                            }
+                        } catch (_) { /* cross-origin ainda — aguarda */ }
+                        if (popup.closed) { clearInterval(timer); }
+                    }, 500);
+                } else {
+                    /* fallback: abre como _blank e pede cópia manual */
+                    S._oauthRedirect = manualRedirect;
+                    window.open(buildUrl(manualRedirect), '_blank', 'noopener,noreferrer');
+                    document.getElementById('oauth-code-box').classList.add('show');
+                    showToast('Nova aba aberta. Autorize e copie o código da URL!', 'info');
+                }
             };
 
-            window.exchangeToken = async function () {
+            window.exchangeToken = async function (redirectOverride) {
                 const code = document.getElementById('oauth-code-input').value.trim();
                 if (!code) { showToast('Cole o código OAuth primeiro!', 'error'); return; }
 
-                const btn = event.currentTarget;
-                btn.innerHTML = '<i class="fas fa-rotate cqb-spin"></i> Trocando...';
-                btn.disabled = true;
+                /* usa o redirect_uri correto para o grant (deve ser idêntico ao usado na autorização) */
+                const redirect = redirectOverride || S._oauthRedirect || 'http://localhost:3000/auth/callback';
+
+                const btn = document.querySelector('[onclick="exchangeToken()"]') ||
+                            document.querySelector('button[onclick^="exchangeToken"]');
+                if (btn) { btn.innerHTML = '<i class="fas fa-rotate cqb-spin"></i> Trocando...'; btn.disabled = true; }
 
                 try {
                     const res = await fetch('https://oauth2.googleapis.com/token', {
@@ -751,7 +850,7 @@
                             code,
                             client_id: S.clientId,
                             client_secret: S.clientSecret,
-                            redirect_uri: 'http://localhost:3000/auth/callback',
+                            redirect_uri: redirect,
                             grant_type: 'authorization_code'
                         })
                     });
@@ -759,7 +858,6 @@
 
                     if (data.refresh_token) {
                         S.refreshToken = data.refresh_token;
-                        /* Salva no ESP32 */
                         await saveToEsp({ googleClientId: S.clientId, googleClientSecret: S.clientSecret, googleRefreshToken: S.refreshToken, serviceAccountEmail: S.svcEmail });
 
                         showToast('Token Refresh gerado com sucesso!', 'success');
@@ -772,13 +870,11 @@
                         updateProgress();
                     } else {
                         showToast('Erro OAuth: ' + (data.error_description || data.error || 'token não retornado'), 'error');
-                        btn.innerHTML = '<i class="fas fa-key"></i> Trocar por Token';
-                        btn.disabled = false;
+                        if (btn) { btn.innerHTML = '<i class="fas fa-key"></i> Trocar por Token'; btn.disabled = false; }
                     }
                 } catch (_) {
                     showToast('Falha de rede ao trocar token.', 'error');
-                    btn.innerHTML = '<i class="fas fa-key"></i> Trocar por Token';
-                    btn.disabled = false;
+                    if (btn) { btn.innerHTML = '<i class="fas fa-key"></i> Trocar por Token'; btn.disabled = false; }
                 }
             };
 
@@ -804,17 +900,17 @@
                     if (!tokenData.access_token) throw new Error('access_token indisponível');
                     const access = tokenData.access_token;
 
-                    /* 2. Verificar/criar pasta OpusHub_Config (sem duplicata) */
-                    const folderQ = `'${S.folderId}' in parents and name='OpusHub_Config' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+                    /* 2. Verificar/criar pasta CanalQbHub_Config (sem duplicata) */
+                    const folderQ = `'${S.folderId}' in parents and name='CanalQbHub_Config' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
                     const folderSR = await driveList(access, folderQ);
                     let configId;
                     if (folderSR.files.length > 0) {
                         configId = folderSR.files[0].id;
-                        showToast('Pasta OpusHub_Config já existe — reutilizando.', 'info');
+                        showToast('Pasta CanalQbHub_Config já existe — reutilizando.', 'info');
                     } else {
-                        const cRes = await driveCreate(access, { name: 'OpusHub_Config', mimeType: 'application/vnd.google-apps.folder', parents: [S.folderId] });
+                        const cRes = await driveCreate(access, { name: 'CanalQbHub_Config', mimeType: 'application/vnd.google-apps.folder', parents: [S.folderId] });
                         configId = cRes.id;
-                        showToast('Pasta OpusHub_Config criada!', 'success');
+                        showToast('Pasta CanalQbHub_Config criada!', 'success');
                     }
 
                     /* 3. Verificar/criar teste.txt (sem duplicata) */
@@ -823,7 +919,7 @@
                     if (fileSR.files.length > 0) {
                         showToast('Arquivo teste.txt já existe — sem duplicata.', 'info');
                     } else {
-                        const content = `CanalQb OpusHub Config Test\nData: ${new Date().toISOString()}\nSite: https://canalqb.com.br\nDevice IP: ${S.espIp}`;
+                        const content = `CanalQb CanalQbHub Config Test\nData: ${new Date().toISOString()}\nSite: https://canalqb.com.br\nDevice IP: ${S.espIp}`;
                         const boundary = 'cqb_boundary_2026';
                         const meta = JSON.stringify({ name: 'teste.txt', parents: [configId] });
                         const body = `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${meta}\r\n--${boundary}\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n${content}\r\n--${boundary}--`;
