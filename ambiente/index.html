@@ -1162,21 +1162,38 @@
             };
 
             async function performWifiScan() {
+                const apiUrl = `http://${S.espIp}/api/scan`;
+                console.log(`Tentando scan WiFi em: ${apiUrl}`);
+                
                 try {
-                    const res = await fetch(`http://${S.espIp}/api/scan`, {
+                    // Primeiro, verificar se o ESP32 está online
+                    const healthRes = await fetch(`http://${S.espIp}/api/config`, {
+                        method: 'GET',
+                        timeout: 5000
+                    });
+                    
+                    if (!healthRes.ok) {
+                        throw new Error(`ESP32 offline: HTTP ${healthRes.status}`);
+                    }
+                    
+                    console.log('ESP32 online, iniciando scan...');
+                    
+                    const res = await fetch(apiUrl, {
                         method: 'GET',
                         headers: {
                             'Accept': 'application/json',
                             'Cache-Control': 'no-cache'
                         },
-                        timeout: 10000
+                        timeout: 15000
                     });
+
+                    console.log(`Resposta do scan: ${res.status}`);
 
                     if (res.status === 202) {
                         // Scan em andamento, tentar novamente
                         scanAttempts++;
                         if (scanAttempts < MAX_SCAN_ATTEMPTS) {
-                            showToast('Scan em andamento, aguardando...', 'info');
+                            showToast(`Scan em andamento (${scanAttempts}/${MAX_SCAN_ATTEMPTS})...`, 'info');
                             scanInterval = setTimeout(() => performWifiScan(), 2000);
                         } else {
                             showToast('Timeout ao escanear redes', 'error');
@@ -1191,20 +1208,32 @@
 
                     const nets = await res.json();
                     console.log('Redes encontradas:', nets);
+                    
+                    if (!Array.isArray(nets)) {
+                        console.error('Resposta inválida:', nets);
+                        throw new Error('Resposta inválida da API');
+                    }
+                    
                     renderWifi(nets);
                     showToast(`${nets.length} redes encontradas`, 'success');
 
                 } catch (error) {
                     console.error('Erro ao escanear WiFi:', error);
-                    showToast('Falha ao comunicar com ESP32, usando dados de teste', 'warn');
-                    // Dados de teste fallback
-                    renderWifi([
+                    showToast(`Erro: ${error.message}. Usando dados de teste.`, 'warn');
+                    
+                    // Dados de teste fallback (simulando redes reais)
+                    const testNetworks = [
                         { ssid: 'CanalQb_Home', rssi: -42, auth: false },
                         { ssid: 'OpusNet_5G', rssi: -61, auth: true },
                         { ssid: 'Vizinho_2.4', rssi: -79, auth: true },
                         { ssid: 'Guest_Network', rssi: -55, auth: false },
-                        { ssid: 'IoT_Devices', rssi: -68, auth: true }
-                    ]);
+                        { ssid: 'IoT_Devices', rssi: -68, auth: true },
+                        { ssid: 'NET_2.4GHz', rssi: -52, auth: true },
+                        { ssid: 'SmartHome', rssi: -73, auth: true }
+                    ];
+                    
+                    renderWifi(testNetworks);
+                    showToast('Modo demonstração: redes simuladas', 'info');
                 }
             }
 
@@ -1320,16 +1349,34 @@
                 }
 
                 showToast('Salvando configuração Wi-Fi...', 'info');
+                console.log(`Tentando conectar à rede: ${ssid}`);
 
                 try {
+                    // Primeiro verificar se o ESP32 está online
+                    const healthRes = await fetch(`http://${S.espIp}/api/config`, {
+                        method: 'GET',
+                        timeout: 5000
+                    });
+                    
+                    if (!healthRes.ok) {
+                        throw new Error(`ESP32 offline: HTTP ${healthRes.status}`);
+                    }
+                    
                     // Tentar conectar via API do ESP32
-                    const response = await fetch(`http://${S.espIp}/api/connect?ssid=${encodeURIComponent(ssid)}&pass=${encodeURIComponent(pass)}`, {
+                    const connectUrl = `http://${S.espIp}/api/connect?ssid=${encodeURIComponent(ssid)}&pass=${encodeURIComponent(pass)}`;
+                    console.log(`Conectando via: ${connectUrl}`);
+                    
+                    const response = await fetch(connectUrl, {
                         method: 'GET',
                         timeout: 15000
                     });
 
+                    console.log(`Resposta da conexão: ${response.status}`);
+
                     if (response.ok) {
                         const result = await response.json();
+                        console.log('Resultado da conexão:', result);
+                        
                         if (result.status === 'success') {
                             showToast(`Conectando a "${ssid}"...`, 'success');
                             // Salvar configuração localmente
@@ -1340,12 +1387,15 @@
                                 try {
                                     const statusRes = await fetch(`http://${S.espIp}/api/status`);
                                     const status = await statusRes.json();
+                                    console.log('Status da conexão:', status);
+                                    
                                     if (status.connected) {
                                         showToast('Conectado com sucesso!', 'success');
                                     } else {
                                         showToast('Falha na conexão. Verifique a senha.', 'error');
                                     }
                                 } catch (e) {
+                                    console.log('Erro ao verificar status:', e);
                                     showToast('Configuração salva. Verificando conexão...', 'info');
                                 }
                             }, 5000);
@@ -1357,9 +1407,16 @@
                     }
                 } catch (error) {
                     console.error('Erro ao conectar WiFi:', error);
+                    showToast(`Erro: ${error.message}. Salvando configuração...`, 'warn');
+                    
                     // Fallback para método antigo
-                    await saveToEsp({ ssid, password: pass });
-                    showToast(`Configuração salva. Reiniciando para conectar a "${ssid}"...`, 'info');
+                    try {
+                        await saveToEsp({ ssid, password: pass });
+                        showToast(`Configuração salva. Reiniciando para conectar a "${ssid}"...`, 'info');
+                    } catch (saveError) {
+                        console.error('Erro ao salvar configuração:', saveError);
+                        showToast('Erro ao salvar configuração', 'error');
+                    }
                 }
             };
 
