@@ -735,6 +735,15 @@
                 arr.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
             };
 
+            /* Inicializa setas dos submenus já abertos na carga da página */
+            document.querySelectorAll('.cqb-submenu.cqb-sub-open').forEach(function (submenu) {
+                const trigger = document.querySelector('[onclick*="' + submenu.id + '"]');
+                if (trigger) {
+                    const arr = trigger.querySelector('.nav-arr');
+                    if (arr) arr.style.transform = 'rotate(180deg)';
+                }
+            });
+
             /* preenche o URI do ESP32 no guia assim que S.espIp estiver disponível */
             (function updateGuideUri() {
                 const uri = `http://${S.espIp}/auth/callback`;
