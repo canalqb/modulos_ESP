@@ -1151,6 +1151,23 @@
                         document.getElementById('bt-name-input').value = data.bluetooth.name || 'Canalqb - ESP32';
                         document.getElementById('bt-pin-input').value = data.bluetooth.pin || '1234';
                     }
+                    
+                    // Carregar status de configuração do Drive
+                    if (data.driveConfigured !== undefined) {
+                        S.driveConfigured = data.driveConfigured;
+                    } else if (data.id_pasta && data.googleRefreshToken) {
+                        // Se tiver pasta e refresh token, considerar configurado
+                        S.driveConfigured = true;
+                    }
+                    
+                    // Atualizar status do sistema após carregar configurações
+                    updateSystemStatus();
+                    updateProgress();
+                    
+                    // Se estiver tudo configurado, desbloquear módulos
+                    if (S.clientId && S.clientSecret && S.svcEmail && S.driveConfigured) {
+                        unlockModules();
+                    }
                 } catch (_) { /* ESP32 offline */ }
             }
 
