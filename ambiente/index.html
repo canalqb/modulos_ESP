@@ -997,7 +997,7 @@
 
                     if (data.refresh_token) {
                         S.refreshToken = data.refresh_token;
-                        await saveToEsp({ googleClientId: S.clientId, googleClientSecret: S.clientSecret, googleRefreshToken: S.refreshToken, serviceAccountEmail: S.svcEmail });
+                        await saveToEsp({ idcliente: S.clientId, secretclient: S.clientSecret, refreshclient: S.refreshToken, emaildecontadeservico: S.svcEmail });
 
                         showToast('Token Refresh gerado com sucesso!', 'success');
                         document.getElementById('gstep-2').classList.add('done');
@@ -1071,7 +1071,7 @@
                     }
 
                     /* 4. Salvar folder + marcar como configurado */
-                    await saveToEsp({ id_pasta: S.folderId, driveConfigFolderId: configId });
+                    await saveToEsp({ iddepastadodrive: S.folderId, driveConfigFolderId: configId });
                     S.driveConfigured = true;
                     unlockModules();
                     updateProgress();
@@ -1129,13 +1129,13 @@
                 try {
                     const res = await fetch(`http://${S.espIp}/api/config`);
                     const data = await res.json();
-                    if (data.googleClientId) { document.getElementById('g-client-id').value = data.googleClientId; S.clientId = data.googleClientId; }
-                    if (data.googleClientSecret) { document.getElementById('g-client-secret').value = data.googleClientSecret; S.clientSecret = data.googleClientSecret; }
-                    if (data.serviceAccountEmail) { document.getElementById('g-svc-email').value = data.serviceAccountEmail; S.svcEmail = data.serviceAccountEmail; }
-                    if (data.googleRefreshToken) { S.refreshToken = data.googleRefreshToken; }
-                    if (data.id_pasta) { document.getElementById('g-folder-id').value = data.id_pasta; S.folderId = data.id_pasta; }
-                    if (data.googleClientId && data.googleClientSecret && data.serviceAccountEmail) { evalGoogleStep1(); }
-                    if (data.googleRefreshToken) {
+                    if (data.idcliente) { document.getElementById('g-client-id').value = data.idcliente; S.clientId = data.idcliente; }
+                    if (data.secretclient) { document.getElementById('g-client-secret').value = data.secretclient; S.clientSecret = data.secretclient; }
+                    if (data.emaildecontadeservico) { document.getElementById('g-svc-email').value = data.emaildecontadeservico; S.svcEmail = data.emaildecontadeservico; }
+                    if (data.refreshclient) { S.refreshToken = data.refreshclient; }
+                    if (data.iddepastadodrive) { document.getElementById('g-folder-id').value = data.iddepastadodrive; S.folderId = data.iddepastadodrive; }
+                    if (data.idcliente && data.secretclient && data.emaildecontadeservico) { evalGoogleStep1(); }
+                    if (data.refreshclient) {
                         document.getElementById('gstep-2').classList.add('done');
                         document.getElementById('gstep-3').classList.add('active');
                         document.getElementById('g-folder-id').disabled = false;
@@ -1155,16 +1155,16 @@
                     // Carregar status de configuração do Drive
                     if (data.driveConfigured !== undefined) {
                         S.driveConfigured = data.driveConfigured;
-                    } else if (data.id_pasta && data.googleRefreshToken) {
+                    } else if (data.iddepastadodrive && data.refreshclient) {
                         // Se tiver pasta e refresh token, considerar configurado
                         S.driveConfigured = true;
-                    } else if (data.googleRefreshToken && data.id_pasta) {
+                    } else if (data.refreshclient && data.iddepastadodrive) {
                         // Detecção automática: se tiver token e pasta, está configurado
                         S.driveConfigured = true;
-                    } else if (data.googleRefreshToken && !data.id_pasta) {
+                    } else if (data.refreshclient && !data.iddepastadodrive) {
                         // Se só tiver token, mas não pasta, não está configurado
                         S.driveConfigured = false;
-                    } else if (!data.googleRefreshToken && !data.id_pasta) {
+                    } else if (!data.refreshclient && !data.iddepastadodrive) {
                         // Se não tiver nem token nem pasta, não está configurado
                         S.driveConfigured = false;
                     }
@@ -1554,60 +1554,19 @@
                 try {
                     showToast('Coletando configurações...', 'info');
                     
-                    // Coletar todas as configurações atuais
-                    const config = {
+                    // Buscar configurações do ESP32 diretamente
+                    const espConfigRes = await fetch(`http://${S.espIp}/api/config`);
+                    if (!espConfigRes.ok) throw new Error('Falha ao obter config do ESP32');
+                    
+                    const config = await espConfigRes.json();
+                    
+                    // Adicionar metadados da interface
+                    config._ui = {
                         timestamp: new Date().toISOString(),
                         version: '1.0',
                         espIp: S.espIp,
-                        google: {
-                            clientId: S.clientId,
-                            clientSecret: S.clientSecret,
-                            serviceAccountEmail: S.svcEmail,
-                            refreshToken: S.refreshToken,
-                            folderId: S.folderId,
-                            driveConfigured: S.driveConfigured
-                        },
-                        bluetooth: {
-                            enabled: document.getElementById('bt-enable-switch')?.checked || false,
-                            name: document.getElementById('bt-name-input')?.value || 'Canalqb - ESP32',
-                            pin: document.getElementById('bt-pin-input')?.value || '1234'
-                        },
-                        wifi: {
-                            ssid: document.getElementById('ssid-manual')?.value || '',
-                            // Não salvamos senha por segurança
-                        },
-                        ssidConfig: {
-                            hostname: document.getElementById('dev-hostname')?.value || '',
-                            channel: parseInt(document.getElementById('dev-channel')?.value) || 0,
-                            staticIp: document.getElementById('dev-ip')?.value || '',
-                            gateway: document.getElementById('dev-gw')?.value || '',
-                            dns1: document.getElementById('dev-dns1')?.value || '',
-                            dns2: document.getElementById('dev-dns2')?.value || ''
-                        },
-                        ui: {
-                            theme: S.theme
-                        }
+                        theme: S.theme
                     };
-
-                    // Buscar configurações adicionais do ESP32
-                    try {
-                        const espConfigRes = await fetch(`http://${S.espIp}/api/config`);
-                        if (espConfigRes.ok) {
-                            const espConfig = await espConfigRes.json();
-                            config.esp32 = {
-                                wifi: {
-                                    ssid: espConfig.wifi?.ssid || '',
-                                    connected: espConfig.wifi?.connected || false
-                                },
-                                system: {
-                                    version: espConfig.version || 'unknown',
-                                    uptime: espConfig.uptime || 0
-                                }
-                            };
-                        }
-                    } catch (e) {
-                        console.log('Não foi possível obter config do ESP32:', e);
-                    }
 
                     // Criar blob e download
                     const jsonString = JSON.stringify(config, null, 2);
@@ -1645,16 +1604,16 @@
                         const config = JSON.parse(e.target.result);
                         console.log('Configurações importadas:', config);
 
-                        // Validar versão e estrutura
-                        if (!config.version) {
+                        // Validar estrutura
+                        if (!config) {
                             throw new Error('Arquivo de configuração inválido ou corrompido');
                         }
 
                         // Confirmar restauração
                         openCqbModal(
                             'Confirmar Restauração',
-                            `Deseja restaurar as configurações do backup de ${new Date(config.timestamp).toLocaleDateString()}?<br><br>
-                            <strong>Atenção:</strong> Isso irá sobrescrever todas as configurações atuais.`,
+                            `Deseja restaurar as configurações deste backup?<br><br>
+                            <strong>Atenção:</strong> Isso irá sobrescrever todas as configurações atuais do ESP32.`,
                             async () => {
                                 await restoreConfig(config);
                             }
@@ -1675,123 +1634,22 @@
                 try {
                     showToast('Restaurando configurações...', 'info');
 
-                    let restored = 0;
-                    let errors = [];
+                    const uiConfig = config._ui;
+                    delete config._ui;
 
-                    // Restaurar configurações Google
-                    if (config.google) {
-                        if (config.google.clientId) {
-                            document.getElementById('g-client-id').value = config.google.clientId;
-                            S.clientId = config.google.clientId;
-                            restored++;
-                        }
-                        if (config.google.clientSecret) {
-                            document.getElementById('g-client-secret').value = config.google.clientSecret;
-                            S.clientSecret = config.google.clientSecret;
-                            restored++;
-                        }
-                        if (config.google.serviceAccountEmail) {
-                            document.getElementById('g-svc-email').value = config.google.serviceAccountEmail;
-                            S.svcEmail = config.google.serviceAccountEmail;
-                            restored++;
-                        }
-                        if (config.google.refreshToken) {
-                            S.refreshToken = config.google.refreshToken;
-                            restored++;
-                        }
-                        if (config.google.folderId) {
-                            document.getElementById('g-folder-id').value = config.google.folderId;
-                            S.folderId = config.google.folderId;
-                            restored++;
-                        }
-                        S.driveConfigured = config.google.driveConfigured || false;
+                    // Enviar todas as chaves mapeadas de volta para o ESP32
+                    await saveToEsp(config);
+
+                    // Restaurar tema se existir
+                    if (uiConfig && uiConfig.theme) {
+                        applyTheme(uiConfig.theme);
                     }
 
-                    // Restaurar configurações Bluetooth
-                    if (config.bluetooth) {
-                        if (document.getElementById('bt-enable-switch')) {
-                            document.getElementById('bt-enable-switch').checked = config.bluetooth.enabled || false;
-                            restored++;
-                        }
-                        if (document.getElementById('bt-name-input')) {
-                            document.getElementById('bt-name-input').value = config.bluetooth.name || 'Canalqb - ESP32';
-                            restored++;
-                        }
-                        if (document.getElementById('bt-pin-input')) {
-                            document.getElementById('bt-pin-input').value = config.bluetooth.pin || '1234';
-                            restored++;
-                        }
-                    }
+                    // Recarregar configurações para atualizar a interface
+                    await loadSavedConfig();
 
-                    // Restaurar configurações WiFi (SSID apenas, sem senha por segurança)
-                    if (config.wifi && config.wifi.ssid && document.getElementById('ssid-manual')) {
-                        document.getElementById('ssid-manual').value = config.wifi.ssid;
-                        restored++;
-                    }
-
-                    // Restaurar configurações avançadas de SSID
-                    if (config.ssidConfig) {
-                        if (config.ssidConfig.hostname && document.getElementById('dev-hostname')) {
-                            document.getElementById('dev-hostname').value = config.ssidConfig.hostname;
-                            restored++;
-                        }
-                        if (config.ssidConfig.channel && document.getElementById('dev-channel')) {
-                            document.getElementById('dev-channel').value = config.ssidConfig.channel;
-                            restored++;
-                        }
-                        if (config.ssidConfig.staticIp && document.getElementById('dev-ip')) {
-                            document.getElementById('dev-ip').value = config.ssidConfig.staticIp;
-                            restored++;
-                        }
-                        if (config.ssidConfig.gateway && document.getElementById('dev-gw')) {
-                            document.getElementById('dev-gw').value = config.ssidConfig.gateway;
-                            restored++;
-                        }
-                        if (config.ssidConfig.dns1 && document.getElementById('dev-dns1')) {
-                            document.getElementById('dev-dns1').value = config.ssidConfig.dns1;
-                            restored++;
-                        }
-                        if (config.ssidConfig.dns2 && document.getElementById('dev-dns2')) {
-                            document.getElementById('dev-dns2').value = config.ssidConfig.dns2;
-                            restored++;
-                        }
-                    }
-
-                    // Restaurar tema
-                    if (config.ui && config.ui.theme) {
-                        applyTheme(config.ui.theme);
-                        restored++;
-                    }
-
-                    // Atualizar UI
-                    evalGoogleStep1();
-                    updateProgress();
-                    updateSystemStatus();
-
-                    // Salvar configurações no ESP32
-                    const espPayload = {};
-                    if (config.google) {
-                        espPayload.googleClientId = config.google.clientId;
-                        espPayload.googleClientSecret = config.google.clientSecret;
-                        espPayload.serviceAccountEmail = config.google.serviceAccountEmail;
-                        espPayload.googleRefreshToken = config.google.refreshToken;
-                        espPayload.id_pasta = config.google.folderId;
-                    }
-                    if (config.bluetooth) {
-                        espPayload.bt_enabled = config.bluetooth.enabled;
-                        espPayload.bt_name = config.bluetooth.name;
-                        espPayload.bt_pin = config.bluetooth.pin;
-                    }
-                    if (config.wifi && config.wifi.ssid) {
-                        espPayload.ssid = config.wifi.ssid;
-                    }
-
-                    if (Object.keys(espPayload).length > 0) {
-                        await saveToEsp(espPayload);
-                    }
-
-                    showToast(`Configurações restauradas! (${restored} itens)`, 'success');
-                    console.log(`Restaurados ${restored} itens de configuração`);
+                    showToast(`Configurações restauradas com sucesso!`, 'success');
+                    console.log(`Configuração restaurada enviada ao ESP32.`);
 
                 } catch (error) {
                     console.error('Erro ao restaurar configurações:', error);
