@@ -365,3 +365,45 @@ pio device monitor
 - ❌ NUNCA ignorar erros no monitor serial após gravação.
 
 **# LEITURA 100% OBRIGATÓRIA DE TODA ATIVIDADE SOLICITADA PELO USUÁRIO!**
+
+---
+
+## 🔄 22. Protocolo Obrigatório de Sincronismo — GitHub + CDN jsDelivr
+
+**🚨 REGRA INEGOCIÁVEL:** Sempre que o LLM modificar qualquer arquivo web do projeto `modulos_ESP` (HTML, CSS, JS), deve **obrigatoriamente e automaticamente** executar a sequência abaixo — sem esperar solicitação do usuário:
+
+```powershell
+# 1. Adicionar todos os arquivos alterados
+git add -A
+
+# 2. Commit com mensagem descritiva
+git commit -m "descrição clara da mudança"
+
+# 3. Push para o branch principal
+git push origin main
+```
+
+Após o push, executar o **purge forçado do CDN jsDelivr** para cada arquivo alterado:
+
+```
+# Padrão de URL de purge:
+https://purge.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/{arquivo}
+
+# Exemplos obrigatórios:
+https://purge.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/style.css
+https://purge.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/index.html
+```
+
+**📋 Regras da Sequência:**
+1. **`git add -A`** — sempre incluir todos os arquivos modificados.
+2. **`git push`** — nunca entregar mudança sem push confirmado.
+3. **Purge jsDelivr** — obrigatório após CADA push; sem purge, o CDN serve cache desatualizado.
+4. **Separador PowerShell** — usar `;` em vez de `&&` (Windows PowerShell não suporta `&&`).
+5. **Confirmação ao Usuário** — informar o hash do commit e confirmar que o purge foi executado.
+
+**🚨 PROIBIÇÃO ABSOLUTA:**
+- ❌ NUNCA fazer push sem purge do CDN em seguida.
+- ❌ NUNCA usar `&&` como separador de comandos no PowerShell — usar `;`.
+- ❌ NUNCA entregar código "pronto" sem confirmar o hash do commit ao usuário.
+
+**# LEITURA 100% OBRIGATÓRIA DE TODA ATIVIDADE SOLICITADA PELO USUÁRIO!**

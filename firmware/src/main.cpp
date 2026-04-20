@@ -343,24 +343,25 @@ const char setup_html[] PROGMEM = R"HTML(
                 `;
                 
                 try {
-                    // Usar JSDelivr para evitar problemas de MIME type (raw do github é text/plain)
                     const baseUrl = "https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente";
                     
-                    const link = document.createElement('link');
-                    link.rel = 'stylesheet';
-                    link.href = `${baseUrl}/style.css`;
-                    document.head.appendChild(link);
-
                     const response = await fetch(`${baseUrl}/index.html`);
                     if (response.ok) {
                         const html = await response.text();
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(html, 'text/html');
                         
-                        // Importar estilos e links do HEAD remoto
+                        // Importar tags do HEAD remoto (CSS, Fontes, etc.)
                         doc.querySelectorAll('link, style').forEach(el => {
                             const newEl = document.createElement(el.tagName);
-                            Array.from(el.attributes).forEach(attr => newEl.setAttribute(attr.name, attr.value));
+                            Array.from(el.attributes).forEach(attr => {
+                                // Se for o link do style.css, garantir que a URL seja absoluta para o GitHub
+                                if (attr.name === 'href' && attr.value === 'style.css') {
+                                    newEl.setAttribute(attr.name, `${baseUrl}/style.css`);
+                                } else {
+                                    newEl.setAttribute(attr.name, attr.value);
+                                }
+                            });
                             newEl.innerHTML = el.innerHTML;
                             document.head.appendChild(newEl);
                         });
@@ -530,6 +531,7 @@ void handleRoot(AsyncWebServerRequest *request);
 void handleNotFound(AsyncWebServerRequest *request);
 void handleCaptivePortal(AsyncWebServerRequest *request);
 void handleConfig(AsyncWebServerRequest *request);
+void handleBtConfig(AsyncWebServerRequest *request);
 void setupAPMode();
 void setupSTAMode();
 void setupWebServer();
@@ -690,13 +692,55 @@ void handleConfig(AsyncWebServerRequest *request) {
   JsonDocument doc;
   doc["wifi"]["ssid"] = config.wifi_ssid;
   doc["network"]["hostname"] = config.hostname;
+  
+  // Enviar em ambos os formatos para compatibilidade total
   doc["bluetooth"]["enabled"] = config.bluetooth_enabled;
   doc["bluetooth"]["name"] = config.bt_name;
   doc["bluetooth"]["pin"] = config.bt_pin;
   
+  // Formato plano (esperado pelo index.html atual)
+  doc["bt_enabled"] = config.bluetooth_enabled;
+  doc["bt_name"] = config.bt_name;
+  doc["bt_pin"] = config.bt_pin;
+  
   String response;
   serializeJson(doc, response);
   request->send(200, "application/json", response);
+}
+
+void handleBtConfig(AsyncWebServerRequest *request) {
+  bool oldEnabled = config.bluetooth_enabled;
+  String oldName = config.bt_name;
+  String oldPin = config.bt_pin;
+  
+  if (request->hasParam("enabled")) config.bluetooth_enabled = request->getParam("enabled")->value() == "true";
+  if (request->hasParam("name")) config.bt_name = request->getParam("name")->value();
+  if (request->hasParam("pin")) config.bt_pin = request->getParam("pin")->value();
+  
+  saveConfig();
+  
+  // Aplicar mudanças em tempo real sem reiniciar
+  if (config.bluetooth_enabled) {
+    if (!oldEnabled || oldName != config.bt_name || oldPin != config.bt_pin) {
+      Serial.println("Ativando/Atualizando Bluetooth dinamicamente...");
+      SerialBT.end(); 
+      delay(100);
+      SerialBT.setPin(config.bt_pin.c_str());
+      if (SerialBT.begin(config.bt_name.c_str())) {
+        Serial.println("Bluetooth ativo: " + config.bt_name);
+      } else {
+        Serial.println("Erro ao iniciar Bluetooth!");
+      }
+    }
+  } else {
+    if (oldEnabled) {
+      Serial.println("Desativando Bluetooth dinamicamente...");
+      SerialBT.end();
+      btStop(); // Libera hardware
+    }
+  }
+  
+  request->send(200, "application/json", "{\"status\":\"success\",\"message\":\"Bluetooth atualizado (Mudanças aplicadas imediatamente)\"}");
 }
 
 void handleRoot(AsyncWebServerRequest *request) {
@@ -740,6 +784,7 @@ void setup() {
   
   // Inicializar Bluetooth se habilitado
   if (config.bluetooth_enabled) {
+    SerialBT.setPin(config.bt_pin.c_str());
     SerialBT.begin(config.bt_name.c_str());
     Serial.println("Bluetooth iniciado: " + config.bt_name);
   }
@@ -813,10 +858,48 @@ void setupSTAMode() {
 void setupWebServer() {
   // Handlers principais
   server.on("/", HTTP_GET, handleRoot);
+  server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(200, "image/svg+xml", "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='#16191f'/><text x='16' y='22' text-anchor='middle' font-size='18' font-family='sans-serif' fill='#28a745'>Q</text></svg>");
+  });
   server.on("/api/scan", HTTP_GET, handleScan);
   server.on("/api/connect", HTTP_GET, handleConnect);
   server.on("/api/restart", HTTP_GET, handleRestart);
   server.on("/api/config", HTTP_GET, handleConfig);
+  server.on("/api/bt_config", HTTP_GET, handleBtConfig);
+  server.on("/api/settings", HTTP_POST, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
+    // Handler para POST JSON
+    JsonDocument doc;
+    DeserializationError error = deserializeJson(doc, (const char*)data, len);
+    
+    if (!error) {
+      if (doc.containsKey("bt_enabled")) {
+        config.bluetooth_enabled = doc["bt_enabled"];
+      }
+      if (doc.containsKey("bt_name")) {
+        config.bt_name = doc["bt_name"].as<String>();
+      }
+      if (doc.containsKey("bt_pin")) {
+        config.bt_pin = doc["bt_pin"].as<String>();
+      }
+      
+      saveConfig();
+      
+      // Aplicar mudanças em tempo real
+      if (config.bluetooth_enabled) {
+        SerialBT.end();
+        delay(50);
+        SerialBT.setPin(config.bt_pin.c_str());
+        SerialBT.begin(config.bt_name.c_str());
+      } else {
+        SerialBT.end();
+        btStop();
+      }
+      
+      request->send(200, "application/json", "{\"status\":\"success\",\"message\":\"Configurações salvas e aplicadas imediatamente\"}");
+    } else {
+      request->send(400, "application/json", "{\"status\":\"error\",\"message\":\"JSON inválido\"}");
+    }
+  });
   
   // Captive Portal handlers
   server.on("/generate_204", HTTP_GET, [](AsyncWebServerRequest *request) {
