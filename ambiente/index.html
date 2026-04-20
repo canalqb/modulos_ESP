@@ -212,6 +212,12 @@
                                         sinal é estável.</span>
                                 </div>
 
+                                <div class="cqb-alert cqb-alert-success" id="wifi-status-alert" style="display:none; margin-top: 15px;">
+                                    <i class="fas fa-wifi"></i>
+                                    <span><strong>Conectado em:</strong> <span id="current-ssid-label">...</span><br>
+                                    <strong>Endereço IP:</strong> <span id="current-ip-label">...</span></span>
+                                </div>
+
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <label class="cqb-label">Redes Detectadas</label>
@@ -740,9 +746,7 @@
         </main>
     </div><!-- /wrapper -->
 
-    <!-- Bootstrap 5.3.3 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/bootstrap.bundle.min.js"></script>
-
+    <!-- Bootstrap JS Bundle removido - 100% Vanilla JS -->
     <script>
         (function () {
             'use strict';
@@ -1177,6 +1181,25 @@
                     if (S.clientId && S.clientSecret && S.svcEmail && S.driveConfigured) {
                         unlockModules();
                     }
+
+                    // Tentar obter status da conexão (IP e SSID)
+                    try {
+                        const statusRes = await fetch(`http://${S.espIp}/api/status`);
+                        if (statusRes.ok) {
+                            const statusData = await statusRes.json();
+                            if (statusData.connected || (data.wifi && data.wifi.ssid)) {
+                                const ssidLabel = statusData.ssid || (data.wifi && data.wifi.ssid) || 'Desconhecido';
+                                const ipLabel = statusData.ip || S.espIp || 'Desconhecido';
+                                
+                                document.getElementById('current-ssid-label').textContent = ssidLabel;
+                                document.getElementById('current-ip-label').textContent = ipLabel;
+                                document.getElementById('wifi-status-alert').style.display = 'flex';
+                            }
+                        }
+                    } catch (e) {
+                        console.log('Erro ao obter status da conexão na inicialização:', e);
+                    }
+
                 } catch (error) { 
                     console.error('Erro ao carregar configurações do ESP32:', error);
                     showToast('Erro ao carregar configurações salvas: ' + error.message, 'warn');
@@ -1450,6 +1473,9 @@
                                     
                                     if (status.connected) {
                                         showToast('Conectado com sucesso!', 'success');
+                                        document.getElementById('current-ssid-label').textContent = status.ssid || ssid;
+                                        document.getElementById('current-ip-label').textContent = status.ip || 'Desconhecido';
+                                        document.getElementById('wifi-status-alert').style.display = 'flex';
                                     } else {
                                         showToast('Falha na conexão. Verifique a senha.', 'error');
                                     }
