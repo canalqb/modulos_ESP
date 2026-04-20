@@ -121,6 +121,11 @@ body {
 
 /* -- LAYOUT -- */
 .cqb-wrapper {
+    min-height: 100vh;
+    position: relative;
+}
+
+.cqb-content {
     display: flex;
     min-height: 100vh;
 }
@@ -131,6 +136,7 @@ body {
     flex-direction: column;
     margin-left: var(--sidebar-w);
     transition: margin-left 0.3s var(--anim);
+    min-width: 0; /* Prevents flex item overflow */
 }
 
 @media (max-width: 768px) {
@@ -144,6 +150,8 @@ body {
     margin: 0 auto;
     padding: 24px;
     flex: 1;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* -- SIDEBAR -- */
