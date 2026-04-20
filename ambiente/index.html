@@ -1218,21 +1218,11 @@
 
                 } catch (error) {
                     console.error('Erro ao escanear WiFi:', error);
-                    showToast(`Erro: ${error.message}. Usando dados de teste.`, 'warn');
+                    showToast(`Erro ao escanear redes: ${error.message}`, 'error');
                     
-                    // Dados de teste fallback (simulando redes reais)
-                    const testNetworks = [
-                        { ssid: 'CanalQb_Home', rssi: -42, auth: false },
-                        { ssid: 'OpusNet_5G', rssi: -61, auth: true },
-                        { ssid: 'Vizinho_2.4', rssi: -79, auth: true },
-                        { ssid: 'Guest_Network', rssi: -55, auth: false },
-                        { ssid: 'IoT_Devices', rssi: -68, auth: true },
-                        { ssid: 'NET_2.4GHz', rssi: -52, auth: true },
-                        { ssid: 'SmartHome', rssi: -73, auth: true }
-                    ];
-                    
-                    renderWifi(testNetworks);
-                    showToast('Modo demonstração: redes simuladas', 'info');
+                    // Não mostrar redes de teste - apenas mostrar erro
+                    renderWifi([]);
+                    showToast('Não foi possível detectar redes WiFi. Verifique o ESP32.', 'error');
                 }
             }
 
