@@ -8,22 +8,32 @@
     <meta name="description" content="Portal de controle avançado para o sistema Opus Hub do @CanalQb.">
     <meta name="author" content="@CanalQb">
     <meta name="copyright" content="@CanalQb 2026">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2316191f'/><text x='16' y='22' text-anchor='middle' font-size='18' font-family='sans-serif' fill='%2328a745'>Q</text></svg>">
 
-    <!-- Bootstrap 5.3.3 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <!-- Font Awesome 6.5 Solid -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        crossorigin="anonymous">
+    <!-- Font Awesome 6.5 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
 
-    <!-- CSS Principal (Carregado via CDN no ESP32 ou Localmente) -->
-    <link rel="stylesheet" href="style.css">
+    <!-- CSS Principal via CDN @CanalQb -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/style.css">
     <!-- Patch: vanilla collapse para .cqb-guide-collapse (independente do Bootstrap JS) -->
     <style>
-        .cqb-guide-collapse          { display: none; }
-        .cqb-guide-collapse.open     { display: block; }
+        .cqb-guide-collapse {
+            display: none;
+        }
+
+        .cqb-guide-collapse.open {
+            display: block;
+        }
     </style>
 </head>
 
@@ -44,7 +54,8 @@
             </div>
             <div class="cqb-modal-footer">
                 <button class="cqb-btn cqb-btn-ghost cqb-btn-block" onclick="closeCqbModal()">Cancelar</button>
-                <button class="cqb-btn cqb-btn-primary cqb-btn-block" id="modal-confirm-btn" style="background:var(--cqb-red);">Confirmar</button>
+                <button class="cqb-btn cqb-btn-primary cqb-btn-block" id="modal-confirm-btn"
+                    style="background:var(--cqb-red);">Confirmar</button>
             </div>
         </div>
     </div>
@@ -75,13 +86,13 @@
                 <p class="cqb-nav-section">Infraestrutura</p>
 
                 <!-- Redes & Internet (collapsible sub) -->
-                <a class="cqb-nav-link active" id="menu-rede" data-bs-toggle="collapse" href="#sub-rede" role="button"
-                    aria-expanded="true">
+                <a class="cqb-nav-link active" id="menu-rede" role="button" aria-expanded="true"
+                    onclick="toggleSubMenu('sub-rede', this)">
                     <i class="fas fa-network-wired fa-icon"></i>
                     <span class="nav-lbl">Redes &amp; Internet</span>
                     <i class="fas fa-chevron-down nav-arr"></i>
                 </a>
-                <div class="cqb-submenu collapse show" id="sub-rede">
+                <div class="cqb-submenu cqb-sub-open" id="sub-rede">
                     <a class="cqb-nav-sub active" id="submenu-rede-wifi" onclick="showTab('rede','wifi')">
                         <i class="fas fa-wifi"></i> Configurações de Rede
                     </a>
@@ -128,7 +139,8 @@
                 </a>
 
                 <!-- Reset de Fábrica -->
-                <a class="cqb-nav-link" onclick="factoryReset()" role="button" style="color:var(--cqb-red);opacity:0.8;">
+                <a class="cqb-nav-link" onclick="factoryReset()" role="button"
+                    style="color:var(--cqb-red);opacity:0.8;">
                     <i class="fas fa-trash-can fa-icon"></i>
                     <span class="nav-lbl">Reset de Fábrica</span>
                 </a>
@@ -404,15 +416,16 @@
                 </div>
 
                 <!-- GUIA COLAPSÍVEL (TUTORIAL NO FINAL) — vanilla JS, sem dependência Bootstrap -->
-                <button class="cqb-guide-toggle" id="guide-toggle-btn" type="button"
-                    onclick="toggleGuide()" aria-expanded="false" style="margin-top:20px;">
+                <button class="cqb-guide-toggle" id="guide-toggle-btn" type="button" onclick="toggleGuide()"
+                    aria-expanded="false" style="margin-top:20px;">
                     <span><i class="fas fa-circle-question" style="margin-right:8px;color:var(--cqb-blue);"></i>
                         Como configurar seu OAuth no Google Cloud</span>
                     <i class="fas fa-chevron-down" id="guide-arr" style="transition:transform 0.25s;"></i>
                 </button>
                 <div class="cqb-guide-collapse" id="guide-body">
                     <div class="cqb-guide-body">
-                        <p style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--text-primary);margin-bottom:14px;">
+                        <p
+                            style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--text-primary);margin-bottom:14px;">
                             <i class="fas fa-cloud" style="color:var(--cqb-blue);margin-right:6px;"></i>
                             Configurações de Acesso à Nuvem — Google Cloud Console
                         </p>
@@ -420,22 +433,29 @@
                         <!-- Passo 1 -->
                         <div class="cqb-guide-step">
                             <span class="cqb-guide-num">1</span>
-                            <div>Acesse <a href="https://console.cloud.google.com" target="_blank" rel="noopener noreferrer" style="color:var(--cqb-blue);">console.cloud.google.com</a> e <strong>crie um projeto novo</strong> ou selecione um existente no seletor do topo da página.</div>
+                            <div>Acesse <a href="https://console.cloud.google.com" target="_blank"
+                                    rel="noopener noreferrer"
+                                    style="color:var(--cqb-blue);">console.cloud.google.com</a> e <strong>crie um
+                                    projeto novo</strong> ou selecione um existente no seletor do topo da página.</div>
                         </div>
 
                         <!-- Passo 2 -->
                         <div class="cqb-guide-step">
                             <span class="cqb-guide-num">2</span>
-                            <div>No menu lateral, vá em <strong>APIs e Serviços → Biblioteca</strong>. Busque por <strong>Google Drive API</strong>, clique no resultado e depois em <strong>Ativar</strong>.</div>
+                            <div>No menu lateral, vá em <strong>APIs e Serviços → Biblioteca</strong>. Busque por
+                                <strong>Google Drive API</strong>, clique no resultado e depois em
+                                <strong>Ativar</strong>.</div>
                         </div>
 
                         <!-- Passo 3 -->
                         <div class="cqb-guide-step">
                             <span class="cqb-guide-num">3</span>
                             <div>
-                                Ainda em <strong>APIs e Serviços</strong>, clique em <strong>Tela de permissão OAuth</strong>.
+                                Ainda em <strong>APIs e Serviços</strong>, clique em <strong>Tela de permissão
+                                    OAuth</strong>.
                                 Em <em>Tipo de usuário</em>, escolha <strong>Externo</strong> e clique em Criar.
-                                Preencha o nome do app e o e-mail de suporte. Em <strong>Tipo de aplicativo</strong>, escolha <strong>App para computador</strong>. Salve.
+                                Preencha o nome do app e o e-mail de suporte. Em <strong>Tipo de aplicativo</strong>,
+                                escolha <strong>App para computador</strong>. Salve.
                             </div>
                         </div>
 
@@ -443,8 +463,10 @@
                         <div class="cqb-guide-step">
                             <span class="cqb-guide-num">4</span>
                             <div>
-                                Na mesma tela de permissão OAuth, clique na aba <strong>Público-alvo</strong> (ou "Test users").
-                                Clique em <strong>Adicionar Usuários</strong> e insira o seu e-mail Google que terá acesso ao Drive.
+                                Na mesma tela de permissão OAuth, clique na aba <strong>Público-alvo</strong> (ou "Test
+                                users").
+                                Clique em <strong>Adicionar Usuários</strong> e insira o seu e-mail Google que terá
+                                acesso ao Drive.
                                 <em>Este mesmo e-mail você usará no campo "E-mail de Conta de Serviço" abaixo.</em>
                             </div>
                         </div>
@@ -455,7 +477,8 @@
                             <div>
                                 Vá em <strong>Credenciais → Criar Credencial → Conta de Serviço</strong>.
                                 Dê um nome, clique em <strong>Criar e Continuar</strong> e finalize.
-                                <strong>Anote o e-mail gerado</strong> — ele termina em <code>@...iam.gserviceaccount.com</code>.
+                                <strong>Anote o e-mail gerado</strong> — ele termina em
+                                <code>@...iam.gserviceaccount.com</code>.
                                 Este é o e-mail que você adicionou como usuário de teste no passo anterior.
                             </div>
                         </div>
@@ -464,9 +487,12 @@
                         <div class="cqb-guide-step">
                             <span class="cqb-guide-num">6</span>
                             <div>
-                                Ainda em <strong>Credenciais</strong>, clique em <strong>Criar Credencial → ID do Cliente OAuth</strong>.
-                                Em <em>Tipo de aplicativo</em>, selecione <strong>App para computador</strong>. Clique em Criar.
-                                Na tela seguinte, copie o <strong>ID do cliente</strong> e a <strong>Chave secreta do cliente</strong> — guarde bem esses dois valores.
+                                Ainda em <strong>Credenciais</strong>, clique em <strong>Criar Credencial → ID do
+                                    Cliente OAuth</strong>.
+                                Em <em>Tipo de aplicativo</em>, selecione <strong>App para computador</strong>. Clique
+                                em Criar.
+                                Na tela seguinte, copie o <strong>ID do cliente</strong> e a <strong>Chave secreta do
+                                    cliente</strong> — guarde bem esses dois valores.
                             </div>
                         </div>
 
@@ -474,15 +500,23 @@
                         <div class="cqb-guide-step">
                             <span class="cqb-guide-num">7</span>
                             <div>
-                                Edite a credencial OAuth recém-criada e, em <strong>URIs de redirecionamento autorizados</strong>, adicione <strong>os dois</strong> URIs abaixo:
+                                Edite a credencial OAuth recém-criada e, em <strong>URIs de redirecionamento
+                                    autorizados</strong>, adicione <strong>os dois</strong> URIs abaixo:
                                 <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px;">
-                                    <code style="display:block;padding:6px 10px;background:rgba(33,150,243,0.08);border-radius:6px;font-size:0.82rem;">http://localhost:3000/auth/callback</code>
+                                    <code
+                                        style="display:block;padding:6px 10px;background:rgba(33,150,243,0.08);border-radius:6px;font-size:0.82rem;">http://localhost:3000/auth/callback</code>
                                     <div id="guide-esp-uri" style="display:flex;align-items:center;gap:8px;">
-                                        <code id="guide-esp-uri-code" style="display:block;padding:6px 10px;background:rgba(40,167,69,0.08);border-radius:6px;font-size:0.82rem;flex:1;">http://&lt;ip-do-esp32&gt;/auth/callback</code>
-                                        <button type="button" onclick="copyEspUri()" class="cqb-btn cqb-btn-ghost cqb-btn-sm" style="flex-shrink:0;" title="Copiar URI do ESP32"><i class="fas fa-copy"></i></button>
+                                        <code id="guide-esp-uri-code"
+                                            style="display:block;padding:6px 10px;background:rgba(40,167,69,0.08);border-radius:6px;font-size:0.82rem;flex:1;">http://&lt;ip-do-esp32&gt;/auth/callback</code>
+                                        <button type="button" onclick="copyEspUri()"
+                                            class="cqb-btn cqb-btn-ghost cqb-btn-sm" style="flex-shrink:0;"
+                                            title="Copiar URI do ESP32"><i class="fas fa-copy"></i></button>
                                     </div>
                                 </div>
-                                <small style="color:var(--text-sub);display:block;margin-top:6px;"><i class="fas fa-circle-info" style="color:var(--cqb-blue);"></i> O segundo URI (IP do ESP32) permite a captura automática do código OAuth — sem precisar copiar da URL.</small>
+                                <small style="color:var(--text-sub);display:block;margin-top:6px;"><i
+                                        class="fas fa-circle-info" style="color:var(--cqb-blue);"></i> O segundo URI (IP
+                                    do ESP32) permite a captura automática do código OAuth — sem precisar copiar da
+                                    URL.</small>
                             </div>
                         </div>
 
@@ -490,12 +524,16 @@
                         <div class="cqb-guide-step">
                             <span class="cqb-guide-num">8</span>
                             <div>
-                                Preencha o <strong>Client ID</strong>, <strong>Client Secret</strong> e o <strong>e-mail</strong> nos campos da seção acima.
-                                Clique em <strong>Iniciar Autorização OAuth</strong>. Uma nova aba abrirá para você conceder permissão ao Drive.
+                                Preencha o <strong>Client ID</strong>, <strong>Client Secret</strong> e o
+                                <strong>e-mail</strong> nos campos da seção acima.
+                                Clique em <strong>Iniciar Autorização OAuth</strong>. Uma nova aba abrirá para você
+                                conceder permissão ao Drive.
                                 Após autorizar, o sistema tentará capturar o código automaticamente.
                                 Se não conseguir, a URL exibirá algo como:
-                                <code style="display:block;margin-top:6px;padding:6px 10px;background:rgba(0,0,0,0.04);border-radius:6px;font-size:0.79rem;word-break:break-all;">http://localhost:3000/auth/callback?...&amp;code=4/0Aci98...&amp;scope=...</code>
-                                Copie apenas o valor entre <code>&amp;code=</code> e o próximo <code>&amp;</code> e cole no campo abaixo.
+                                <code
+                                    style="display:block;margin-top:6px;padding:6px 10px;background:rgba(0,0,0,0.04);border-radius:6px;font-size:0.79rem;word-break:break-all;">http://localhost:3000/auth/callback?...&amp;code=4/0Aci98...&amp;scope=...</code>
+                                Copie apenas o valor entre <code>&amp;code=</code> e o próximo <code>&amp;</code> e cole
+                                no campo abaixo.
                             </div>
                         </div>
                     </div>
@@ -511,13 +549,16 @@
                     <div class="cqb-card-body">
                         <div class="cqb-alert cqb-alert-info">
                             <i class="fas fa-info-circle"></i>
-                            <span>O Bluetooth permite que o dispositivo seja localizado por outros aparelhos. O PIN padrão é <strong>1234</strong>.</span>
+                            <span>O Bluetooth permite que o dispositivo seja localizado por outros aparelhos. O PIN
+                                padrão é <strong>1234</strong>.</span>
                         </div>
                         <div class="row g-4">
                             <div class="col-12">
                                 <div class="form-check form-switch cqb-switch-wrap">
-                                    <input class="form-check-input cqb-switch" type="checkbox" id="bt-enable-switch" onchange="updateBtStatus()">
-                                    <label class="form-check-label" for="bt-enable-switch" style="font-weight:600;margin-left:10px;">Ativar Bluetooth</label>
+                                    <input class="form-check-input cqb-switch" type="checkbox" id="bt-enable-switch"
+                                        onchange="updateBtStatus()">
+                                    <label class="form-check-label" for="bt-enable-switch"
+                                        style="font-weight:600;margin-left:10px;">Ativar Bluetooth</label>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
@@ -622,7 +663,6 @@
 
     <!-- Bootstrap 5.3.3 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 
     <script>
@@ -648,8 +688,8 @@
             /* guide — vanilla collapse, sem Bootstrap */
             window.toggleGuide = function () {
                 const body = document.getElementById('guide-body');
-                const arr  = document.getElementById('guide-arr');
-                const btn  = document.getElementById('guide-toggle-btn');
+                const arr = document.getElementById('guide-arr');
+                const btn = document.getElementById('guide-toggle-btn');
                 const open = body.classList.toggle('open');
                 arr.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
                 btn.setAttribute('aria-expanded', String(open));
@@ -658,7 +698,7 @@
             /* preenche o URI do ESP32 no guia assim que S.espIp estiver disponível */
             (function updateGuideUri() {
                 const uri = `http://${S.espIp}/auth/callback`;
-                const el  = document.getElementById('guide-esp-uri-code');
+                const el = document.getElementById('guide-esp-uri-code');
                 if (el) el.textContent = uri;
             })();
 
@@ -700,6 +740,18 @@
                 const open = s.classList.toggle('open');
                 o.classList.toggle('show', open);
                 b.setAttribute('aria-expanded', String(open));
+            };
+
+            /* sub-menu vanilla toggle (independente do Bootstrap JS) */
+            window.toggleSubMenu = function (id, trigger) {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const open = el.classList.toggle('cqb-sub-open');
+                if (trigger) {
+                    trigger.setAttribute('aria-expanded', String(open));
+                    const arr = trigger.querySelector('.nav-arr');
+                    if (arr) arr.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
+                }
             };
             window.closeSidebar = function () {
                 document.getElementById('cqb-sidebar').classList.remove('open');
@@ -768,33 +820,33 @@
 
             /* ── OAUTH FLOW — captura automática via popup same-origin ─── */
             window.startOAuth = function () {
-                S.clientId     = document.getElementById('g-client-id').value.trim();
+                S.clientId = document.getElementById('g-client-id').value.trim();
                 S.clientSecret = document.getElementById('g-client-secret').value.trim();
-                S.svcEmail     = document.getElementById('g-svc-email').value.trim();
+                S.svcEmail = document.getElementById('g-svc-email').value.trim();
                 if (!S.clientId || !S.clientSecret || !S.svcEmail) {
                     showToast('Preencha Client ID, Client Secret e E-mail!', 'error'); return;
                 }
 
-                const scope        = 'https://www.googleapis.com/auth/drive';
+                const scope = 'https://www.googleapis.com/auth/drive';
                 /* Tenta captura automática usando o próprio ESP32 como redirect_uri (same-origin).
                    Para funcionar, adicione http://{ip}/auth/callback nas URIs autorizadas do Google Cloud. */
                 const autoRedirect = `http://${S.espIp}/auth/callback`;
                 const manualRedirect = 'http://localhost:3000/auth/callback';
 
                 const buildUrl = (redirect) => 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({
-                    client_id:     S.clientId,
-                    redirect_uri:  redirect,
+                    client_id: S.clientId,
+                    redirect_uri: redirect,
                     response_type: 'code',
                     scope,
-                    access_type:   'offline',
-                    prompt:        'consent'
+                    access_type: 'offline',
+                    prompt: 'consent'
                 }).toString();
 
                 /* --- tenta modo automático (ESP32 same-origin) --- */
                 let popup;
                 try {
                     popup = window.open(buildUrl(autoRedirect), 'oauth_auto', 'width=520,height=640,noopener=0');
-                } catch(_) { popup = null; }
+                } catch (_) { popup = null; }
 
                 if (popup) {
                     showToast('Nova aba aberta. Aguardando autorização...', 'info');
@@ -839,7 +891,7 @@
                 const redirect = redirectOverride || S._oauthRedirect || 'http://localhost:3000/auth/callback';
 
                 const btn = document.querySelector('[onclick="exchangeToken()"]') ||
-                            document.querySelector('button[onclick^="exchangeToken"]');
+                    document.querySelector('button[onclick^="exchangeToken"]');
                 if (btn) { btn.innerHTML = '<i class="fas fa-rotate cqb-spin"></i> Trocando...'; btn.disabled = true; }
 
                 try {
@@ -1016,21 +1068,21 @@
             }
 
             /* ── BLUETOOTH ─────────────────────────────────────── */
-            window.updateBtStatus = function() {
+            window.updateBtStatus = function () {
                 const en = document.getElementById('bt-enable-switch').checked;
                 showToast(en ? 'O Bluetooth será ativado imediatamente ao salvar.' : 'O Bluetooth será desativado imediatamente ao salvar.', 'info');
             };
-            window.saveBtConfig = async function() {
+            window.saveBtConfig = async function () {
                 const enabled = document.getElementById('bt-enable-switch').checked;
                 const name = document.getElementById('bt-name-input').value || 'Canalqb - ESP32';
                 const pin = document.getElementById('bt-pin-input').value || '1234';
-                
+
                 showToast('Aplicando configurações Bluetooth...', 'info');
-                
+
                 try {
                     const res = await fetch(`http://${S.espIp}/api/bt_config?enabled=${enabled}&name=${encodeURIComponent(name)}&pin=${encodeURIComponent(pin)}`);
                     const data = await res.json();
-                    
+
                     if (data.status === 'success') {
                         showToast(enabled ? 'Bluetooth ativado com sucesso!' : 'Bluetooth desativado com sucesso!', 'success');
                     } else {
@@ -1132,27 +1184,27 @@
                 };
                 document.getElementById('cqb-modal-overlay').classList.add('show');
             }
-            window.closeCqbModal = function() {
+            window.closeCqbModal = function () {
                 document.getElementById('cqb-modal-overlay').classList.remove('show');
             };
 
             /* ── RESET DE FÁBRICA ─────────────────────────────── */
-            window.factoryReset = function() {
+            window.factoryReset = function () {
                 openCqbModal(
-                    "⚠️ RESET DE FÁBRICA", 
-                    "Isso apagará <strong>TODAS</strong> as configurações (Wi-Fi, Google, Módulos).<br><br>Esta ação é irreversível. O dispositivo voltará ao estado original de fábrica.", 
+                    "⚠️ RESET DE FÁBRICA",
+                    "Isso apagará <strong>TODAS</strong> as configurações (Wi-Fi, Google, Módulos).<br><br>Esta ação é irreversível. O dispositivo voltará ao estado original de fábrica.",
                     async () => {
                         showToast('Iniciando Reset de Fábrica...', 'warn');
                         try {
                             const res = await fetch(`http://${S.espIp}/api/factory_reset`, { method: 'POST' });
                             const data = await res.json();
-                            if(data.success) {
+                            if (data.success) {
                                 showToast('Reset concluído! O dispositivo irá reiniciar.', 'success');
                                 setTimeout(() => { window.location.reload(); }, 5000);
                             } else {
                                 showToast('Erro ao resetar!', 'error');
                             }
-                        } catch(e) {
+                        } catch (e) {
                             showToast('O dispositivo parou de responder. O reset deve estar em curso.', 'info');
                         }
                     }
