@@ -415,125 +415,128 @@
                     </div>
                 </div>
 
-                <!-- GUIA COLAPSÍVEL (TUTORIAL NO FINAL) — vanilla JS, sem dependência Bootstrap -->
-                <button class="cqb-guide-toggle" id="guide-toggle-btn" type="button" onclick="toggleGuide()"
-                    aria-expanded="false" style="margin-top:20px;">
-                    <span><i class="fas fa-circle-question" style="margin-right:8px;color:var(--cqb-blue);"></i>
-                        Como configurar seu OAuth no Google Cloud</span>
-                    <i class="fas fa-chevron-down" id="guide-arr" style="transition:transform 0.25s;"></i>
-                </button>
-                <div class="cqb-guide-collapse" id="guide-body">
-                    <div class="cqb-guide-body">
-                        <p
-                            style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--text-primary);margin-bottom:14px;">
-                            <i class="fas fa-cloud" style="color:var(--cqb-blue);margin-right:6px;"></i>
-                            Configurações de Acesso à Nuvem — Google Cloud Console
-                        </p>
-
-                        <!-- Passo 1 -->
-                        <div class="cqb-guide-step">
-                            <span class="cqb-guide-num">1</span>
-                            <div>Acesse <a href="https://console.cloud.google.com" target="_blank"
-                                    rel="noopener noreferrer"
-                                    style="color:var(--cqb-blue);">console.cloud.google.com</a> e <strong>crie um
-                                    projeto novo</strong> ou selecione um existente no seletor do topo da página.</div>
+                <!-- GUIA COLAPSÍVEL (TUTORIAL NO FINAL) - Card com head e body -->
+                <div class="cqb-guide-card" id="guide-card">
+                    <div class="cqb-guide-head" onclick="toggleGuide()">
+                        <div class="cqb-guide-title">
+                            <i class="fas fa-circle-question" style="color:var(--cqb-blue);"></i>
+                            Como configurar seu OAuth no Google Cloud
                         </div>
+                        <i class="fas fa-chevron-down cqb-guide-arrow" id="guide-arr"></i>
+                    </div>
+                    <div class="cqb-guide-collapse" id="guide-body">
+                        <div class="cqb-guide-body">
+                            <p
+                                style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--text-primary);margin-bottom:14px;">
+                                <i class="fas fa-cloud" style="color:var(--cqb-blue);margin-right:6px;"></i>
+                                Configurações de Acesso à Nuvem - Google Cloud Console
+                            </p>
 
-                        <!-- Passo 2 -->
-                        <div class="cqb-guide-step">
-                            <span class="cqb-guide-num">2</span>
-                            <div>No menu lateral, vá em <strong>APIs e Serviços → Biblioteca</strong>. Busque por
-                                <strong>Google Drive API</strong>, clique no resultado e depois em
-                                <strong>Ativar</strong>.</div>
-                        </div>
-
-                        <!-- Passo 3 -->
-                        <div class="cqb-guide-step">
-                            <span class="cqb-guide-num">3</span>
-                            <div>
-                                Ainda em <strong>APIs e Serviços</strong>, clique em <strong>Tela de permissão
-                                    OAuth</strong>.
-                                Em <em>Tipo de usuário</em>, escolha <strong>Externo</strong> e clique em Criar.
-                                Preencha o nome do app e o e-mail de suporte. Em <strong>Tipo de aplicativo</strong>,
-                                escolha <strong>App para computador</strong>. Salve.
+                            <!-- Passo 1 -->
+                            <div class="cqb-guide-step">
+                                <span class="cqb-guide-num">1</span>
+                                <div>Acesse <a href="https://console.cloud.google.com" target="_blank"
+                                        rel="noopener noreferrer"
+                                        style="color:var(--cqb-blue);">console.cloud.google.com</a> e <strong>crie um
+                                        projeto novo</strong> ou selecione um existente no seletor do topo da página.</div>
                             </div>
-                        </div>
 
-                        <!-- Passo 4 -->
-                        <div class="cqb-guide-step">
-                            <span class="cqb-guide-num">4</span>
-                            <div>
-                                Na mesma tela de permissão OAuth, clique na aba <strong>Público-alvo</strong> (ou "Test
-                                users").
-                                Clique em <strong>Adicionar Usuários</strong> e insira o seu e-mail Google que terá
-                                acesso ao Drive.
-                                <em>Este mesmo e-mail você usará no campo "E-mail de Conta de Serviço" abaixo.</em>
+                            <!-- Passo 2 -->
+                            <div class="cqb-guide-step">
+                                <span class="cqb-guide-num">2</span>
+                                <div>No menu lateral, vá em <strong>APIs e Serviços -> Biblioteca</strong>. Busque por
+                                    <strong>Google Drive API</strong>, clique no resultado e depois em
+                                    <strong>Ativar</strong>.</div>
                             </div>
-                        </div>
 
-                        <!-- Passo 5 -->
-                        <div class="cqb-guide-step">
-                            <span class="cqb-guide-num">5</span>
-                            <div>
-                                Vá em <strong>Credenciais → Criar Credencial → Conta de Serviço</strong>.
-                                Dê um nome, clique em <strong>Criar e Continuar</strong> e finalize.
-                                <strong>Anote o e-mail gerado</strong> — ele termina em
-                                <code>@...iam.gserviceaccount.com</code>.
-                                Este é o e-mail que você adicionou como usuário de teste no passo anterior.
-                            </div>
-                        </div>
-
-                        <!-- Passo 6 -->
-                        <div class="cqb-guide-step">
-                            <span class="cqb-guide-num">6</span>
-                            <div>
-                                Ainda em <strong>Credenciais</strong>, clique em <strong>Criar Credencial → ID do
-                                    Cliente OAuth</strong>.
-                                Em <em>Tipo de aplicativo</em>, selecione <strong>App para computador</strong>. Clique
-                                em Criar.
-                                Na tela seguinte, copie o <strong>ID do cliente</strong> e a <strong>Chave secreta do
-                                    cliente</strong> — guarde bem esses dois valores.
-                            </div>
-                        </div>
-
-                        <!-- Passo 7 -->
-                        <div class="cqb-guide-step">
-                            <span class="cqb-guide-num">7</span>
-                            <div>
-                                Edite a credencial OAuth recém-criada e, em <strong>URIs de redirecionamento
-                                    autorizados</strong>, adicione <strong>os dois</strong> URIs abaixo:
-                                <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px;">
-                                    <code
-                                        style="display:block;padding:6px 10px;background:rgba(33,150,243,0.08);border-radius:6px;font-size:0.82rem;">http://localhost:3000/auth/callback</code>
-                                    <div id="guide-esp-uri" style="display:flex;align-items:center;gap:8px;">
-                                        <code id="guide-esp-uri-code"
-                                            style="display:block;padding:6px 10px;background:rgba(40,167,69,0.08);border-radius:6px;font-size:0.82rem;flex:1;">http://&lt;ip-do-esp32&gt;/auth/callback</code>
-                                        <button type="button" onclick="copyEspUri()"
-                                            class="cqb-btn cqb-btn-ghost cqb-btn-sm" style="flex-shrink:0;"
-                                            title="Copiar URI do ESP32"><i class="fas fa-copy"></i></button>
-                                    </div>
+                            <!-- Passo 3 -->
+                            <div class="cqb-guide-step">
+                                <span class="cqb-guide-num">3</span>
+                                <div>
+                                    Ainda em <strong>APIs e Serviços</strong>, clique em <strong>Tela de permissão
+                                        OAuth</strong>.
+                                    Em <em>Tipo de usuário</em>, escolha <strong>Externo</strong> e clique em Criar.
+                                    Preencha o nome do app e o e-mail de suporte. Em <strong>Tipo de aplicativo</strong>,
+                                    escolha <strong>App para computador</strong>. Salve.
                                 </div>
-                                <small style="color:var(--text-sub);display:block;margin-top:6px;"><i
-                                        class="fas fa-circle-info" style="color:var(--cqb-blue);"></i> O segundo URI (IP
-                                    do ESP32) permite a captura automática do código OAuth — sem precisar copiar da
-                                    URL.</small>
                             </div>
-                        </div>
 
-                        <!-- Passo 8 -->
-                        <div class="cqb-guide-step">
-                            <span class="cqb-guide-num">8</span>
-                            <div>
-                                Preencha o <strong>Client ID</strong>, <strong>Client Secret</strong> e o
-                                <strong>e-mail</strong> nos campos da seção acima.
-                                Clique em <strong>Iniciar Autorização OAuth</strong>. Uma nova aba abrirá para você
-                                conceder permissão ao Drive.
-                                Após autorizar, o sistema tentará capturar o código automaticamente.
-                                Se não conseguir, a URL exibirá algo como:
-                                <code
-                                    style="display:block;margin-top:6px;padding:6px 10px;background:rgba(0,0,0,0.04);border-radius:6px;font-size:0.79rem;word-break:break-all;">http://localhost:3000/auth/callback?...&amp;code=4/0Aci98...&amp;scope=...</code>
-                                Copie apenas o valor entre <code>&amp;code=</code> e o próximo <code>&amp;</code> e cole
-                                no campo abaixo.
+                            <!-- Passo 4 -->
+                            <div class="cqb-guide-step">
+                                <span class="cqb-guide-num">4</span>
+                                <div>
+                                    Na mesma tela de permissão OAuth, clique na aba <strong>Público-alvo</strong> (ou "Test
+                                    users").
+                                    Clique em <strong>Adicionar Usuários</strong> e insira o seu e-mail Google que terá
+                                    acesso ao Drive.
+                                    <em>Este mesmo e-mail você usará no campo "E-mail de Conta de Serviço" abaixo.</em>
+                                </div>
+                            </div>
+
+                            <!-- Passo 5 -->
+                            <div class="cqb-guide-step">
+                                <span class="cqb-guide-num">5</span>
+                                <div>
+                                    Vá em <strong>Credenciais -> Criar Credencial -> Conta de Serviço</strong>.
+                                    Dê um nome, clique em <strong>Criar e Continuar</strong> e finalize.
+                                    <strong>Anote o e-mail gerado</strong> - ele termina em
+                                    <code>@...iam.gserviceaccount.com</code>.
+                                    Este é o e-mail que você adicionou como usuário de teste no passo anterior.
+                                </div>
+                            </div>
+
+                            <!-- Passo 6 -->
+                            <div class="cqb-guide-step">
+                                <span class="cqb-guide-num">6</span>
+                                <div>
+                                    Ainda em <strong>Credenciais</strong>, clique em <strong>Criar Credencial -> ID do
+                                        Cliente OAuth</strong>.
+                                    Em <em>Tipo de aplicativo</em>, selecione <strong>App para computador</strong>. Clique
+                                    em Criar.
+                                    Na tela seguinte, copie o <strong>ID do cliente</strong> e a <strong>Chave secreta do
+                                        cliente</strong> - guarde bem esses dois valores.
+                                </div>
+                            </div>
+
+                            <!-- Passo 7 -->
+                            <div class="cqb-guide-step">
+                                <span class="cqb-guide-num">7</span>
+                                <div>
+                                    Edite a credencial OAuth recém-criada e, em <strong>URIs de redirecionamento
+                                        autorizados</strong>, adicione <strong>os dois</strong> URIs abaixo:
+                                    <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px;">
+                                        <code
+                                            style="display:block;padding:6px 10px;background:rgba(33,150,243,0.08);border-radius:6px;font-size:0.82rem;">http://localhost:3000/auth/callback</code>
+                                        <div id="guide-esp-uri" style="display:flex;align-items:center;gap:8px;">
+                                            <code id="guide-esp-uri-code"
+                                                style="display:block;padding:6px 10px;background:rgba(40,167,69,0.08);border-radius:6px;font-size:0.82rem;flex:1;">http://&lt;ip-do-esp32&gt;/auth/callback</code>
+                                            <button type="button" onclick="copyEspUri()"
+                                                class="cqb-btn cqb-btn-ghost cqb-btn-sm" style="flex-shrink:0;"
+                                                title="Copiar URI do ESP32"><i class="fas fa-copy"></i></button>
+                                        </div>
+                                    </div>
+                                    <small style="color:var(--text-sub);display:block;margin-top:6px;"><i
+                                            class="fas fa-circle-info" style="color:var(--cqb-blue);"></i> O segundo URI (IP
+                                        do ESP32) permite a captura automática do código OAuth - sem precisar copiar da
+                                        URL.</small>
+                                </div>
+                            </div>
+
+                            <!-- Passo 8 -->
+                            <div class="cqb-guide-step">
+                                <span class="cqb-guide-num">8</span>
+                                <div>
+                                    Preencha o <strong>Client ID</strong>, <strong>Client Secret</strong> e o
+                                    <strong>e-mail</strong> nos campos da seção acima.
+                                    Clique em <strong>Iniciar Autorização OAuth</strong>. Uma nova aba abrirá para você
+                                    conceder permissão ao Drive.
+                                    Após autorizar, o sistema tentará capturar o código automaticamente.
+                                    Se não conseguir, a URL exibirá algo como:
+                                    <code
+                                        style="display:block;margin-top:6px;padding:6px 10px;background:rgba(0,0,0,0.04);border-radius:6px;font-size:0.79rem;word-break:break-all;">http://localhost:3000/auth/callback?...&amp;code=4/0Aci98...&amp;scope=...</code>
+                                    Copie apenas o valor entre <code>&amp;code=</code> e o próximo <code>&amp;</code> e cole
+                                    no campo abaixo.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -686,14 +689,14 @@
             document.getElementById('cqb-ip').textContent = S.espIp;
             applyTheme(S.theme);
 
-            /* guide — vanilla collapse, sem Bootstrap */
+            /* guide - vanilla collapse, sem Bootstrap */
             window.toggleGuide = function () {
+                const card = document.getElementById('guide-card');
                 const body = document.getElementById('guide-body');
                 const arr = document.getElementById('guide-arr');
-                const btn = document.getElementById('guide-toggle-btn');
                 const open = body.classList.toggle('open');
+                card.classList.toggle('open', open);
                 arr.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
-                btn.setAttribute('aria-expanded', String(open));
             };
 
             /* preenche o URI do ESP32 no guia assim que S.espIp estiver disponível */
