@@ -1142,52 +1142,227 @@
 
             /* ── WIFI ──────────────────────────────────────────── */
             let selectedSsid = '';
+            let scanInterval = null;
+            let scanAttempts = 0;
+            const MAX_SCAN_ATTEMPTS = 5;
+
             window.scanWifi = async function () {
-                showToast('Escaneando redes Wi-Fi...', 'info');
-                const list = document.getElementById('wifi-list');
-                list.innerHTML = `<div class="cqb-wifi-row" style="justify-content:center;color:var(--text-sub);border-style:dashed;cursor:default;"><i class="fas fa-rotate cqb-spin"></i>&nbsp;Buscando...</div>`;
-                try {
-                    const res = await fetch(`http://${S.espIp}/api/scan`);
-                    const nets = await res.json();
-                    renderWifi(nets);
-                } catch (_) {
-                    renderWifi([{ ssid: 'CanalQb_Home', rssi: -42 }, { ssid: 'OpusNet_5G', rssi: -61 }, { ssid: 'Vizinho_2.4', rssi: -79 }]);
+                // Limpa scan anterior
+                if (scanInterval) {
+                    clearInterval(scanInterval);
+                    scanInterval = null;
                 }
+
+                scanAttempts = 0;
+                showToast('Iniciando scan de redes Wi-Fi...', 'info');
+                const list = document.getElementById('wifi-list');
+                list.innerHTML = `<div class="cqb-wifi-row" style="justify-content:center;color:var(--text-sub);border-style:dashed;cursor:default;"><i class="fas fa-rotate cqb-spin"></i>&nbsp;Buscando redes...</div>`;
+
+                await performWifiScan();
             };
-            function sigIcon(rssi) {
-                if (rssi >= -55) return '<i class="fas fa-wifi" style="color:var(--cqb-green);"></i>';
-                if (rssi >= -70) return '<i class="fas fa-wifi" style="color:var(--cqb-yellow);"></i>';
-                return '<i class="fas fa-wifi" style="color:var(--cqb-red);"></i>';
+
+            async function performWifiScan() {
+                try {
+                    const res = await fetch(`http://${S.espIp}/api/scan`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Cache-Control': 'no-cache'
+                        },
+                        timeout: 10000
+                    });
+
+                    if (res.status === 202) {
+                        // Scan em andamento, tentar novamente
+                        scanAttempts++;
+                        if (scanAttempts < MAX_SCAN_ATTEMPTS) {
+                            showToast('Scan em andamento, aguardando...', 'info');
+                            scanInterval = setTimeout(() => performWifiScan(), 2000);
+                        } else {
+                            showToast('Timeout ao escanear redes', 'error');
+                            renderWifi([]);
+                        }
+                        return;
+                    }
+
+                    if (!res.ok) {
+                        throw new Error(`HTTP ${res.status}`);
+                    }
+
+                    const nets = await res.json();
+                    console.log('Redes encontradas:', nets);
+                    renderWifi(nets);
+                    showToast(`${nets.length} redes encontradas`, 'success');
+
+                } catch (error) {
+                    console.error('Erro ao escanear WiFi:', error);
+                    showToast('Falha ao comunicar com ESP32, usando dados de teste', 'warn');
+                    // Dados de teste fallback
+                    renderWifi([
+                        { ssid: 'CanalQb_Home', rssi: -42, auth: false },
+                        { ssid: 'OpusNet_5G', rssi: -61, auth: true },
+                        { ssid: 'Vizinho_2.4', rssi: -79, auth: true },
+                        { ssid: 'Guest_Network', rssi: -55, auth: false },
+                        { ssid: 'IoT_Devices', rssi: -68, auth: true }
+                    ]);
+                }
             }
+
+            function sigIcon(rssi, auth) {
+                let icon = '';
+                if (rssi >= -55) icon = '<i class="fas fa-wifi" style="color:var(--cqb-green);"></i>';
+                else if (rssi >= -70) icon = '<i class="fas fa-wifi" style="color:var(--cqb-yellow);"></i>';
+                else icon = '<i class="fas fa-wifi" style="color:var(--cqb-red);"></i>';
+
+                if (auth) {
+                    icon += '<i class="fas fa-lock" style="font-size:0.7rem;color:var(--text-sub);margin-left:4px;"></i>';
+                }
+
+                return icon;
+            }
+
             function renderWifi(nets) {
                 const list = document.getElementById('wifi-list');
-                if (!nets?.length) { list.innerHTML = `<div class="cqb-wifi-row" style="color:var(--text-sub);justify-content:center;cursor:default;">Nenhuma rede encontrada.</div>`; return; }
-                list.innerHTML = nets.map(n => `
-      <div class="cqb-wifi-row" onclick="selectWifi('${n.ssid}',this)" role="button" tabindex="0">
-        <span class="cqb-wifi-sig">${sigIcon(n.rssi)}</span>
+
+                if (!nets?.length) {
+                    list.innerHTML = `<div class="cqb-wifi-row" style="color:var(--text-sub);justify-content:center;cursor:default;">
+                        <i class="fas fa-wifi-slash" style="margin-right:8px;opacity:0.5;"></i>
+                        Nenhuma rede encontrada. Verifique se o WiFi está ativo.
+                    </div>`;
+                    return;
+                }
+
+                // Ordenar por RSSI (sinal mais forte primeiro)
+                nets.sort((a, b) => a.rssi - b.rssi);
+
+                list.innerHTML = nets.map((n, index) => {
+                    const isSecure = n.auth !== false;
+                    const signalClass = n.rssi >= -55 ? 'success' : n.rssi >= -70 ? 'warning' : 'danger';
+                    const signalText = n.rssi >= -55 ? 'Excelente' : n.rssi >= -70 ? 'Bom' : 'Fraco';
+
+                    return `
+      <div class="cqb-wifi-row" onclick="selectWifi('${n.ssid}',this)" role="button" tabindex="0" data-ssid="${n.ssid}" data-rssi="${n.rssi}" data-auth="${isSecure}">
+        <span class="cqb-wifi-sig">${sigIcon(n.rssi, isSecure)}</span>
         <span style="flex:1;font-weight:500;">${n.ssid}</span>
-        <span style="font-size:0.72rem;color:var(--text-sub);font-family:'JetBrains Mono',monospace;">${n.rssi} dBm</span>
-      </div>`).join('');
+        <span style="font-size:0.72rem;color:var(--text-${signalClass});font-family:'JetBrains Mono',monospace;">${signalText}</span>
+        <span style="font-size:0.68rem;color:var(--text-sub);font-family:'JetBrains Mono',monospace;margin-left:4px;">${n.rssi} dBm</span>
+      </div>`;
+                }).join('');
+
+                // Adicionar evento de teclado para acessibilidade
+                list.querySelectorAll('.cqb-wifi-row').forEach(row => {
+                    row.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            const ssid = row.dataset.ssid;
+                            selectWifi(ssid, row);
+                        }
+                    });
+                });
             }
+
             window.selectWifi = function (ssid, el) {
                 selectedSsid = ssid;
                 document.getElementById('ssid-manual').value = ssid;
+
+                // Atualizar UI de seleção
                 document.querySelectorAll('.cqb-wifi-row').forEach(r => r.classList.remove('selected'));
                 el.classList.add('selected');
+
+                // Focar no campo de senha
+                const passField = document.getElementById('wifi-pass');
+                passField.focus();
+
+                // Mostrar feedback
+                const rssi = el.dataset.rssi;
+                const auth = el.dataset.auth === 'true';
+                let message = `Rede "${ssid}" selecionada`;
+
+                if (auth) {
+                    message += ' (protegida)';
+                }
+
+                showToast(message, 'info');
+
+                // Se a rede for aberta, limpar campo de senha
+                if (!auth) {
+                    passField.value = '';
+                    passField.placeholder = 'Rede aberta (sem senha)';
+                } else {
+                    passField.placeholder = 'Digite a senha...';
+                }
             };
+
             window.togglePass = function () {
                 const i = document.getElementById('wifi-pass'), e = document.getElementById('eye-icon');
                 i.type = i.type === 'password' ? 'text' : 'password';
                 e.className = i.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
             };
+
             window.saveWifi = async function () {
                 const ssid = document.getElementById('ssid-manual').value.trim() || selectedSsid;
                 const pass = document.getElementById('wifi-pass').value;
-                if (!ssid) { showToast('Selecione ou digite o SSID!', 'error'); return; }
+
+                if (!ssid) {
+                    showToast('Selecione ou digite o SSID!', 'error');
+                    document.getElementById('ssid-manual').focus();
+                    return;
+                }
+
+                // Verificar se a rede selecionada requer senha
+                const selectedRow = document.querySelector('.cqb-wifi-row.selected');
+                const isSecure = selectedRow?.dataset.auth === 'true';
+
+                if (isSecure && !pass) {
+                    showToast('Esta rede é protegida. Digite a senha!', 'error');
+                    document.getElementById('wifi-pass').focus();
+                    return;
+                }
+
                 showToast('Salvando configuração Wi-Fi...', 'info');
-                await saveToEsp({ ssid, password: pass });
-                showToast(`Conectando a "${ssid}"...`, 'success');
+
+                try {
+                    // Tentar conectar via API do ESP32
+                    const response = await fetch(`http://${S.espIp}/api/connect?ssid=${encodeURIComponent(ssid)}&pass=${encodeURIComponent(pass)}`, {
+                        method: 'GET',
+                        timeout: 15000
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        if (result.status === 'success') {
+                            showToast(`Conectando a "${ssid}"...`, 'success');
+                            // Salvar configuração localmente
+                            await saveToEsp({ ssid, password: pass });
+
+                            // Aguardar conexão e verificar status
+                            setTimeout(async () => {
+                                try {
+                                    const statusRes = await fetch(`http://${S.espIp}/api/status`);
+                                    const status = await statusRes.json();
+                                    if (status.connected) {
+                                        showToast('Conectado com sucesso!', 'success');
+                                    } else {
+                                        showToast('Falha na conexão. Verifique a senha.', 'error');
+                                    }
+                                } catch (e) {
+                                    showToast('Configuração salva. Verificando conexão...', 'info');
+                                }
+                            }, 5000);
+                        } else {
+                            showToast('Erro ao conectar: ' + (result.message || 'desconhecido'), 'error');
+                        }
+                    } else {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                } catch (error) {
+                    console.error('Erro ao conectar WiFi:', error);
+                    // Fallback para método antigo
+                    await saveToEsp({ ssid, password: pass });
+                    showToast(`Configuração salva. Reiniciando para conectar a "${ssid}"...`, 'info');
+                }
             };
+
             window.saveSsidConfig = async function () {
                 const cfg = {
                     hostname: document.getElementById('dev-hostname').value,
