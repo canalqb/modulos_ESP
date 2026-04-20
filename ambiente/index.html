@@ -1158,6 +1158,15 @@
                     } else if (data.id_pasta && data.googleRefreshToken) {
                         // Se tiver pasta e refresh token, considerar configurado
                         S.driveConfigured = true;
+                    } else if (data.googleRefreshToken && data.id_pasta) {
+                        // Detecção automática: se tiver token e pasta, está configurado
+                        S.driveConfigured = true;
+                    } else if (data.googleRefreshToken && !data.id_pasta) {
+                        // Se só tiver token, mas não pasta, não está configurado
+                        S.driveConfigured = false;
+                    } else if (!data.googleRefreshToken && !data.id_pasta) {
+                        // Se não tiver nem token nem pasta, não está configurado
+                        S.driveConfigured = false;
                     }
                     
                     // Atualizar status do sistema após carregar configurações
