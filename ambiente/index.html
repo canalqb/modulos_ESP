@@ -654,11 +654,51 @@
                             <i class="fas fa-gear hd-icon"></i> Configurações Avançadas
                         </div>
                         <div class="cqb-card-body">
-                            <div class="cqb-empty">
-                                <div class="cqb-empty-icon"><i class="fas fa-gear"></i></div>
-                                <p class="cqb-empty-title">Em Breve</p>
-                                <p class="cqb-empty-sub">Este módulo foi otimizado para os leitores do
-                                    canalqb.com.br.<br>Novidades chegando!</p>
+                            <div class="cqb-alert cqb-alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Use estas ferramentas para backup e restauração das configurações do sistema. Ideal para trocas de firmware ou reset do ESP32.</span>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <h6 style="margin-bottom:12px;color:var(--text-primary);font-weight:600;">
+                                        <i class="fas fa-download" style="margin-right:8px;color:var(--cqb-blue);"></i>
+                                        Backup de Configurações
+                                    </h6>
+                                </div>
+                                <div class="col-12">
+                                    <button class="cqb-btn cqb-btn-primary cqb-btn-block" onclick="exportConfig()">
+                                        <i class="fas fa-file-export"></i> Exportar Configurações
+                                    </button>
+                                    <small style="display:block;margin-top:6px;color:var(--text-sub);font-size:0.75rem;">
+                                        Baixa todas as configurações em um arquivo JSON para backup seguro.
+                                    </small>
+                                </div>
+                                <div class="col-12">
+                                    <h6 style="margin-bottom:12px;color:var(--text-primary);font-weight:600;">
+                                        <i class="fas fa-upload" style="margin-right:8px;color:var(--cqb-green);"></i>
+                                        Restauração de Configurações
+                                    </h6>
+                                </div>
+                                <div class="col-12">
+                                    <input type="file" id="config-import-file" accept=".json" style="display:none;" onchange="importConfig(event)">
+                                    <button class="cqb-btn cqb-btn-success cqb-btn-block" onclick="document.getElementById('config-import-file').click()">
+                                        <i class="fas fa-file-import"></i> Importar Configurações
+                                    </button>
+                                    <small style="display:block;margin-top:6px;color:var(--text-sub);font-size:0.75rem;">
+                                        Carrega configurações de um arquivo JSON de backup.
+                                    </small>
+                                </div>
+                                <div class="col-12">
+                                    <div class="cqb-form-group">
+                                        <label class="cqb-label">
+                                            <i class="fas fa-clock-rotate-left"></i> Último Backup
+                                        </label>
+                                        <div id="last-backup-info" style="padding:8px;background:rgba(0,0,0,0.02);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-sub);">
+                                            Nenhum backup realizado ainda
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1479,10 +1519,287 @@
                 );
             };
 
+            /* ── CONFIG BACKUP/RESTORE ──────────────────────────── */
+            window.exportConfig = async function () {
+                try {
+                    showToast('Coletando configurações...', 'info');
+                    
+                    // Coletar todas as configurações atuais
+                    const config = {
+                        timestamp: new Date().toISOString(),
+                        version: '1.0',
+                        espIp: S.espIp,
+                        google: {
+                            clientId: S.clientId,
+                            clientSecret: S.clientSecret,
+                            serviceAccountEmail: S.svcEmail,
+                            refreshToken: S.refreshToken,
+                            folderId: S.folderId,
+                            driveConfigured: S.driveConfigured
+                        },
+                        bluetooth: {
+                            enabled: document.getElementById('bt-enable-switch')?.checked || false,
+                            name: document.getElementById('bt-name-input')?.value || 'Canalqb - ESP32',
+                            pin: document.getElementById('bt-pin-input')?.value || '1234'
+                        },
+                        wifi: {
+                            ssid: document.getElementById('ssid-manual')?.value || '',
+                            // Não salvamos senha por segurança
+                        },
+                        ssidConfig: {
+                            hostname: document.getElementById('dev-hostname')?.value || '',
+                            channel: parseInt(document.getElementById('dev-channel')?.value) || 0,
+                            staticIp: document.getElementById('dev-ip')?.value || '',
+                            gateway: document.getElementById('dev-gw')?.value || '',
+                            dns1: document.getElementById('dev-dns1')?.value || '',
+                            dns2: document.getElementById('dev-dns2')?.value || ''
+                        },
+                        ui: {
+                            theme: S.theme
+                        }
+                    };
+
+                    // Buscar configurações adicionais do ESP32
+                    try {
+                        const espConfigRes = await fetch(`http://${S.espIp}/api/config`);
+                        if (espConfigRes.ok) {
+                            const espConfig = await espConfigRes.json();
+                            config.esp32 = {
+                                wifi: {
+                                    ssid: espConfig.wifi?.ssid || '',
+                                    connected: espConfig.wifi?.connected || false
+                                },
+                                system: {
+                                    version: espConfig.version || 'unknown',
+                                    uptime: espConfig.uptime || 0
+                                }
+                            };
+                        }
+                    } catch (e) {
+                        console.log('Não foi possível obter config do ESP32:', e);
+                    }
+
+                    // Criar blob e download
+                    const jsonString = JSON.stringify(config, null, 2);
+                    const blob = new Blob([jsonString], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    const filename = `opus-hub-config-${new Date().toISOString().split('T')[0]}.json`;
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    // Atualizar info do último backup
+                    updateLastBackupInfo();
+                    
+                    showToast('Configurações exportadas com sucesso!', 'success');
+                    console.log('Configurações exportadas:', config);
+
+                } catch (error) {
+                    console.error('Erro ao exportar configurações:', error);
+                    showToast('Erro ao exportar configurações: ' + error.message, 'error');
+                }
+            };
+
+            window.importConfig = function (event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    try {
+                        const config = JSON.parse(e.target.result);
+                        console.log('Configurações importadas:', config);
+
+                        // Validar versão e estrutura
+                        if (!config.version) {
+                            throw new Error('Arquivo de configuração inválido ou corrompido');
+                        }
+
+                        // Confirmar restauração
+                        openCqbModal(
+                            'Confirmar Restauração',
+                            `Deseja restaurar as configurações do backup de ${new Date(config.timestamp).toLocaleDateString()}?<br><br>
+                            <strong>Atenção:</strong> Isso irá sobrescrever todas as configurações atuais.`,
+                            async () => {
+                                await restoreConfig(config);
+                            }
+                        );
+
+                    } catch (error) {
+                        console.error('Erro ao ler arquivo:', error);
+                        showToast('Erro ao ler arquivo de configurações: ' + error.message, 'error');
+                    }
+                };
+                reader.readAsText(file);
+                
+                // Limpar input para permitir selecionar o mesmo arquivo novamente
+                event.target.value = '';
+            };
+
+            async function restoreConfig(config) {
+                try {
+                    showToast('Restaurando configurações...', 'info');
+
+                    let restored = 0;
+                    let errors = [];
+
+                    // Restaurar configurações Google
+                    if (config.google) {
+                        if (config.google.clientId) {
+                            document.getElementById('g-client-id').value = config.google.clientId;
+                            S.clientId = config.google.clientId;
+                            restored++;
+                        }
+                        if (config.google.clientSecret) {
+                            document.getElementById('g-client-secret').value = config.google.clientSecret;
+                            S.clientSecret = config.google.clientSecret;
+                            restored++;
+                        }
+                        if (config.google.serviceAccountEmail) {
+                            document.getElementById('g-svc-email').value = config.google.serviceAccountEmail;
+                            S.svcEmail = config.google.serviceAccountEmail;
+                            restored++;
+                        }
+                        if (config.google.refreshToken) {
+                            S.refreshToken = config.google.refreshToken;
+                            restored++;
+                        }
+                        if (config.google.folderId) {
+                            document.getElementById('g-folder-id').value = config.google.folderId;
+                            S.folderId = config.google.folderId;
+                            restored++;
+                        }
+                        S.driveConfigured = config.google.driveConfigured || false;
+                    }
+
+                    // Restaurar configurações Bluetooth
+                    if (config.bluetooth) {
+                        if (document.getElementById('bt-enable-switch')) {
+                            document.getElementById('bt-enable-switch').checked = config.bluetooth.enabled || false;
+                            restored++;
+                        }
+                        if (document.getElementById('bt-name-input')) {
+                            document.getElementById('bt-name-input').value = config.bluetooth.name || 'Canalqb - ESP32';
+                            restored++;
+                        }
+                        if (document.getElementById('bt-pin-input')) {
+                            document.getElementById('bt-pin-input').value = config.bluetooth.pin || '1234';
+                            restored++;
+                        }
+                    }
+
+                    // Restaurar configurações WiFi (SSID apenas, sem senha por segurança)
+                    if (config.wifi && config.wifi.ssid && document.getElementById('ssid-manual')) {
+                        document.getElementById('ssid-manual').value = config.wifi.ssid;
+                        restored++;
+                    }
+
+                    // Restaurar configurações avançadas de SSID
+                    if (config.ssidConfig) {
+                        if (config.ssidConfig.hostname && document.getElementById('dev-hostname')) {
+                            document.getElementById('dev-hostname').value = config.ssidConfig.hostname;
+                            restored++;
+                        }
+                        if (config.ssidConfig.channel && document.getElementById('dev-channel')) {
+                            document.getElementById('dev-channel').value = config.ssidConfig.channel;
+                            restored++;
+                        }
+                        if (config.ssidConfig.staticIp && document.getElementById('dev-ip')) {
+                            document.getElementById('dev-ip').value = config.ssidConfig.staticIp;
+                            restored++;
+                        }
+                        if (config.ssidConfig.gateway && document.getElementById('dev-gw')) {
+                            document.getElementById('dev-gw').value = config.ssidConfig.gateway;
+                            restored++;
+                        }
+                        if (config.ssidConfig.dns1 && document.getElementById('dev-dns1')) {
+                            document.getElementById('dev-dns1').value = config.ssidConfig.dns1;
+                            restored++;
+                        }
+                        if (config.ssidConfig.dns2 && document.getElementById('dev-dns2')) {
+                            document.getElementById('dev-dns2').value = config.ssidConfig.dns2;
+                            restored++;
+                        }
+                    }
+
+                    // Restaurar tema
+                    if (config.ui && config.ui.theme) {
+                        applyTheme(config.ui.theme);
+                        restored++;
+                    }
+
+                    // Atualizar UI
+                    evalGoogleStep1();
+                    updateProgress();
+                    updateSystemStatus();
+
+                    // Salvar configurações no ESP32
+                    const espPayload = {};
+                    if (config.google) {
+                        espPayload.googleClientId = config.google.clientId;
+                        espPayload.googleClientSecret = config.google.clientSecret;
+                        espPayload.serviceAccountEmail = config.google.serviceAccountEmail;
+                        espPayload.googleRefreshToken = config.google.refreshToken;
+                        espPayload.id_pasta = config.google.folderId;
+                    }
+                    if (config.bluetooth) {
+                        espPayload.bt_enabled = config.bluetooth.enabled;
+                        espPayload.bt_name = config.bluetooth.name;
+                        espPayload.bt_pin = config.bluetooth.pin;
+                    }
+                    if (config.wifi && config.wifi.ssid) {
+                        espPayload.ssid = config.wifi.ssid;
+                    }
+
+                    if (Object.keys(espPayload).length > 0) {
+                        await saveToEsp(espPayload);
+                    }
+
+                    showToast(`Configurações restauradas! (${restored} itens)`, 'success');
+                    console.log(`Restaurados ${restored} itens de configuração`);
+
+                } catch (error) {
+                    console.error('Erro ao restaurar configurações:', error);
+                    showToast('Erro ao restaurar configurações: ' + error.message, 'error');
+                }
+            }
+
+            function updateLastBackupInfo() {
+                const now = new Date();
+                const info = `Último backup: ${now.toLocaleDateString('pt-BR')} ${now.toLocaleTimeString('pt-BR')}`;
+                const element = document.getElementById('last-backup-info');
+                if (element) {
+                    element.textContent = info;
+                    element.style.color = 'var(--cqb-green)';
+                }
+                
+                // Salvar no localStorage
+                localStorage.setItem('lastBackup', now.toISOString());
+            }
+
+            // Carregar info do último backup ao iniciar
+            (function loadLastBackupInfo() {
+                const lastBackup = localStorage.getItem('lastBackup');
+                if (lastBackup) {
+                    const date = new Date(lastBackup);
+                    const info = `Último backup: ${date.toLocaleDateString('pt-BR')} ${date.toLocaleTimeString('pt-BR')}`;
+                    const element = document.getElementById('last-backup-info');
+                    if (element) {
+                        element.textContent = info;
+                        element.style.color = 'var(--cqb-green)';
+                    }
+                }
+            })();
+
             /* ── PIX ───────────────────────────────────────────── */
             window.copyPix = function () {
                 navigator.clipboard.writeText('qrodrigob@gmail.com')
-                    .then(() => showToast('E-mail Pix copiado! Obrigado pelo apoio ao @CanalQb. ☕', 'success'))
+                    .then(() => showToast('E-mail Pix copiado! Obrigado pelo apoio ao @CanalQb. ?', 'success'))
                     .catch(() => showToast('Copie manualmente: qrodrigob@gmail.com', 'info'));
             };
 
