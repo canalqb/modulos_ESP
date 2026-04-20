@@ -158,513 +158,544 @@
         <main id="cqb-main">
             <div class="cqb-container">
 
-            <!-- TOPBAR -->
-            <header class="cqb-topbar">
-                <div style="display:flex;align-items:center;gap:10px;">
-                    <i class="fas fa-house" style="color:var(--text-sub);font-size:0.85rem;"></i>
-                    <span class="cqb-topbar-title" id="cqb-section-title">Redes &amp; Internet</span>
-                </div>
-                <div class="cqb-topbar-right">
-                    <div id="badge-sistema">
-                        <span class="cqb-badge-dot"></span>
-                        SISTEMA ATIVO
+                <!-- TOPBAR -->
+                <header class="cqb-topbar">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <i class="fas fa-house" style="color:var(--text-sub);font-size:0.85rem;"></i>
+                        <span class="cqb-topbar-title" id="cqb-section-title">Redes &amp; Internet</span>
                     </div>
-                    <span class="cqb-ip-label" id="cqb-ip">...</span>
-                    <button class="cqb-theme-btn" onclick="toggleTheme()" id="theme-btn" title="Alternar tema">
-                        <i class="fas fa-moon" id="theme-icon"></i>
-                    </button>
-                </div>
-            </header>
-
-            <!-- PROGRESS BAR CONFIG -->
-            <div class="cqb-progress-wrap" id="config-progress" style="display:none;">
-                <div class="cqb-progress-bar-bg">
-                    <div class="cqb-progress-fill" id="progress-fill" style="width:0%;"></div>
-                </div>
-                <div class="cqb-progress-labels">
-                    <span>Configuração Google</span>
-                    <span id="progress-pct">0%</span>
-                </div>
-            </div>
-
-            <!-- ══ SEÇÃO: REDES ══════════════════════════════════ -->
-            <section id="section-rede" class="cqb-section">
-                <div class="cqb-tabs">
-                    <button class="cqb-tab active" id="tab-wifi" onclick="showTab('rede','wifi')">
-                        <i class="fas fa-wifi"></i> Configurações de Rede
-                    </button>
-                    <button class="cqb-tab" id="tab-ssid" onclick="showTab('rede','ssid')">
-                        <i class="fas fa-signal"></i> Configurações de SSID
-                    </button>
-                </div>
-
-                <!-- Rede / Wi-Fi -->
-                <div id="pane-wifi" class="cqb-tab-pane active">
-                    <div class="cqb-card">
-                        <div class="cqb-card-header">
-                            <i class="fas fa-wifi hd-icon"></i> Conexão Wi-Fi
+                    <div class="cqb-topbar-right">
+                        <div id="badge-sistema">
+                            <span class="cqb-badge-dot"></span>
+                            SISTEMA ATIVO
                         </div>
-                        <div class="cqb-card-body">
-                            <div class="cqb-alert cqb-alert-info">
-                                <i class="fas fa-circle-info"></i>
-                                <span>O Hub Opus usará esta rede para comunicação com a nuvem. Certifique-se de que o
-                                    sinal é estável.</span>
-                            </div>
+                        <span class="cqb-ip-label" id="cqb-ip">...</span>
+                        <button class="cqb-theme-btn" onclick="toggleTheme()" id="theme-btn" title="Alternar tema">
+                            <i class="fas fa-moon" id="theme-icon"></i>
+                        </button>
+                    </div>
+                </header>
 
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <label class="cqb-label">Redes Detectadas</label>
-                                    <div id="wifi-list">
-                                        <div class="cqb-wifi-row"
-                                            style="justify-content:center;color:var(--text-sub);border-style:dashed;cursor:default;">
-                                            <i class="fas fa-rotate"></i> Clique em
-                                            <strong>&nbsp;Escanear&nbsp;</strong> para buscar redes
+                <!-- PROGRESS BAR CONFIG -->
+                <div class="cqb-progress-wrap" id="config-progress" style="display:none;">
+                    <div class="cqb-progress-bar-bg">
+                        <div class="cqb-progress-fill" id="progress-fill" style="width:0%;"></div>
+                    </div>
+                    <div class="cqb-progress-labels">
+                        <span>Configuração Google</span>
+                        <span id="progress-pct">0%</span>
+                    </div>
+                </div>
+
+                <!-- ══ SEÇÃO: REDES ══════════════════════════════════ -->
+                <section id="section-rede" class="cqb-section">
+                    <div class="cqb-tabs">
+                        <button class="cqb-tab active" id="tab-wifi" onclick="showTab('rede','wifi')">
+                            <i class="fas fa-wifi"></i> Configurações de Rede
+                        </button>
+                        <button class="cqb-tab" id="tab-ssid" onclick="showTab('rede','ssid')">
+                            <i class="fas fa-signal"></i> Configurações de SSID
+                        </button>
+                    </div>
+
+                    <!-- Rede / Wi-Fi -->
+                    <div id="pane-wifi" class="cqb-tab-pane active">
+                        <div class="cqb-card">
+                            <div class="cqb-card-header">
+                                <i class="fas fa-wifi hd-icon"></i> Conexão Wi-Fi
+                            </div>
+                            <div class="cqb-card-body">
+                                <div class="cqb-alert cqb-alert-info">
+                                    <i class="fas fa-circle-info"></i>
+                                    <span>O Hub Opus usará esta rede para comunicação com a nuvem. Certifique-se de que
+                                        o
+                                        sinal é estável.</span>
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="cqb-label">Redes Detectadas</label>
+                                        <div id="wifi-list">
+                                            <div class="cqb-wifi-row"
+                                                style="justify-content:center;color:var(--text-sub);border-style:dashed;cursor:default;">
+                                                <i class="fas fa-rotate"></i> Clique em
+                                                <strong>&nbsp;Escanear&nbsp;</strong> para buscar redes
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-12">
-                                    <label class="cqb-label" for="ssid-manual">SSID (Manual ou Selecionado)</label>
-                                    <input type="text" id="ssid-manual" class="cqb-input"
-                                        placeholder="Nome da rede Wi-Fi...">
-                                </div>
-                                <div class="col-12">
-                                    <label class="cqb-label" for="wifi-pass">Senha</label>
-                                    <div style="display:flex;gap:8px;">
-                                        <input type="password" id="wifi-pass" class="cqb-input"
-                                            placeholder="Senha da rede...">
-                                        <button class="cqb-btn cqb-btn-ghost cqb-btn-sm" onclick="togglePass()"
-                                            style="flex-shrink:0;min-width:44px;">
-                                            <i class="fas fa-eye" id="eye-icon"></i>
+                                    <div class="col-12">
+                                        <label class="cqb-label" for="ssid-manual">SSID (Manual ou Selecionado)</label>
+                                        <input type="text" id="ssid-manual" class="cqb-input"
+                                            placeholder="Nome da rede Wi-Fi...">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="cqb-label" for="wifi-pass">Senha</label>
+                                        <div style="display:flex;gap:8px;">
+                                            <input type="password" id="wifi-pass" class="cqb-input"
+                                                placeholder="Senha da rede...">
+                                            <button class="cqb-btn cqb-btn-ghost cqb-btn-sm" onclick="togglePass()"
+                                                style="flex-shrink:0;min-width:44px;">
+                                                <i class="fas fa-eye" id="eye-icon"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="cqb-btn cqb-btn-ghost cqb-btn-block" onclick="scanWifi()">
+                                            <i class="fas fa-magnifying-glass"></i> Escanear
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="cqb-btn cqb-btn-dark cqb-btn-block" onclick="saveWifi()">
+                                            <i class="fas fa-floppy-disk"></i> Salvar e Conectar
                                         </button>
                                     </div>
                                 </div>
-                                <div class="col-6">
-                                    <button class="cqb-btn cqb-btn-ghost cqb-btn-block" onclick="scanWifi()">
-                                        <i class="fas fa-magnifying-glass"></i> Escanear
-                                    </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SSID Avançado -->
+                    <div id="pane-ssid" class="cqb-tab-pane">
+                        <div class="cqb-card">
+                            <div class="cqb-card-header">
+                                <i class="fas fa-signal hd-icon"></i> Configurações de SSID
+                            </div>
+                            <div class="cqb-card-body">
+                                <div class="cqb-alert cqb-alert-warn">
+                                    <i class="fas fa-triangle-exclamation"></i>
+                                    <span>Configurações avançadas. Altere somente se souber o que está fazendo. Aqui no
+                                        @CanalQb, validamos que erros aqui podem derrubar a conectividade do Hub.</span>
                                 </div>
-                                <div class="col-6">
-                                    <button class="cqb-btn cqb-btn-dark cqb-btn-block" onclick="saveWifi()">
-                                        <i class="fas fa-floppy-disk"></i> Salvar e Conectar
-                                    </button>
+                                <div class="row g-3">
+                                    <div class="col-12 col-md-6">
+                                        <input type="text" class="cqb-input" id="dev-hostname"
+                                            placeholder="canalqb_esp32" value="canalqb_esp32">
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="cqb-label">Canal Wi-Fi</label>
+                                        <input type="number" class="cqb-input" id="dev-channel" placeholder="Auto (0)"
+                                            value="0" min="0" max="13">
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="cqb-label">IP Estático (opcional)</label>
+                                        <input type="text" class="cqb-input" id="dev-ip" placeholder="192.168.1.100">
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="cqb-label">Gateway</label>
+                                        <input type="text" class="cqb-input" id="dev-gw" placeholder="192.168.1.1">
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="cqb-label">DNS Primário</label>
+                                        <input type="text" class="cqb-input" id="dev-dns1" placeholder="8.8.8.8"
+                                            value="8.8.8.8">
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="cqb-label">DNS Secundário</label>
+                                        <input type="text" class="cqb-input" id="dev-dns2" placeholder="8.8.4.4"
+                                            value="8.8.4.4">
+                                    </div>
+                                    <div class="col-12">
+                                        <button class="cqb-btn cqb-btn-primary cqb-btn-block"
+                                            onclick="saveSsidConfig()">
+                                            <i class="fas fa-floppy-disk"></i> Salvar Configurações de SSID
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </section>
 
-                <!-- SSID Avançado -->
-                <div id="pane-ssid" class="cqb-tab-pane">
+                <!-- ══ SEÇÃO: GOOGLE CONFIG ══════════════════════════ -->
+                <!-- ══ SEÇÃO: GOOGLE CONFIG ══════════════════════════ -->
+                <section id="section-google" class="cqb-section d-none">
+
+                    <!-- STEPS GOOGLE CONFIG (ORDEM CORRETA: CARD PRIMEIRO) -->
                     <div class="cqb-card">
                         <div class="cqb-card-header">
-                            <i class="fas fa-signal hd-icon"></i> Configurações de SSID
+                            <i class="fas fa-key hd-icon"></i>
+                            Credenciais &amp; Autorização OAuth
                         </div>
                         <div class="cqb-card-body">
-                            <div class="cqb-alert cqb-alert-warn">
-                                <i class="fas fa-triangle-exclamation"></i>
-                                <span>Configurações avançadas. Altere somente se souber o que está fazendo. Aqui no
-                                    @CanalQb, validamos que erros aqui podem derrubar a conectividade do Hub.</span>
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-12 col-md-6">
-                                    <input type="text" class="cqb-input" id="dev-hostname" placeholder="canalqb_esp32"
-                                        value="canalqb_esp32">
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="cqb-label">Canal Wi-Fi</label>
-                                    <input type="number" class="cqb-input" id="dev-channel" placeholder="Auto (0)"
-                                        value="0" min="0" max="13">
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="cqb-label">IP Estático (opcional)</label>
-                                    <input type="text" class="cqb-input" id="dev-ip" placeholder="192.168.1.100">
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="cqb-label">Gateway</label>
-                                    <input type="text" class="cqb-input" id="dev-gw" placeholder="192.168.1.1">
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="cqb-label">DNS Primário</label>
-                                    <input type="text" class="cqb-input" id="dev-dns1" placeholder="8.8.8.8"
-                                        value="8.8.8.8">
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="cqb-label">DNS Secundário</label>
-                                    <input type="text" class="cqb-input" id="dev-dns2" placeholder="8.8.4.4"
-                                        value="8.8.4.4">
-                                </div>
-                                <div class="col-12">
-                                    <button class="cqb-btn cqb-btn-primary cqb-btn-block" onclick="saveSsidConfig()">
-                                        <i class="fas fa-floppy-disk"></i> Salvar Configurações de SSID
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+                            <div class="cqb-steps">
 
-            <!-- ══ SEÇÃO: GOOGLE CONFIG ══════════════════════════ -->
-            <!-- ══ SEÇÃO: GOOGLE CONFIG ══════════════════════════ -->
-            <section id="section-google" class="cqb-section d-none">
-
-                <!-- STEPS GOOGLE CONFIG (ORDEM CORRETA: CARD PRIMEIRO) -->
-                <div class="cqb-card">
-                    <div class="cqb-card-header">
-                        <i class="fas fa-key hd-icon"></i>
-                        Credenciais &amp; Autorização OAuth
-                    </div>
-                    <div class="cqb-card-body">
-                        <div class="cqb-steps">
-
-                            <!-- STEP 1: Credenciais -->
-                            <article class="cqb-step active" id="gstep-1">
-                                <div class="cqb-step-dot">1</div>
-                                <div class="cqb-step-content">
-                                    <h3 class="cqb-step-title">Credenciais do Google Cloud</h3>
-                                    <p class="cqb-step-desc">Cole o <strong>Client ID</strong> e a <strong>Chave Secreta
-                                            (Client Secret)</strong> obtidos no Console do Google Cloud em <em>APIs e
-                                            Serviços → Credenciais</em>.</p>
-                                    <div class="cqb-form-row">
-                                        <div class="cqb-form-group">
-                                            <label class="cqb-label" for="g-client-id">
-                                                <i class="fas fa-id-badge"></i> Client ID
-                                            </label>
-                                            <input type="text" id="g-client-id" class="cqb-input"
-                                                placeholder="...apps.googleusercontent.com" oninput="evalGoogleStep1()">
-                                        </div>
-                                        <div class="cqb-form-group">
-                                            <label class="cqb-label" for="g-client-secret">
-                                                <i class="fas fa-lock"></i> Client Secret
-                                            </label>
-                                            <input type="password" id="g-client-secret" class="cqb-input"
-                                                placeholder="GOCSPX-..." oninput="evalGoogleStep1()">
+                                <!-- STEP 1: Credenciais -->
+                                <article class="cqb-step active" id="gstep-1">
+                                    <div class="cqb-step-dot">1</div>
+                                    <div class="cqb-step-content">
+                                        <h3 class="cqb-step-title">Credenciais do Google Cloud</h3>
+                                        <p class="cqb-step-desc">Cole o <strong>Client ID</strong> e a <strong>Chave
+                                                Secreta
+                                                (Client Secret)</strong> obtidos no Console do Google Cloud em <em>APIs
+                                                e
+                                                Serviços → Credenciais</em>.</p>
+                                        <div class="cqb-form-row">
+                                            <div class="cqb-form-group">
+                                                <label class="cqb-label" for="g-client-id">
+                                                    <i class="fas fa-id-badge"></i> Client ID
+                                                </label>
+                                                <input type="text" id="g-client-id" class="cqb-input"
+                                                    placeholder="...apps.googleusercontent.com"
+                                                    oninput="evalGoogleStep1()">
+                                            </div>
+                                            <div class="cqb-form-group">
+                                                <label class="cqb-label" for="g-client-secret">
+                                                    <i class="fas fa-lock"></i> Client Secret
+                                                </label>
+                                                <input type="password" id="g-client-secret" class="cqb-input"
+                                                    placeholder="GOCSPX-..." oninput="evalGoogleStep1()">
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </article>
+                                </article>
 
-                            <!-- STEP 2: Service Account + OAuth -->
-                            <div class="cqb-step" id="gstep-2">
-                                <div class="cqb-step-dot">2</div>
-                                <div class="cqb-step-content">
-                                    <h3 class="cqb-step-title">Autorização OAuth</h3>
-                                    <p class="cqb-step-desc">
-                                        Informe o e-mail adicionado como <strong>Usuário de Teste</strong> no OAuth
-                                        consent screen e inicie a autorização para gerar o token de acesso ao Drive.
-                                    </p>
-                                    <div class="cqb-form-group">
-                                        <label class="cqb-label" for="g-svc-email">
-                                            <i class="fas fa-envelope"></i> E-mail de Teste OAuth
-                                        </label>
-                                        <input type="email" id="g-svc-email" class="cqb-input"
-                                            placeholder="seuemail@gmail.com" oninput="evalGoogleStep1()">
-                                    </div>
-                                    <button class="cqb-btn cqb-btn-primary" id="btn-oauth" onclick="startOAuth()" disabled>
-                                        <i class="fas fa-arrow-up-right-from-square"></i> Iniciar Autorização OAuth
-                                    </button>
-                                    <!-- Code input box (aparece após clicar) -->
-                                    <div class="cqb-code-box" id="oauth-code-box">
-                                        <p>
-                                            <i class="fas fa-circle-info" style="color:var(--cqb-blue);margin-right:6px;"></i>
-                                            Uma nova aba foi aberta. Após aceitar as permissões, a URL mostrará
-                                            <code>?code=4/0A...</code> &mdash; copie apenas o valor do parâmetro <code>code</code>
-                                            e cole abaixo.
+                                <!-- STEP 2: Service Account + OAuth -->
+                                <div class="cqb-step" id="gstep-2">
+                                    <div class="cqb-step-dot">2</div>
+                                    <div class="cqb-step-content">
+                                        <h3 class="cqb-step-title">Autorização OAuth</h3>
+                                        <p class="cqb-step-desc">
+                                            Informe o e-mail adicionado como <strong>Usuário de Teste</strong> no OAuth
+                                            consent screen e inicie a autorização para gerar o token de acesso ao Drive.
                                         </p>
-                                        <div style="display:flex;gap:12px;margin-top:12px;">
-                                            <input type="text" id="oauth-code-input" class="cqb-input"
-                                                placeholder="4/0AanRRrsBq...">
-                                            <button class="cqb-btn cqb-btn-success" onclick="exchangeToken()" style="flex-shrink:0;">
-                                                <i class="fas fa-key"></i> Trocar
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- STEP 3: Drive Folder -->
-                            <div class="cqb-step" id="gstep-3">
-                                <div class="cqb-step-dot">3</div>
-                                <div class="cqb-step-content">
-                                    <h3 class="cqb-step-title">Pasta Raiz no Drive</h3>
-                                    <p class="cqb-step-desc">
-                                        Informe o ID da pasta raiz do Google Drive (obtido via URL após <code>/folders/</code>).
-                                    </p>
-                                    <div class="cqb-form-row">
-                                        <div class="cqb-form-group" style="flex:2;min-width:0;">
-                                            <label class="cqb-label" for="g-folder-id">
-                                                <i class="fas fa-folder-tree"></i> ID da Pasta Raiz
+                                        <div class="cqb-form-group">
+                                            <label class="cqb-label" for="g-svc-email">
+                                                <i class="fas fa-envelope"></i> E-mail de Teste OAuth
                                             </label>
-                                            <input type="text" id="g-folder-id" class="cqb-input"
-                                                placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs..." disabled>
+                                            <input type="email" id="g-svc-email" class="cqb-input"
+                                                placeholder="seuemail@gmail.com" oninput="evalGoogleStep1()">
                                         </div>
-                                        <div class="cqb-form-group" style="flex:1;min-width:140px;">
-                                            <label class="cqb-label">&nbsp;</label>
-                                            <button class="cqb-btn cqb-btn-outline cqb-btn-block" id="btn-test-drive"
-                                                onclick="testDriveSetup()" disabled>
-                                                <i class="fas fa-circle-check"></i> Testar Conexão
-                                            </button>
+                                        <button class="cqb-btn cqb-btn-primary" id="btn-oauth" onclick="startOAuth()"
+                                            disabled>
+                                            <i class="fas fa-arrow-up-right-from-square"></i> Iniciar Autorização OAuth
+                                        </button>
+                                        <!-- Code input box (aparece após clicar) -->
+                                        <div class="cqb-code-box" id="oauth-code-box">
+                                            <p>
+                                                <i class="fas fa-circle-info"
+                                                    style="color:var(--cqb-blue);margin-right:6px;"></i>
+                                                Uma nova aba foi aberta. Após aceitar as permissões, a URL mostrará
+                                                <code>?code=4/0A...</code> &mdash; copie apenas o valor do parâmetro
+                                                <code>code</code>
+                                                e cole abaixo.
+                                            </p>
+                                            <div style="display:flex;gap:12px;margin-top:12px;">
+                                                <input type="text" id="oauth-code-input" class="cqb-input"
+                                                    placeholder="4/0AanRRrsBq...">
+                                                <button class="cqb-btn cqb-btn-success" onclick="exchangeToken()"
+                                                    style="flex-shrink:0;">
+                                                    <i class="fas fa-key"></i> Trocar
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="cqb-alert cqb-alert-info" style="display:none;" id="drive-test-info">
-                                        <i class="fas fa-folder-open"></i>
-                                        <span>Conexão bem sucedida! Os módulos do Hub foram liberados.</span>
                                     </div>
                                 </div>
-                            </div>
 
-                        </div><!-- /steps -->
-                    </div>
-                </div>
+                                <!-- STEP 3: Drive Folder -->
+                                <div class="cqb-step" id="gstep-3">
+                                    <div class="cqb-step-dot">3</div>
+                                    <div class="cqb-step-content">
+                                        <h3 class="cqb-step-title">Pasta Raiz no Drive</h3>
+                                        <p class="cqb-step-desc">
+                                            Informe o ID da pasta raiz do Google Drive (obtido via URL após
+                                            <code>/folders/</code>).
+                                        </p>
+                                        <div class="cqb-form-row">
+                                            <div class="cqb-form-group" style="flex:2;min-width:0;">
+                                                <label class="cqb-label" for="g-folder-id">
+                                                    <i class="fas fa-folder-tree"></i> ID da Pasta Raiz
+                                                </label>
+                                                <input type="text" id="g-folder-id" class="cqb-input"
+                                                    placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs..." disabled>
+                                            </div>
+                                            <div class="cqb-form-group" style="flex:1;min-width:140px;">
+                                                <label class="cqb-label">&nbsp;</label>
+                                                <button class="cqb-btn cqb-btn-outline cqb-btn-block"
+                                                    id="btn-test-drive" onclick="testDriveSetup()" disabled>
+                                                    <i class="fas fa-circle-check"></i> Testar Conexão
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="cqb-alert cqb-alert-info" style="display:none;"
+                                            id="drive-test-info">
+                                            <i class="fas fa-folder-open"></i>
+                                            <span>Conexão bem sucedida! Os módulos do Hub foram liberados.</span>
+                                        </div>
+                                    </div>
+                                </div>
 
-                <!-- GUIA COLAPSÍVEL (TUTORIAL NO FINAL) - Card com head e body -->
-                <div class="cqb-guide-card" id="guide-card">
-                    <div class="cqb-guide-head" onclick="toggleGuide()">
-                        <div class="cqb-guide-title">
-                            <i class="fas fa-circle-question" style="color:var(--cqb-blue);"></i>
-                            Como configurar seu OAuth no Google Cloud
+                            </div><!-- /steps -->
                         </div>
-                        <i class="fas fa-chevron-down cqb-guide-arrow" id="guide-arr"></i>
                     </div>
-                    <div class="cqb-guide-collapse" id="guide-body">
-                        <div class="cqb-guide-body">
-                            <p
-                                style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--text-primary);margin-bottom:14px;">
-                                <i class="fas fa-cloud" style="color:var(--cqb-blue);margin-right:6px;"></i>
-                                Configurações de Acesso à Nuvem - Google Cloud Console
-                            </p>
 
-                            <!-- Passo 1 -->
-                            <div class="cqb-guide-step">
-                                <span class="cqb-guide-num">1</span>
-                                <div>Acesse <a href="https://console.cloud.google.com" target="_blank"
-                                        rel="noopener noreferrer"
-                                        style="color:var(--cqb-blue);">console.cloud.google.com</a> e <strong>crie um
-                                        projeto novo</strong> ou selecione um existente no seletor do topo da página.</div>
+                    <!-- GUIA COLAPSÍVEL (TUTORIAL NO FINAL) - Card com head e body -->
+                    <div class="cqb-guide-card" id="guide-card">
+                        <div class="cqb-guide-head" onclick="toggleGuide()">
+                            <div class="cqb-guide-title">
+                                <i class="fas fa-circle-question" style="color:var(--cqb-blue);"></i>
+                                Como configurar seu OAuth no Google Cloud
                             </div>
+                            <i class="fas fa-chevron-down cqb-guide-arrow" id="guide-arr"></i>
+                        </div>
+                        <div class="cqb-guide-collapse" id="guide-body">
+                            <div class="cqb-guide-body">
+                                <p
+                                    style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--text-primary);margin-bottom:14px;">
+                                    <i class="fas fa-cloud" style="color:var(--cqb-blue);margin-right:6px;"></i>
+                                    Configurações de Acesso à Nuvem - Google Cloud Console
+                                </p>
 
-                            <!-- Passo 2 -->
-                            <div class="cqb-guide-step">
-                                <span class="cqb-guide-num">2</span>
-                                <div>No menu lateral, vá em <strong>APIs e Serviços -> Biblioteca</strong>. Busque por
-                                    <strong>Google Drive API</strong>, clique no resultado e depois em
-                                    <strong>Ativar</strong>.</div>
-                            </div>
-
-                            <!-- Passo 3 -->
-                            <div class="cqb-guide-step">
-                                <span class="cqb-guide-num">3</span>
-                                <div>
-                                    Ainda em <strong>APIs e Serviços</strong>, clique em <strong>Tela de permissão
-                                        OAuth</strong>.
-                                    Em <em>Tipo de usuário</em>, escolha <strong>Externo</strong> e clique em Criar.
-                                    Preencha o nome do app e o e-mail de suporte. Em <strong>Tipo de aplicativo</strong>,
-                                    escolha <strong>App para computador</strong>. Salve.
+                                <!-- Passo 1 -->
+                                <div class="cqb-guide-step">
+                                    <span class="cqb-guide-num">1</span>
+                                    <div>Acesse <a href="https://console.cloud.google.com" target="_blank"
+                                            rel="noopener noreferrer"
+                                            style="color:var(--cqb-blue);">console.cloud.google.com</a> e <strong>crie
+                                            um
+                                            projeto novo</strong> ou selecione um existente no seletor do topo da
+                                        página.</div>
                                 </div>
-                            </div>
 
-                            <!-- Passo 4 -->
-                            <div class="cqb-guide-step">
-                                <span class="cqb-guide-num">4</span>
-                                <div>
-                                    Na mesma tela de permissão OAuth, clique na aba <strong>Público-alvo</strong> (ou "Test
-                                    users").
-                                    Clique em <strong>Adicionar Usuários</strong> e insira o seu e-mail Google que terá
-                                    acesso ao Drive.
-                                    <em>Este mesmo e-mail você usará no campo "E-mail de Conta de Serviço" abaixo.</em>
+                                <!-- Passo 2 -->
+                                <div class="cqb-guide-step">
+                                    <span class="cqb-guide-num">2</span>
+                                    <div>No menu lateral, vá em <strong>APIs e Serviços -> Biblioteca</strong>. Busque
+                                        por
+                                        <strong>Google Drive API</strong>, clique no resultado e depois em
+                                        <strong>Ativar</strong>.
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Passo 5 -->
-                            <div class="cqb-guide-step">
-                                <span class="cqb-guide-num">5</span>
-                                <div>
-                                    Vá em <strong>Credenciais -> Criar Credencial -> Conta de Serviço</strong>.
-                                    Dê um nome, clique em <strong>Criar e Continuar</strong> e finalize.
-                                    <strong>Anote o e-mail gerado</strong> - ele termina em
-                                    <code>@...iam.gserviceaccount.com</code>.
-                                    Este é o e-mail que você adicionou como usuário de teste no passo anterior.
+                                <!-- Passo 3 -->
+                                <div class="cqb-guide-step">
+                                    <span class="cqb-guide-num">3</span>
+                                    <div>
+                                        Ainda em <strong>APIs e Serviços</strong>, clique em <strong>Tela de permissão
+                                            OAuth</strong>.
+                                        Em <em>Tipo de usuário</em>, escolha <strong>Externo</strong> e clique em Criar.
+                                        Preencha o nome do app e o e-mail de suporte. Em <strong>Tipo de
+                                            aplicativo</strong>,
+                                        escolha <strong>App para computador</strong>. Salve.
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Passo 6 -->
-                            <div class="cqb-guide-step">
-                                <span class="cqb-guide-num">6</span>
-                                <div>
-                                    Ainda em <strong>Credenciais</strong>, clique em <strong>Criar Credencial -> ID do
-                                        Cliente OAuth</strong>.
-                                    Em <em>Tipo de aplicativo</em>, selecione <strong>App para computador</strong>. Clique
-                                    em Criar.
-                                    Na tela seguinte, copie o <strong>ID do cliente</strong> e a <strong>Chave secreta do
-                                        cliente</strong> - guarde bem esses dois valores.
+                                <!-- Passo 4 -->
+                                <div class="cqb-guide-step">
+                                    <span class="cqb-guide-num">4</span>
+                                    <div>
+                                        Na mesma tela de permissão OAuth, clique na aba <strong>Público-alvo</strong>
+                                        (ou "Test
+                                        users").
+                                        Clique em <strong>Adicionar Usuários</strong> e insira o seu e-mail Google que
+                                        terá
+                                        acesso ao Drive.
+                                        <em>Este mesmo e-mail você usará no campo "E-mail de Conta de Serviço"
+                                            abaixo.</em>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Passo 7 -->
-                            <div class="cqb-guide-step">
-                                <span class="cqb-guide-num">7</span>
-                                <div>
-                                    Edite a credencial OAuth recém-criada e, em <strong>URIs de redirecionamento
-                                        autorizados</strong>, adicione <strong>os dois</strong> URIs abaixo:
-                                    <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px;">
+                                <!-- Passo 5 -->
+                                <div class="cqb-guide-step">
+                                    <span class="cqb-guide-num">5</span>
+                                    <div>
+                                        Vá em <strong>Credenciais -> Criar Credencial -> Conta de Serviço</strong>.
+                                        Dê um nome, clique em <strong>Criar e Continuar</strong> e finalize.
+                                        <strong>Anote o e-mail gerado</strong> - ele termina em
+                                        <code>@...iam.gserviceaccount.com</code>.
+                                        Este é o e-mail que você adicionou como usuário de teste no passo anterior.
+                                    </div>
+                                </div>
+
+                                <!-- Passo 6 -->
+                                <div class="cqb-guide-step">
+                                    <span class="cqb-guide-num">6</span>
+                                    <div>
+                                        Ainda em <strong>Credenciais</strong>, clique em <strong>Criar Credencial -> ID
+                                            do
+                                            Cliente OAuth</strong>.
+                                        Em <em>Tipo de aplicativo</em>, selecione <strong>App para computador</strong>.
+                                        Clique
+                                        em Criar.
+                                        Na tela seguinte, copie o <strong>ID do cliente</strong> e a <strong>Chave
+                                            secreta do
+                                            cliente</strong> - guarde bem esses dois valores.
+                                    </div>
+                                </div>
+
+                                <!-- Passo 7 -->
+                                <div class="cqb-guide-step">
+                                    <span class="cqb-guide-num">7</span>
+                                    <div>
+                                        Edite a credencial OAuth recém-criada e, em <strong>URIs de redirecionamento
+                                            autorizados</strong>, adicione <strong>os dois</strong> URIs abaixo:
+                                        <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px;">
+                                            <code
+                                                style="display:block;padding:6px 10px;background:rgba(33,150,243,0.08);border-radius:6px;font-size:0.82rem;">http://localhost:3000/auth/callback</code>
+                                            <div id="guide-esp-uri" style="display:flex;align-items:center;gap:8px;">
+                                                <code id="guide-esp-uri-code"
+                                                    style="display:block;padding:6px 10px;background:rgba(40,167,69,0.08);border-radius:6px;font-size:0.82rem;flex:1;">http://&lt;ip-do-esp32&gt;/auth/callback</code>
+                                                <button type="button" onclick="copyEspUri()"
+                                                    class="cqb-btn cqb-btn-ghost cqb-btn-sm" style="flex-shrink:0;"
+                                                    title="Copiar URI do ESP32"><i class="fas fa-copy"></i></button>
+                                            </div>
+                                        </div>
+                                        <small style="color:var(--text-sub);display:block;margin-top:6px;"><i
+                                                class="fas fa-circle-info" style="color:var(--cqb-blue);"></i> O segundo
+                                            URI (IP
+                                            do ESP32) permite a captura automática do código OAuth - sem precisar copiar
+                                            da
+                                            URL.</small>
+                                    </div>
+                                </div>
+
+                                <!-- Passo 8 -->
+                                <div class="cqb-guide-step">
+                                    <span class="cqb-guide-num">8</span>
+                                    <div>
+                                        Preencha o <strong>Client ID</strong>, <strong>Client Secret</strong> e o
+                                        <strong>e-mail</strong> nos campos da seção acima.
+                                        Clique em <strong>Iniciar Autorização OAuth</strong>. Uma nova aba abrirá para
+                                        você
+                                        conceder permissão ao Drive.
+                                        Após autorizar, o sistema tentará capturar o código automaticamente.
+                                        Se não conseguir, a URL exibirá algo como:
                                         <code
-                                            style="display:block;padding:6px 10px;background:rgba(33,150,243,0.08);border-radius:6px;font-size:0.82rem;">http://localhost:3000/auth/callback</code>
-                                        <div id="guide-esp-uri" style="display:flex;align-items:center;gap:8px;">
-                                            <code id="guide-esp-uri-code"
-                                                style="display:block;padding:6px 10px;background:rgba(40,167,69,0.08);border-radius:6px;font-size:0.82rem;flex:1;">http://&lt;ip-do-esp32&gt;/auth/callback</code>
-                                            <button type="button" onclick="copyEspUri()"
-                                                class="cqb-btn cqb-btn-ghost cqb-btn-sm" style="flex-shrink:0;"
-                                                title="Copiar URI do ESP32"><i class="fas fa-copy"></i></button>
-                                        </div>
+                                            style="display:block;margin-top:6px;padding:6px 10px;background:rgba(0,0,0,0.04);border-radius:6px;font-size:0.79rem;word-break:break-all;">http://localhost:3000/auth/callback?...&amp;code=4/0Aci98...&amp;scope=...</code>
+                                        Copie apenas o valor entre <code>&amp;code=</code> e o próximo
+                                        <code>&amp;</code> e cole
+                                        no campo abaixo.
                                     </div>
-                                    <small style="color:var(--text-sub);display:block;margin-top:6px;"><i
-                                            class="fas fa-circle-info" style="color:var(--cqb-blue);"></i> O segundo URI (IP
-                                        do ESP32) permite a captura automática do código OAuth - sem precisar copiar da
-                                        URL.</small>
-                                </div>
-                            </div>
-
-                            <!-- Passo 8 -->
-                            <div class="cqb-guide-step">
-                                <span class="cqb-guide-num">8</span>
-                                <div>
-                                    Preencha o <strong>Client ID</strong>, <strong>Client Secret</strong> e o
-                                    <strong>e-mail</strong> nos campos da seção acima.
-                                    Clique em <strong>Iniciar Autorização OAuth</strong>. Uma nova aba abrirá para você
-                                    conceder permissão ao Drive.
-                                    Após autorizar, o sistema tentará capturar o código automaticamente.
-                                    Se não conseguir, a URL exibirá algo como:
-                                    <code
-                                        style="display:block;margin-top:6px;padding:6px 10px;background:rgba(0,0,0,0.04);border-radius:6px;font-size:0.79rem;word-break:break-all;">http://localhost:3000/auth/callback?...&amp;code=4/0Aci98...&amp;scope=...</code>
-                                    Copie apenas o valor entre <code>&amp;code=</code> e o próximo <code>&amp;</code> e cole
-                                    no campo abaixo.
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- ══ SEÇÃO: BLUETOOTH ═════════════════════════════ -->
-            <section id="section-bluetooth" class="cqb-section d-none">
-                <div class="cqb-card">
-                    <div class="cqb-card-header">
-                        <i class="fab fa-bluetooth hd-icon"></i> Configurações Bluetooth
-                    </div>
-                    <div class="cqb-card-body">
-                        <div class="cqb-alert cqb-alert-info">
-                            <i class="fas fa-info-circle"></i>
-                            <span>O Bluetooth permite que o dispositivo seja localizado por outros aparelhos. O PIN
-                                padrão é <strong>1234</strong>.</span>
+                <!-- ══ SEÇÃO: BLUETOOTH ═════════════════════════════ -->
+                <section id="section-bluetooth" class="cqb-section d-none">
+                    <div class="cqb-card">
+                        <div class="cqb-card-header">
+                            <i class="fab fa-bluetooth hd-icon"></i> Configurações Bluetooth
                         </div>
-                        
-                        <div class="cqb-switch-wrap">
-                            <label class="cqb-label" for="bt-enable-switch" style="margin:0;">
-                                <i class="fab fa-bluetooth-b"></i> Ativar Visibilidade Bluetooth
-                            </label>
-                            <input class="cqb-switch" type="checkbox" id="bt-enable-switch" onchange="updateBtStatus()">
-                        </div>
-
-                        <div class="cqb-form-row">
-                            <div class="cqb-form-group">
-                                <label class="cqb-label">
-                                    <i class="fas fa-tag"></i> Nome do Dispositivo
-                                </label>
-                                <input type="text" id="bt-name-input" class="cqb-input" placeholder="Canalqb - ESP32">
+                        <div class="cqb-card-body">
+                            <div class="cqb-alert cqb-alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <span>O Bluetooth permite que o dispositivo seja localizado por outros aparelhos. O PIN
+                                    padrão é <strong>1234</strong>.</span>
                             </div>
-                            <div class="cqb-form-group">
-                                <label class="cqb-label">
-                                    <i class="fas fa-key"></i> PIN de Pareamento
+
+                            <div class="cqb-switch-wrap">
+                                <label class="cqb-label" for="bt-enable-switch" style="margin:0;">
+                                    <i class="fab fa-bluetooth-b"></i> Ativar Visibilidade Bluetooth
                                 </label>
-                                <input type="text" id="bt-pin-input" class="cqb-input" placeholder="1234" maxlength="4">
+                                <input class="cqb-switch" type="checkbox" id="bt-enable-switch"
+                                    onchange="updateBtStatus()">
+                            </div>
+
+                            <div class="cqb-form-row">
+                                <div class="cqb-form-group">
+                                    <label class="cqb-label">
+                                        <i class="fas fa-tag"></i> Nome do Dispositivo
+                                    </label>
+                                    <input type="text" id="bt-name-input" class="cqb-input"
+                                        placeholder="Canalqb - ESP32">
+                                </div>
+                                <div class="cqb-form-group">
+                                    <label class="cqb-label">
+                                        <i class="fas fa-key"></i> PIN de Pareamento
+                                    </label>
+                                    <input type="text" id="bt-pin-input" class="cqb-input" placeholder="1234"
+                                        maxlength="4">
+                                </div>
+                            </div>
+
+                            <button class="cqb-btn cqb-btn-primary cqb-btn-block" onclick="saveBtConfig()"
+                                style="margin-top:8px;">
+                                <i class="fas fa-floppy-disk"></i> Salvar e Aplicar Configurações
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                <section id="section-marketplace" class="cqb-section d-none">
+                    <div class="cqb-card">
+                        <div class="cqb-card-header">
+                            <i class="fas fa-store hd-icon"></i> Marketplace @CanalQb
+                        </div>
+                        <div class="cqb-card-body">
+                            <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:20px;">
+                                Scripts, automações e módulos desenvolvidos e validados pelo @CanalQb para o ecossistema
+                                Opus.
+                            </p>
+                            <div id="market-list" class="row g-3"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══ SEÇÃO: CHAT ════════════════════════════════════ -->
+                <section id="section-chat" class="cqb-section d-none">
+                    <div class="cqb-card">
+                        <div class="cqb-card-header">
+                            <i class="fas fa-comments hd-icon"></i> Chat Opus AI
+                        </div>
+                        <div class="cqb-card-body">
+                            <div class="cqb-empty">
+                                <div class="cqb-empty-icon"><i class="fas fa-robot"></i></div>
+                                <p class="cqb-empty-title">Em Desenvolvimento</p>
+                                <p class="cqb-empty-sub">O módulo de Chat Opus AI chega em breve.<br>Fique ligado no
+                                    @CanalQb!</p>
                             </div>
                         </div>
+                    </div>
+                </section>
 
-                        <button class="cqb-btn cqb-btn-primary cqb-btn-block" onclick="saveBtConfig()" style="margin-top:8px;">
-                            <i class="fas fa-floppy-disk"></i> Salvar e Aplicar Configurações
-                        </button>
-                    </div>
-                </div>
-            </section>
-            <section id="section-marketplace" class="cqb-section d-none">
-                <div class="cqb-card">
-                    <div class="cqb-card-header">
-                        <i class="fas fa-store hd-icon"></i> Marketplace @CanalQb
-                    </div>
-                    <div class="cqb-card-body">
-                        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:20px;">
-                            Scripts, automações e módulos desenvolvidos e validados pelo @CanalQb para o ecossistema
-                            Opus.
-                        </p>
-                        <div id="market-list" class="row g-3"></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ══ SEÇÃO: CHAT ════════════════════════════════════ -->
-            <section id="section-chat" class="cqb-section d-none">
-                <div class="cqb-card">
-                    <div class="cqb-card-header">
-                        <i class="fas fa-comments hd-icon"></i> Chat Opus AI
-                    </div>
-                    <div class="cqb-card-body">
-                        <div class="cqb-empty">
-                            <div class="cqb-empty-icon"><i class="fas fa-robot"></i></div>
-                            <p class="cqb-empty-title">Em Desenvolvimento</p>
-                            <p class="cqb-empty-sub">O módulo de Chat Opus AI chega em breve.<br>Fique ligado no
-                                @CanalQb!</p>
+                <!-- ══ SEÇÃO: CONFIG ══════════════════════════════════ -->
+                <section id="section-config" class="cqb-section d-none">
+                    <div class="cqb-card">
+                        <div class="cqb-card-header">
+                            <i class="fas fa-gear hd-icon"></i> Configurações Avançadas
+                        </div>
+                        <div class="cqb-card-body">
+                            <div class="cqb-empty">
+                                <div class="cqb-empty-icon"><i class="fas fa-gear"></i></div>
+                                <p class="cqb-empty-title">Em Breve</p>
+                                <p class="cqb-empty-sub">Este módulo foi otimizado para os leitores do
+                                    canalqb.com.br.<br>Novidades chegando!</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- ══ SEÇÃO: CONFIG ══════════════════════════════════ -->
-            <section id="section-config" class="cqb-section d-none">
-                <div class="cqb-card">
-                    <div class="cqb-card-header">
-                        <i class="fas fa-gear hd-icon"></i> Configurações Avançadas
-                    </div>
-                    <div class="cqb-card-body">
-                        <div class="cqb-empty">
-                            <div class="cqb-empty-icon"><i class="fas fa-gear"></i></div>
-                            <p class="cqb-empty-title">Em Breve</p>
-                            <p class="cqb-empty-sub">Este módulo foi otimizado para os leitores do
-                                canalqb.com.br.<br>Novidades chegando!</p>
+                <!-- ══ FOOTER ══════════════════════════════════════════ -->
+                <footer class="cqb-footer">
+                    <div class="cqb-footer-donation">
+                        <div class="don-text">
+                            <h6><i class="fas fa-mug-hot" style="margin-right:6px;color:var(--cqb-yellow);"></i>Apoie o
+                                @CanalQb ☕</h6>
+                            <p>Sua ajuda mantém o projeto ativo. Todo apoio é bem-vindo!</p>
+                        </div>
+                        <div class="don-btns">
+                            <button class="cqb-btn cqb-btn-dark cqb-btn-sm" onclick="copyPix()">
+                                <i class="fas fa-qrcode"></i> Pix: qrodrigob@gmail.com
+                            </button>
+                            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=qrodrigob@gmail.com&currency_code=BRL"
+                                class="cqb-btn cqb-btn-primary cqb-btn-sm" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-hand-holding-dollar"></i> Doação via PayPal
+                            </a>
                         </div>
                     </div>
-                </div>
-            </section>
 
-            <!-- ══ FOOTER ══════════════════════════════════════════ -->
-            <footer class="cqb-footer">
-                <div class="cqb-footer-donation">
-                    <div class="don-text">
-                        <h6><i class="fas fa-mug-hot" style="margin-right:6px;color:var(--cqb-yellow);"></i>Apoie o
-                            @CanalQb ☕</h6>
-                        <p>Sua ajuda mantém o projeto ativo. Todo apoio é bem-vindo!</p>
+                    <div class="cqb-footer-copy">
+                        Desenvolvido com
+                        <a href="https://canalqb.blogspot.com/?c=Claude" target="_blank"
+                            rel="noopener noreferrer">Master
+                            Rules Claude</a>
+                        &nbsp;·&nbsp;
+                        <a href="https://getbootstrap.com" target="_blank" rel="noopener noreferrer">Bootstrap 5.3</a>
+                        +
+                        <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer">Tailwind CSS 3</a>
+                        &nbsp;·&nbsp; &copy; 2026 @CanalQb. Todos os direitos reservados.
                     </div>
-                    <div class="don-btns">
-                        <button class="cqb-btn cqb-btn-dark cqb-btn-sm" onclick="copyPix()">
-                            <i class="fas fa-qrcode"></i> Pix: qrodrigob@gmail.com
-                        </button>
-                        <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=qrodrigob@gmail.com&currency_code=BRL"
-                            class="cqb-btn cqb-btn-primary cqb-btn-sm" target="_blank" rel="noopener noreferrer">
-                            <i class="fas fa-hand-holding-dollar"></i> Doação via PayPal
-                        </a>
-                    </div>
-                </div>
-
-                <div class="cqb-footer-copy">
-                    Desenvolvido com
-                    <a href="https://canalqb.blogspot.com/?c=Claude" target="_blank" rel="noopener noreferrer">Master
-                        Rules Claude</a>
-                    &nbsp;·&nbsp;
-                    <a href="https://getbootstrap.com" target="_blank" rel="noopener noreferrer">Bootstrap 5.3</a>
-                    +
-                    <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer">Tailwind CSS 3</a>
-                    &nbsp;·&nbsp; &copy; 2026 @CanalQb. Todos os direitos reservados.
-                </div>
-            </footer>
+                </footer>
             </div><!-- /container -->
         </main>
     </div><!-- /wrapper -->
