@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "bloggerwindsurf",
+  "private_key_id": "0de5154ca68121058b252c9b6d88a0a1debde24d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEuQIBADANBgkqhkiG9w0BAQEFAASCBKMwggSfAgEAAoIBAQDHGA5BGSVRVvGG\nW4cc7rrTcOB+cpie62V9//QAfiu+eBvDxdt8YsJhVcdmpeH05A8VEGa/ADIBC/xd\nNlVH4x5f/ke03sC+NdH9Y5sElz1IZbpuxRVZ/zkSUtI5GCLpvpboDVZ+ntLWdhBy\nA7FMAEJ3Dmt2waKe2+V8rdejLEPR3cOujOgyXhkdkIqYO+Br8tU1hTI5/6KCooqV\nOCXdbpUdzSUjCEWFM2izODnsFWRzBFSDbDPZzW2iiYLYrazAMBfsR8Bo2dE1ht/y\n3DWaCvhBIIAFo+W2z4FA6PxTNoBLTGVPdxsRwCOfG6/E1a04tT5UCAHWJGMAn9ee\njFxZWOE1AgMBAAECgf8/H4wQF749Nn5dRae7r0qMv2fDWjy0JkOHhMoCs1OAkD7n\n/f4Y8eGvUAMTXdoboDMn+otDrkwsXiB6wpSctjsV3wkyehhM4RjdveGTEwswaRCI\nY57had+DxRPiBkULgeIBW46Q7B+XiiyspCm9Ga1OZ26rDbmsTwvzpn/ivFDEY3v6\nLuCCn2APm192iEnTJl6MMuvN3BLDWa2k87nXFrt1GeTi0LHM+vm6gj/hR3vQAzld\n60AoSptv9QGcExT4suG/4n59FfmP+0oArelDLuOth7UpdqeOoV1nMrUpF7ghlDGt\nB5+FxqI3LC684xC5y7kH+Ztnf/I5To2k7n57ee8CgYEA8iS/9csZUVUpRM62JuOz\n0Zu2XBy5W0ok0MVbj6klmR3fUgWL8hFqvlKBdU0AnON+dol6Z+INWPnkTWtj+0z/\nMfb0UP1zPcjgxjI6qRqLUFReWyV6EYOlmrXe8UnaCDMKiML4M+7E1MxP/X9JmK65\ntyTlIJ8FxefQ7LsEc1ensocCgYEA0nyoFYn20TERRZEMjdOcfwkIwiEetsz4ZCUi\nYkryi+MEXvu1Xqa/YjpjyCBN+0/t1WuQLYBKjFCoA83Bd3s9+hjBlSQu+GkbRGGV\nuvC+yG3NBLrTrC8ceq0CVZoGHPlal+8kEhOHsa0IeDSBqXkS0dlasLV37Er/+1az\nGrDVMWMCf0QaEeMPPA+j4/d2K8TERc6t/JvreDY0pCYTW60L5Ycq36Qx6yopu9vL\nWJ2lCocVdHviLosJCLf9kDg1++ixvxROYGhm4AKAfLdBaT4mOQhesirwX2SNogXh\nINK78pZbxJqyOxxgCvvOerDRG+HVQmY/+jEyiG0gxaHO93F5NbECgYAilx3APGX1\nRs0B065ueEIVllR8Ipk7jT+cpYWbBZoKZwpG2bKalWiKKfJP5w8pp578HasZ7yVR\nHcgep+eNTRGIUh0t9z5I0G0MtcS3bezMX0774f/7IdraRihGDQPIKyo6IbCZz9/S\n0Q69QlO0mBMBrWh79bZ5fHHIyhyw3DKM5QKBgQCV+2VEZAX3ZjKJ50nTXMngiRmw\nrGMZfdc6qhFsJGli1qTsvbAhQUUTWqVdsWej/I48zDyrVogT/j0jKrSBhtkToFK/\nDxkuHvj0Ex4xCedA7K72IhfA+9NA2oufB3qVRizrBiBSGxt+p++Vtth/pg9oo24V\nKrb44PdHYsG7bFliYQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "esp-624@bloggerwindsurf.iam.gserviceaccount.com",
+  "client_id": "109307734564385495364",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/esp-624%40bloggerwindsurf.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

@@ -51,6 +51,15 @@ struct Config {
   bool bluetooth_enabled = false;
   String bt_name = "CanalQb-ESP32";
   String bt_pin = "1234";
+  
+  // OAuth e Google Drive
+  String oauth_client_id = "";
+  String oauth_client_secret = "";
+  String oauth_refresh_token = "";
+  String oauth_access_token = "";
+  String gdrive_service_email = "";
+  String gdrive_folder_id = "";
+  long oauth_token_expires = 0;
 } config;
 
 // HTML da página de configuração (PROGMEM)
@@ -532,6 +541,7 @@ void handleNotFound(AsyncWebServerRequest *request);
 void handleCaptivePortal(AsyncWebServerRequest *request);
 void handleConfig(AsyncWebServerRequest *request);
 void handleBtConfig(AsyncWebServerRequest *request);
+void handleStatus(AsyncWebServerRequest *request);
 void setupAPMode();
 void setupSTAMode();
 void setupWebServer();
@@ -703,6 +713,55 @@ void handleConfig(AsyncWebServerRequest *request) {
   doc["bt_name"] = config.bt_name;
   doc["bt_pin"] = config.bt_pin;
   
+  // OAuth e Google Drive - persistência de credenciais
+  doc["oauth"]["client_id"] = config.oauth_client_id;
+  doc["oauth"]["client_secret"] = config.oauth_client_secret;
+  doc["oauth"]["refresh_token"] = config.oauth_refresh_token;
+  doc["oauth"]["access_token"] = config.oauth_access_token;
+  doc["oauth"]["token_expires"] = config.oauth_token_expires;
+  
+  // Google Drive
+  doc["gdrive"]["service_email"] = config.gdrive_service_email;
+  doc["gdrive"]["folder_id"] = config.gdrive_folder_id;
+  
+  // Verificar se token ainda é válido
+  long currentTime = millis() / 1000;
+  bool tokenValid = config.oauth_access_token.length() > 0 && 
+                    (config.oauth_token_expires == 0 || currentTime < config.oauth_token_expires);
+  doc["oauth"]["token_valid"] = tokenValid;
+  
+  String response;
+  serializeJson(doc, response);
+  request->send(200, "application/json", response);
+}
+
+void handleStatus(AsyncWebServerRequest *request) {
+  JsonDocument doc;
+  
+  // Status da conexão WiFi
+  doc["wifi"]["connected"] = (WiFi.status() == WL_CONNECTED);
+  doc["wifi"]["ssid"] = WiFi.SSID();
+  doc["wifi"]["rssi"] = WiFi.RSSI();
+  doc["wifi"]["ip"] = WiFi.localIP().toString();
+  doc["wifi"]["gateway"] = WiFi.gatewayIP().toString();
+  doc["wifi"]["dns"] = WiFi.dnsIP().toString();
+  doc["wifi"]["mode"] = WiFi.getMode() == WIFI_STA ? "STA" : WiFi.getMode() == WIFI_AP ? "AP" : "AP_STA";
+  
+  // Status do Bluetooth
+  doc["bluetooth"]["enabled"] = config.bluetooth_enabled;
+  doc["bluetooth"]["active"] = SerialBT.hasClient();
+  doc["bluetooth"]["name"] = config.bt_name;
+  
+  // Informações do sistema
+  doc["system"]["uptime"] = millis();
+  doc["system"]["free_heap"] = ESP.getFreeHeap();
+  doc["system"]["chip_id"] = ESP.getChipModel();
+  doc["system"]["flash_size"] = ESP.getFlashChipSize();
+  
+  // Status geral
+  doc["status"] = "ok";
+  doc["connected"] = (WiFi.status() == WL_CONNECTED);
+  
   String response;
   serializeJson(doc, response);
   request->send(200, "application/json", response);
@@ -866,20 +925,53 @@ void setupWebServer() {
   server.on("/api/restart", HTTP_GET, handleRestart);
   server.on("/api/config", HTTP_GET, handleConfig);
   server.on("/api/bt_config", HTTP_GET, handleBtConfig);
+  server.on("/api/status", HTTP_GET, handleStatus);
   server.on("/api/settings", HTTP_POST, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
     // Handler para POST JSON
     JsonDocument doc;
     DeserializationError error = deserializeJson(doc, (const char*)data, len);
     
     if (!error) {
-      if (doc.containsKey("bt_enabled")) {
+      // Bluetooth settings
+      if (doc["bt_enabled"].is<bool>()) {
         config.bluetooth_enabled = doc["bt_enabled"];
       }
-      if (doc.containsKey("bt_name")) {
+      if (doc["bt_name"].is<const char*>()) {
         config.bt_name = doc["bt_name"].as<String>();
       }
-      if (doc.containsKey("bt_pin")) {
+      if (doc["bt_pin"].is<const char*>()) {
         config.bt_pin = doc["bt_pin"].as<String>();
+      }
+      
+      // OAuth settings
+      if (doc["oauth"].is<JsonObject>()) {
+        JsonObject oauth = doc["oauth"];
+        if (oauth["client_id"].is<const char*>()) {
+          config.oauth_client_id = oauth["client_id"].as<String>();
+        }
+        if (oauth["client_secret"].is<const char*>()) {
+          config.oauth_client_secret = oauth["client_secret"].as<String>();
+        }
+        if (oauth["refresh_token"].is<const char*>()) {
+          config.oauth_refresh_token = oauth["refresh_token"].as<String>();
+        }
+        if (oauth["access_token"].is<const char*>()) {
+          config.oauth_access_token = oauth["access_token"].as<String>();
+        }
+        if (oauth["token_expires"].is<long>()) {
+          config.oauth_token_expires = oauth["token_expires"];
+        }
+      }
+      
+      // Google Drive settings
+      if (doc["gdrive"].is<JsonObject>()) {
+        JsonObject gdrive = doc["gdrive"];
+        if (gdrive["service_email"].is<const char*>()) {
+          config.gdrive_service_email = gdrive["service_email"].as<String>();
+        }
+        if (gdrive["folder_id"].is<const char*>()) {
+          config.gdrive_folder_id = gdrive["folder_id"].as<String>();
+        }
       }
       
       saveConfig();
