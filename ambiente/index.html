@@ -827,7 +827,9 @@
 
             /* VALIDAÇÃO GOOGLE - Desativar cadeados se tudo configurado */
             window.checkGoogleConfigComplete = async function() {
+                console.log('DEBUG - checkGoogleConfigComplete() INICIADA');
                 try {
+                    console.log('DEBUG - Fazendo fetch para:', `http://${S.espIp}/api/config`);
                     const response = await fetch(`http://${S.espIp}/api/config`);
                     const config = await response.json();
                     
@@ -920,13 +922,14 @@
                         }
                     }
                 } catch (error) {
-                    console.error('Erro ao verificar configuração Google:', error);
+                    console.error('DEBUG - ERRO EM checkGoogleConfigComplete():', error);
                     showToast('Erro ao verificar configuração Google', 'error');
                 }
             };
 
             // Executar validação ao carregar a página
             setTimeout(() => {
+                console.log('DEBUG - Chamando checkGoogleConfigComplete() em 2s');
                 checkGoogleConfigComplete();
             }, 2000);
 
