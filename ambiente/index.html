@@ -28,9 +28,22 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-W45V7S5Z');</script>
+    <!-- End Google Tag Manager -->
 </head>
 
 <body>
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W45V7S5Z"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
 
     <!-- TOAST CONTAINER -->
     <div id="cqb-toasts" role="alert" aria-live="assertive" aria-atomic="true"></div>
@@ -1602,7 +1615,6 @@
                     console.log(`Configuração restaurada enviada ao ESP32.`);
 
                 } catch (error) {
-                    console.error('Erro ao restaurar configurações:', error);
                     showToast('Erro ao restaurar configurações: ' + error.message, 'error');
                 }
             }
@@ -1615,8 +1627,17 @@
                     .catch(() => showToast('Copie manualmente: ' + pix, 'info'));
             };
 
+            // Script de integração GA4-GTM
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src =
+            'https://www.googletagmanager.com/gtag/js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','G-XXXXX');
         })();
     </script>
+
+    <!-- Google Analytics 4 + GTM Integration Script -->
+    <script src="ga4-gtm-integration.js"></script>
 
 </body>
 
