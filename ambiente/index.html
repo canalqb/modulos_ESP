@@ -2090,18 +2090,48 @@
     <script type="text/javascript">
         // AI Configuration Module - OpenRouter Integration
         window.AIModule = {
-            // Modelos gratuitos do OpenRouter
+            // Modelos gratuitos do OpenRouter - Todos os 28 modelos disponíveis
             freeModels: [
-                { name: "NVIDIA Nemotron 3 Super", id: "/nvidia/nemotron-3-super-120b-a12b:free" },
-                { name: "Arcee Trinity Large", id: "/arcee-ai/trinity-large-preview:free" },
-                { name: "Z.ai GLM 4.5 Air", id: "/z-ai/glm-4.5-air:free" },
-                { name: "OpenAI GPT OSS 120B", id: "/openai/gpt-oss-120b:free" },
-                { name: "NVIDIA Nemotron Nano 30B", id: "/nvidia/nemotron-3-nano-30b-a3b:free" },
-                { name: "MiniMax M2.5", id: "/minimax/minimax-m2.5:free" },
-                { name: "Gemma 3 27B", id: "/google/gemma-3-27b-it:free" },
-                { name: "Meta Llama 3.3 70B", id: "/meta-llama/llama-3.3-70b-instruct:free" },
-                { name: "Qwen Coder 480B", id: "/qwen/qwen3-coder:free" },
-                { name: "InclusionAI Ling Flash", id: "/inclusionai/ling-2.6-flash:free" }
+                // NVIDIA Models
+                { name: "NVIDIA: Nemotron 3 Super (free)", id: "/nvidia/nemotron-3-super-120b-a12b:free" },
+                { name: "NVIDIA: Nemotron 3 Nano 30B A3B (free)", id: "/nvidia/nemotron-3-nano-30b-a3b:free" },
+                { name: "NVIDIA: Nemotron Nano 9B V2 (free)", id: "/nvidia/nemotron-nano-9b-v2:free" },
+                { name: "NVIDIA: Nemotron Nano 12B 2 VL (free)", id: "/nvidia/nemotron-nano-12b-v2-vl:free" },
+                { name: "NVIDIA: Llama Nemotron Embed VL 1B V2 (free)", id: "/nvidia/llama-nemotron-embed-vl-1b-v2:free" },
+                
+                // Google Models
+                { name: "Google: Gemma 4 31B (free)", id: "/google/gemma-4-31b-it:free" },
+                { name: "Google: Gemma 4 26B A4B (free)", id: "/google/gemma-4-26b-a4b-it:free" },
+                { name: "Google: Gemma 3 27B (free)", id: "/google/gemma-3-27b-it:free" },
+                { name: "Google: Gemma 3 4B (free)", id: "/google/gemma-3-4b-it:free" },
+                { name: "Google: Gemma 3 12B (free)", id: "/google/gemma-3-12b-it:free" },
+                { name: "Google: Gemma 3n 2B (free)", id: "/google/gemma-3n-e2b-it:free" },
+                { name: "Google: Gemma 3n 4B (free)", id: "/google/gemma-3n-e4b-it:free" },
+                
+                // Meta Models
+                { name: "Meta: Llama 3.3 70B Instruct (free)", id: "/meta-llama/llama-3.3-70b-instruct:free" },
+                { name: "Meta: Llama 3.2 3B Instruct (free)", id: "/meta-llama/llama-3.2-3b-instruct:free" },
+                
+                // OpenAI Models
+                { name: "OpenAI: gpt-oss-120b (free)", id: "/openai/gpt-oss-120b:free" },
+                { name: "OpenAI: gpt-oss-20b (free)", id: "/openai/gpt-oss-20b:free" },
+                
+                // Qwen Models
+                { name: "Qwen: Qwen3 Coder 480B A35B (free)", id: "/qwen/qwen3-coder:free" },
+                { name: "Qwen: Qwen3 Next 80B A3B Instruct (free)", id: "/qwen/qwen3-next-80b-a3b-instruct:free" },
+                
+                // LiquidAI Models
+                { name: "LiquidAI: LFM2.5-1.2B-Thinking (free)", id: "/liquid/lfm-2.5-1.2b-thinking:free" },
+                { name: "LiquidAI: LFM2.5-1.2B-Instruct (free)", id: "/liquid/lfm-2.5-1.2b-instruct:free" },
+                
+                // Other Providers
+                { name: "Arcee AI: Trinity Large Preview (free)", id: "/arcee-ai/trinity-large-preview:free" },
+                { name: "Z.ai: GLM 4.5 Air (free)", id: "/z-ai/glm-4.5-air:free" },
+                { name: "MiniMax: MiniMax M2.5 (free)", id: "/minimax/minimax-m2.5:free" },
+                { name: "inclusionAI: Ling-2.6-flash (free)", id: "/inclusionai/ling-2.6-flash:free" },
+                { name: "Venice: Uncensored (free)", id: "/cognitivecomputations/dolphin-mistral-24b-venice-edition:free" },
+                { name: "Nous: Hermes 3 405B Instruct (free)", id: "/nousresearch/hermes-3-llama-3.1-405b:free" },
+                { name: "Free Models Router", id: "/openrouter/free" }
             ],
             
             init() {
