@@ -209,29 +209,29 @@ jobs:
         echo "" >> $GITHUB_STEP_SUMMARY
         
         echo "## Resultados do CDN Purge" >> $GITHUB_STEP_SUMMARY
-        echo "- **Arquivos processados:** ${{ env.TOTAL_COUNT }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **Arquivos com sucesso:** ${{ env.SUCCESS_COUNT }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Arquivos processados:** $TOTAL_COUNT" >> $GITHUB_STEP_SUMMARY
+        echo "- **Arquivos com sucesso:** $SUCCESS_COUNT" >> $GITHUB_STEP_SUMMARY
         
         # Calcular taxa de sucesso usando shell arithmetic
-        SUCCESS_RATE=$(echo "scale=2; ${{ env.SUCCESS_COUNT }} * 100 / ${{ env.TOTAL_COUNT }}" | bc -l 2>/dev/null || echo "0")
-        if [ "${{ env.SUCCESS_COUNT }}" = "${{ env.TOTAL_COUNT }}" ]; then
+        SUCCESS_RATE=$(echo "scale=2; $SUCCESS_COUNT * 100 / $TOTAL_COUNT" | bc -l 2>/dev/null || echo "0")
+        if [ "$SUCCESS_COUNT" = "$TOTAL_COUNT" ]; then
           SUCCESS_RATE="100"
         fi
         echo "- **Taxa de sucesso:** ${SUCCESS_RATE}%" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         
         echo "## Disponibilidade dos Arquivos" >> $GITHUB_STEP_SUMMARY
-        echo "- **Arquivos disponíveis:** ${{ env.AVAILABLE_COUNT }}/${{ env.TOTAL_COUNT }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Arquivos disponíveis:** $AVAILABLE_COUNT/$TOTAL_COUNT" >> $GITHUB_STEP_SUMMARY
         
         # Calcular taxa de disponibilidade
-        AVAILABLE_RATE=$(echo "scale=2; ${{ env.AVAILABLE_COUNT }} * 100 / ${{ env.TOTAL_COUNT }}" | bc -l 2>/dev/null || echo "0")
-        if [ "${{ env.AVAILABLE_COUNT }}" = "${{ env.TOTAL_COUNT }}" ]; then
+        AVAILABLE_RATE=$(echo "scale=2; $AVAILABLE_COUNT * 100 / $TOTAL_COUNT" | bc -l 2>/dev/null || echo "0")
+        if [ "$AVAILABLE_COUNT" = "$TOTAL_COUNT" ]; then
           AVAILABLE_RATE="100"
         fi
         echo "- **Taxa de disponibilidade:** ${AVAILABLE_RATE}%" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         
-        if [ "${{ env.SUCCESS_COUNT }}" = "${{ env.TOTAL_COUNT }}" ] && [ "${{ env.AVAILABLE_COUNT }}" = "${{ env.TOTAL_COUNT }}" ]; then
+        if [ "$SUCCESS_COUNT" = "$TOTAL_COUNT" ] && [ "$AVAILABLE_COUNT" = "$TOTAL_COUNT" ]; then
           echo "## Status: SUCESSO" >> $GITHUB_STEP_SUMMARY
           echo "Todos os arquivos foram atualizados e estão disponíveis no CDN." >> $GITHUB_STEP_SUMMARY
         else

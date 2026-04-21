@@ -91,7 +91,7 @@ jobs:
         echo "3. jsDelivr Bitbucket (se existir)"
         curl -s -X POST "https://purge.jsdelivr.net/gh/canalqb/modulos_ESP@main" | jq '.id' 2>/dev/null || echo "Not applicable"
         
-        sleep ${{ env.RETRY_DELAY }}
+        sleep $RETRY_DELAY
         
     - name: Aggressive File Purge
       run: |
@@ -120,8 +120,8 @@ jobs:
           RETRY_COUNT=0
           SUCCESS=false
           
-          while [ $RETRY_COUNT -lt ${{ env.MAX_RETRIES }} ] && [ "$SUCCESS" = false ]; do
-            echo "  Tentativa $((RETRY_COUNT + 1))/${{ env.MAX_RETRIES }}"
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ] && [ "$SUCCESS" = false ]; do
+            echo "  Tentativa $((RETRY_COUNT + 1))/$MAX_RETRIES"
             
             # Tentar purge
             PURGE_RESPONSE=$(curl -s -w "%{http_code}" -X POST "https://purge.jsdelivr.net/gh/canalqb/modulos_ESP@main/$file")
@@ -147,20 +147,20 @@ jobs:
               echo "  Purge FALHA: HTTP $HTTP_CODE"
               RETRY_COUNT=$((RETRY_COUNT + 1))
               
-              if [ $RETRY_COUNT -lt ${{ env.MAX_RETRIES }} ]; then
-                echo "  Aguardando ${{ env.RETRY_DELAY }} segundos antes de retry..."
-                sleep ${{ env.RETRY_DELAY }}
+              if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+                echo "  Aguardando $RETRY_DELAY segundos antes de retry..."
+                sleep $RETRY_DELAY
               fi
             fi
           done
           
           if [ "$SUCCESS" = false ]; then
-            echo "  FALHA TOTAL após ${{ env.MAX_RETRIES }} tentativas"
+            echo "  FALHA TOTAL após $MAX_RETRIES tentativas"
             FAILED_FILES+=("$file")
           fi
           
           # Rate limiting entre arquivos
-          sleep ${{ env.WAIT_TIME }}
+          sleep $WAIT_TIME
         done
         
         echo "=== RESUMO DO PURGE AGRESSIVO ==="
@@ -291,27 +291,27 @@ jobs:
         echo "" >> $GITHUB_STEP_SUMMARY
         
         echo "## Resultados do Purge Aggressivo" >> $GITHUB_STEP_SUMMARY
-        echo "- **Arquivos processados:** ${{ env.TOTAL_COUNT }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **Arquivos com sucesso:** ${{ env.SUCCESS_COUNT }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **Arquivos com falha:** ${{ env.FAILED_FILES_COUNT }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Arquivos processados:** $TOTAL_COUNT" >> $GITHUB_STEP_SUMMARY
+        echo "- **Arquivos com sucesso:** $SUCCESS_COUNT" >> $GITHUB_STEP_SUMMARY
+        echo "- **Arquivos com falha:** $FAILED_FILES_COUNT" >> $GITHUB_STEP_SUMMARY
         # Calcular taxa de sucesso
-        SUCCESS_RATE=$(echo "scale=2; ${{ env.SUCCESS_COUNT }} * 100 / ${{ env.TOTAL_COUNT }}" | bc -l 2>/dev/null || echo "0")
-        if [ "${{ env.SUCCESS_COUNT }}" = "${{ env.TOTAL_COUNT }}" ]; then
+        SUCCESS_RATE=$(echo "scale=2; $SUCCESS_COUNT * 100 / $TOTAL_COUNT" | bc -l 2>/dev/null || echo "0")
+        if [ "$SUCCESS_COUNT" = "$TOTAL_COUNT" ]; then
           SUCCESS_RATE="100"
         fi
         echo "- **Taxa de sucesso:** ${SUCCESS_RATE}%" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         
-        if [ "${{ env.FAILED_FILES_COUNT }}" -gt 0 ]; then
+        if [ "$FAILED_FILES_COUNT" -gt 0 ]; then
           echo "## Arquivos com Falha" >> $GITHUB_STEP_SUMMARY
           echo "Os seguintes arquivos não puderam ser atualizados:" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
         fi
         
-        if [ "${{ env.SUCCESS_COUNT }}" = "${{ env.TOTAL_COUNT }}" ]; then
+        if [ "$SUCCESS_COUNT" = "$TOTAL_COUNT" ]; then
           echo "## Status: SUCESSO COMPLETO" >> $GITHUB_STEP_SUMMARY
           echo "Todos os arquivos foram atualizados com sucesso!" >> $GITHUB_STEP_SUMMARY
-        elif [ "${{ env.SUCCESS_COUNT }}" -gt $((TOTAL_COUNT / 2)) ]; then
+        elif [ "$SUCCESS_COUNT" -gt $((TOTAL_COUNT / 2)) ]; then
           echo "## Status: SUCESSO PARCIAL" >> $GITHUB_STEP_SUMMARY
           echo "Maioria dos arquivos foi atualizada, mas alguns precisam de atenção." >> $GITHUB_STEP_SUMMARY
         else
@@ -321,7 +321,7 @@ jobs:
         
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### Próximos Passos" >> $GITHUB_STEP_SUMMARY
-        if [ "${{ env.SUCCESS_COUNT }}" = "${{ env.TOTAL_COUNT }}" ]; then
+        if [ "$SUCCESS_COUNT" = "$TOTAL_COUNT" ]; then
           echo "1. Verificar se os arquivos estão funcionando no navegador" >> $GITHUB_STEP_SUMMARY
           echo "2. Testar funcionalidades críticas do sistema" >> $GITHUB_STEP_SUMMARY
         else
