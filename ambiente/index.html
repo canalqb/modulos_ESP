@@ -820,6 +820,98 @@
 
             loadSavedConfig();
 
+            /* VALIDAÇÃO GOOGLE - Desativar cadeados se tudo configurado */
+            window.checkGoogleConfigComplete = async function() {
+                try {
+                    const response = await fetch(`http://${S.espIp}/api/config`);
+                    const config = await response.json();
+                    
+                    // Verificar todos os campos obrigatórios
+                    const requiredFields = {
+                        client_id: config.oauth?.client_id,
+                        client_secret: config.oauth?.client_secret,
+                        refresh_token: config.oauth?.refresh_token,
+                        access_token: config.oauth?.access_token,
+                        token_expires: config.oauth?.token_expires,
+                        service_email: config.gdrive?.service_email,
+                        folder_id: config.gdrive?.folder_id
+                    };
+                    
+                    // Verificar se todos os campos existem e não estão vazios
+                    const allFieldsComplete = Object.values(requiredFields).every(field => 
+                        field && field !== '' && field !== null && field !== undefined
+                    );
+                    
+                    // Verificar se o token ainda é válido
+                    const tokenValid = config.oauth?.token_valid === true;
+                    const tokenNotExpired = config.oauth?.token_expires > Date.now() / 1000;
+                    
+                    // Se tudo estiver configurado e token válido, desativar cadeados
+                    if (allFieldsComplete && tokenValid && tokenNotExpired) {
+                        console.log('Configuração Google completa - Desativando cadeados');
+                        
+                        // Desativar cadeado do Google Drive
+                        const driveLock = document.getElementById('menu-drive');
+                        if (driveLock) {
+                            driveLock.classList.remove('locked');
+                            const lockIcon = driveLock.querySelector('.fa-lock');
+                            if (lockIcon) {
+                                lockIcon.style.display = 'none';
+                            }
+                        }
+                        
+                        // Desativar cadeado do Marketplace
+                        const marketplaceLock = document.getElementById('menu-marketplace');
+                        if (marketplaceLock) {
+                            marketplaceLock.classList.remove('locked');
+                            const lockIcon = marketplaceLock.querySelector('.fa-lock');
+                            if (lockIcon) {
+                                lockIcon.style.display = 'none';
+                            }
+                        }
+                        
+                        // Atualizar estado do sistema
+                        S.driveConfigured = true;
+                        S.clientId = config.oauth.client_id;
+                        S.clientSecret = config.oauth.client_secret;
+                        S.refreshToken = config.oauth.refresh_token;
+                        S.folderId = config.gdrive.folder_id;
+                        S.svcEmail = config.gdrive.service_email;
+                        
+                        showToast('Configuração Google verificada e completa!', 'success');
+                    } else {
+                        console.log('Configuração Google incompleta ou token inválido');
+                        
+                        // Manter cadeados ativos se algo estiver faltando
+                        const driveLock = document.getElementById('menu-drive');
+                        if (driveLock) {
+                            driveLock.classList.add('locked');
+                            const lockIcon = driveLock.querySelector('.fa-lock');
+                            if (lockIcon) {
+                                lockIcon.style.display = 'inline';
+                            }
+                        }
+                        
+                        const marketplaceLock = document.getElementById('menu-marketplace');
+                        if (marketplaceLock) {
+                            marketplaceLock.classList.add('locked');
+                            const lockIcon = marketplaceLock.querySelector('.fa-lock');
+                            if (lockIcon) {
+                                lockIcon.style.display = 'inline';
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro ao verificar configuração Google:', error);
+                    showToast('Erro ao verificar configuração Google', 'error');
+                }
+            };
+
+            // Executar validação ao carregar a página
+            setTimeout(() => {
+                checkGoogleConfigComplete();
+            }, 1000);
+
             /* TOAST */
             function showToast(msg, type = 'info') {
                 const icons = { success: 'fas fa-circle-check', error: 'fas fa-circle-xmark', info: 'fas fa-circle-info', warn: 'fas fa-triangle-exclamation' };
