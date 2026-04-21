@@ -15,6 +15,10 @@ on:
     paths:
       - 'ambiente/**'
 
+# ESPECIFICAÇÃO: Apenas pasta ambiente/ deve ser sincronizada com CDN
+# Outras pastas (.github, marketplace, etc.) devem permanecer apenas no repositório local
+# NENHUM arquivo fora de ambiente/ deve ser enviado para o CDN
+
 jobs:
   cdn-force-update:
     runs-on: ubuntu-latest
@@ -73,15 +77,14 @@ jobs:
       run: |
         echo "=== Forçando purge de arquivos específicos ==="
         
-        # Lista de arquivos críticos para atualizar
+        # Lista de arquivos críticos para atualizar (apenas pasta ambiente/)
         FILES=(
           "ambiente/index.html"
           "ambiente/style.css"
           "ambiente/components.css"
           "ambiente/secure-config.js"
           "ambiente/ga4-gtm-integration.js"
-          "ambiente/sites-externos.html"
-          "ambiente/ads.txt"
+          "ambiente/sites.txt"
         )
         
         SUCCESS_COUNT=0
