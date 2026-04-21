@@ -55,16 +55,16 @@
 .text-center { text-align: center !important; }
 
 /* -- THEME TOKENS -- */
-:root[data-theme="light"] {
-    --bg-body: #f5f7fb;
+:root[data-theme="light"]:root {
+    --bg-body: #ffffff;
     --bg-card: #ffffff;
     --bg-input: #f8fafc;
     --bg-sidebar: #0f172a;
     --bg-topbar: #ffffff;
     --bg-code: #f1f5f9;
-    --text-primary: #1e293b;
+    --text-primary: #0f172a;
     --text-muted: #64748b;
-    --text-sub: #94a3b8;
+    --text-sub: #475569;
     --border: rgba(0, 0, 0, 0.06);
     --border-input: #e2e8f0;
     --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
@@ -82,9 +82,9 @@
     --bg-sidebar: #020617;
     --bg-topbar: #0f172a;
     --bg-code: #1e293b;
-    --text-primary: #f8fafc;
+    --text-primary: #ffffff;
     --text-muted: #94a3b8;
-    --text-sub: #64748b;
+    --text-sub: #e2e8f0;
     --border: rgba(255, 255, 255, 0.08);
     --border-input: rgba(255, 255, 255, 0.1);
     --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
