@@ -1928,7 +1928,92 @@
     </script>
 
     <!-- Secure Configuration Loader -->
-    <script src="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/secure-config.js"></script>
+    <script>
+/**
+ * Secure Configuration Loader for CanalQB ESP32
+ * 
+ * SECURITY NOTICE:
+ * This file should be loaded from a secure backend or environment variables
+ * Never commit sensitive data to public repositories
+ * 
+ * Usage:
+ * 1. Deploy this to a secure server
+ * 2. Load via: <script src="https://your-secure-server.com/secure-config.js"></script>
+ * 3. Or inject via server-side template
+ */
+
+(function() {
+    'use strict';
+    
+    // Production configuration - should be loaded from secure backend
+    const PROD_CONFIG = {
+        // Google Analytics 4
+        GA4_MEASUREMENT_ID: 'G-392122309', // CanalQB Analytics
+        GA4_PROPERTY_ID: '392122309',
+        
+        // Google Tag Manager
+        GTM_CONTAINER_ID: 'GTM-W45V7S5Z',
+        
+        // Service Account (NEVER expose in frontend)
+        SERVICE_ACCOUNT: null, // Load from backend only
+        
+        // API Endpoints
+        ANALYTICS_ENDPOINT: 'https://canalqb-analytics.onrender.com/api/analytics',
+        
+        // Security
+        DEBUG_MODE: false,
+        TRACKING_ENABLED: true
+    };
+    
+    // Development configuration
+    const DEV_CONFIG = {
+        ...PROD_CONFIG,
+        DEBUG_MODE: true,
+        GA4_MEASUREMENT_ID: 'G-392122309' // Same ID for development
+    };
+    
+    // Environment detection
+    const isDevelopment = window.location.hostname === 'localhost' || 
+                        window.location.hostname === '127.0.0.1' ||
+                        window.location.hostname.includes('dev');
+    
+    // Select appropriate configuration
+    const CONFIG = isDevelopment ? DEV_CONFIG : PROD_CONFIG;
+    
+    // Expose configuration globally
+    window.CQB_CONFIG = CONFIG;
+    
+    // Backward compatibility
+    window.CQB_GA4_MEASUREMENT_ID = CONFIG.GA4_MEASUREMENT_ID;
+    window.CQB_GA4_PROPERTY_ID = CONFIG.GA4_PROPERTY_ID;
+    window.CQB_SERVICE_ACCOUNT = CONFIG.SERVICE_ACCOUNT;
+    
+    // Security validation
+    function validateConfig() {
+        const required = ['GA4_MEASUREMENT_ID', 'GTM_CONTAINER_ID'];
+        const missing = required.filter(key => !CONFIG[key] || CONFIG[key].includes('XXXX'));
+        
+        if (missing.length > 0) {
+            console.warn('CQB Security: Missing configuration for:', missing);
+            console.warn('Please configure secure variables in production environment');
+        }
+    }
+    
+    // Initialize security validation
+    validateConfig();
+    
+    // Log initialization (only in development)
+    if (CONFIG.DEBUG_MODE) {
+        console.log('CQB Secure Configuration loaded:', {
+            environment: isDevelopment ? 'development' : 'production',
+            ga4Configured: !CONFIG.GA4_MEASUREMENT_ID.includes('XXXX'),
+            gtmConfigured: !CONFIG.GTM_CONTAINER_ID.includes('XXXX'),
+            serviceAccountSecure: CONFIG.SERVICE_ACCOUNT === null
+        });
+    }
+    
+})();
+    </script>
 
     <!-- External Sites Loader -->
     <script>
@@ -2252,7 +2337,279 @@
     </style>
 
     <!-- Google Analytics 4 + GTM Integration Script -->
-    <script src="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/ga4-gtm-integration.js"></script>
+    <script>
+/**
+ * Google Analytics 4 + Google Tag Manager Integration
+ * CanalQB ESP32 Dashboard - Advanced Tracking & Automation
+ * 
+ * Features:
+ * - Enhanced event tracking
+ * - Custom dimensions
+ * - User behavior analysis
+ * - Performance monitoring
+ * - Conversion tracking
+ * - Real-time insights
+ */
+
+(function() {
+    'use strict';
+    
+    // Configuration
+    const GTM_GA4_CONFIG = {
+        containerId: 'GTM-W45V7S5Z',
+        measurementId: window.CQB_GA4_MEASUREMENT_ID || 'G-XXXXXXXXXX', // GA4 Measurement ID (configured securely)
+        propertyId: window.CQB_GA4_PROPERTY_ID || 'XXXXXXXXXX', // GA4 Property ID (configured securely)
+        serviceAccount: window.CQB_SERVICE_ACCOUNT || null, // Service Account (configured securely)
+        trackingEnabled: true,
+        debugMode: false,
+        customDimensions: {
+            deviceType: 'custom_dimension_1',
+            userRole: 'custom_dimension_2',
+            featureUsage: 'custom_dimension_3',
+            performanceScore: 'custom_dimension_4'
+        }
+    };
+    
+    // Enhanced Data Layer Manager
+    window.CQBDataLayer = {
+        events: [],
+        userContext: {},
+        sessionData: {},
+        
+        init() {
+            console.log('Initializing CQB Data Layer Manager...');
+            this.setupUserContext();
+            this.trackPageView();
+            this.setupEventListeners();
+            this.startPerformanceTracking();
+        },
+        
+        setupUserContext() {
+            this.userContext = {
+                userId: this.generateUserId(),
+                sessionId: this.generateSessionId(),
+                deviceType: this.detectDeviceType(),
+                browser: this.detectBrowser(),
+                esp32IP: window.S?.espIp || 'unknown',
+                timestamp: new Date().toISOString(),
+                firstVisit: !localStorage.getItem('cqb_returning_user')
+            };
+            
+            if (this.userContext.firstVisit) {
+                localStorage.setItem('cqb_returning_user', 'true');
+                this.trackEvent('first_visit', {
+                    device_type: this.userContext.deviceType,
+                    browser: this.userContext.browser
+                });
+            }
+            
+            // Push to GTM data layer
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                'event': 'user_context_ready',
+                'user_context': this.userContext
+            });
+        },
+        
+        trackPageView(pageData = {}) {
+            const pageDataEnhanced = {
+                page_title: document.title,
+                page_location: window.location.href,
+                page_path: window.location.pathname,
+                ...this.userContext,
+                ...pageData
+            };
+            
+            // GA4 page_view
+            if (window.gtag) {
+                gtag('config', GTM_GA4_CONFIG.measurementId, {
+                    page_path: window.location.pathname,
+                    custom_map: GTM_GA4_CONFIG.customDimensions
+                });
+                
+                gtag('event', 'page_view', pageDataEnhanced);
+            }
+            
+            // Custom tracking
+            this.trackEvent('page_view', pageDataEnhanced);
+        },
+        
+        trackEvent(eventName, parameters = {}) {
+            const eventData = {
+                event_name: eventName,
+                ...parameters,
+                ...this.userContext,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Push to GTM
+            if (window.dataLayer) {
+                window.dataLayer.push({
+                    'event': eventName,
+                    'event_data': eventData
+                });
+            }
+            
+            // GA4 custom event
+            if (window.gtag) {
+                gtag('event', eventName, parameters);
+            }
+            
+            console.log('Event tracked:', eventName, eventData);
+        },
+        
+        setupEventListeners() {
+            // Menu interactions
+            document.addEventListener('click', (e) => {
+                const navLink = e.target.closest('.cqb-nav-link, .cqb-nav-sub');
+                if (navLink) {
+                    const linkText = navLink.querySelector('.nav-lbl')?.textContent || 'Unknown';
+                    this.trackEvent('menu_click', {
+                        menu_item: linkText,
+                        menu_type: navLink.classList.contains('cqb-nav-sub') ? 'submenu' : 'main'
+                    });
+                }
+            });
+            
+            // Form submissions
+            document.addEventListener('submit', (e) => {
+                const form = e.target;
+                const formName = form.getAttribute('data-name') || 'unknown_form';
+                this.trackEvent('form_submit', {
+                    form_name: formName,
+                    form_id: form.id || 'no_id'
+                });
+            });
+            
+            // Button interactions
+            document.addEventListener('click', (e) => {
+                const button = e.target.closest('.cqb-btn');
+                if (button) {
+                    this.trackEvent('button_click', {
+                        button_text: button.textContent.trim(),
+                        button_type: this.getButtonType(button),
+                        button_id: button.id || 'no_id'
+                    });
+                }
+            });
+        },
+        
+        startPerformanceTracking() {
+            // Track page load performance
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    const perfData = this.getPerformanceData();
+                    this.trackEvent('page_performance', perfData);
+                    
+                    // Performance score for optimization
+                    const performanceScore = this.calculatePerformanceScore(perfData);
+                    this.trackEvent('performance_score', {
+                        score: performanceScore,
+                        grade: this.getPerformanceGrade(performanceScore)
+                    });
+                }, 1000);
+            });
+        },
+        
+        // Utility methods
+        generateUserId() {
+            let userId = localStorage.getItem('cqb_user_id');
+            if (!userId) {
+                userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('cqb_user_id', userId);
+            }
+            return userId;
+        },
+        
+        generateSessionId() {
+            let sessionId = sessionStorage.getItem('cqb_session_id');
+            if (!sessionId) {
+                sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                sessionStorage.setItem('cqb_session_id', sessionId);
+            }
+            return sessionId;
+        },
+        
+        detectDeviceType() {
+            const userAgent = navigator.userAgent;
+            if (/Mobi|Android/i.test(userAgent)) return 'mobile';
+            if (/Tablet|iPad/i.test(userAgent)) return 'tablet';
+            return 'desktop';
+        },
+        
+        detectBrowser() {
+            const userAgent = navigator.userAgent;
+            if (userAgent.includes('Chrome')) return 'chrome';
+            if (userAgent.includes('Firefox')) return 'firefox';
+            if (userAgent.includes('Safari')) return 'safari';
+            if (userAgent.includes('Edge')) return 'edge';
+            return 'unknown';
+        },
+        
+        getButtonType(button) {
+            if (button.classList.contains('cqb-btn-primary')) return 'primary';
+            if (button.classList.contains('cqb-btn-secondary')) return 'secondary';
+            if (button.classList.contains('cqb-btn-danger')) return 'danger';
+            if (button.classList.contains('cqb-btn-success')) return 'success';
+            return 'default';
+        },
+        
+        getPerformanceData() {
+            const navigation = performance.getEntriesByType('navigation')[0];
+            return {
+                load_time: Math.round(navigation.loadEventEnd - navigation.fetchStart),
+                dom_content_loaded: Math.round(navigation.domContentLoadedEventEnd - navigation.fetchStart),
+                first_paint: this.getMetric('first-paint'),
+                first_contentful_paint: this.getMetric('first-contentful-paint'),
+                largest_contentful_paint: this.getMetric('largest-contentful-paint'),
+                cumulative_layout_shift: this.getMetric('cumulative-layout-shift')
+            };
+        },
+        
+        getMetric(name) {
+            const entries = performance.getEntriesByType('paint');
+            const entry = entries.find(e => e.name === name);
+            return entry ? Math.round(entry.startTime) : 0;
+        },
+        
+        calculatePerformanceScore(perfData) {
+            let score = 100;
+            
+            // Load time penalty
+            if (perfData.load_time > 3000) score -= 20;
+            else if (perfData.load_time > 2000) score -= 10;
+            
+            // FCP penalty
+            if (perfData.first_contentful_paint > 2000) score -= 15;
+            else if (perfData.first_contentful_paint > 1000) score -= 5;
+            
+            return Math.max(0, score);
+        },
+        
+        getPerformanceGrade(score) {
+            if (score >= 90) return 'A';
+            if (score >= 80) return 'B';
+            if (score >= 70) return 'C';
+            if (score >= 60) return 'D';
+            return 'F';
+        }
+    };
+    
+    // Initialize everything when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+        // Wait a bit for other scripts to load
+        setTimeout(() => {
+            console.log('Initializing CQB Analytics Integration...');
+            
+            // Initialize data layer
+            window.CQBDataLayer.init();
+            
+            console.log('CQB Analytics Integration ready!');
+        }, 1000);
+    });
+    
+})();
+    </script>
 
 </body>
 
