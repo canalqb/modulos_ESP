@@ -1104,6 +1104,10 @@
                     updateSystemStatus();
                     document.getElementById('gstep-3').classList.add('done');
                     showToast('Drive validado! Módulos liberados.', 'success');
+                    
+                    // Resetar botão após sucesso
+                    btn.innerHTML = '<i class="fas fa-circle-check"></i> Testar Conexão';
+                    btn.disabled = false;
 
                 } catch (err) {
                     showToast('Erro ao testar Drive: ' + (err.message || 'verifique credenciais'), 'error');
@@ -1129,29 +1133,50 @@
 
             /* UNLOCK */
             function unlockModules() {
-                // Verificar se Google está configurado para liberar módulos
-                const googleConfigured = S.gdrive && S.gdrive.folder_id;
+                // Verificar se Google Drive está configurado para liberar módulos
+                const googleConfigured = S.driveConfigured && S.folderId;
                 
                 if (googleConfigured) {
                     // Liberar Chat AI se Google configurado
                     const chatMenu = document.getElementById('menu-chat');
                     if (chatMenu) {
                         chatMenu.classList.remove('locked');
+                        // Remover ícone de cadeado
+                        const lockIcon = chatMenu.querySelector('.fa-lock');
+                        if (lockIcon) {
+                            lockIcon.remove();
+                        }
                     }
                     
                     // Liberar Marketplace se Google configurado
                     const marketplaceMenu = document.getElementById('menu-marketplace');
                     if (marketplaceMenu) {
                         marketplaceMenu.classList.remove('locked');
+                        // Remover ícone de cadeado
+                        const lockIcon = marketplaceMenu.querySelector('.fa-lock');
+                        if (lockIcon) {
+                            lockIcon.remove();
+                        }
                     }
+                    
+                    console.log('Módulos liberados: Chat AI e Marketplace');
                 } else {
                     // Manter cadeados se Google não configurado
                     ['marketplace', 'chat'].forEach(id => {
                         const m = document.getElementById('menu-' + id);
                         if (m) {
                             m.classList.add('locked');
+                            // Adicionar ícone de cadeado se não existir
+                            if (!m.querySelector('.fa-lock')) {
+                                const lockIcon = document.createElement('i');
+                                lockIcon.className = 'fas fa-lock';
+                                lockIcon.style.fontSize = '0.72rem';
+                                m.appendChild(lockIcon);
+                            }
                         }
                     });
+                    
+                    console.log('Módulos bloqueados: aguardando configuração do Google Drive');
                 }
             }
 
