@@ -17,7 +17,7 @@
     // Production configuration - should be loaded from secure backend
     const PROD_CONFIG = {
         // Google Analytics 4
-        GA4_MEASUREMENT_ID: 'G-XXXXXXXXXX', // Replace with actual ID
+        GA4_MEASUREMENT_ID: 'G-392122309', // CanalQB Analytics
         GA4_PROPERTY_ID: '392122309',
         
         // Google Tag Manager
@@ -38,7 +38,7 @@
     const DEV_CONFIG = {
         ...PROD_CONFIG,
         DEBUG_MODE: true,
-        GA4_MEASUREMENT_ID: 'G-XXXXXXXXXX_DEV' // Development ID
+        GA4_MEASUREMENT_ID: 'G-392122309' // Same ID for development
     };
     
     // Environment detection
