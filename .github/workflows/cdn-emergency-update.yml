@@ -1,5 +1,9 @@
 name: CDN Emergency Update
 
+# ESPECIFICAÇÃO: Apenas pasta ambiente/ deve ser sincronizada com CDN
+# Outras pastas (.github, marketplace, etc.) devem permanecer apenas no repositório local
+# NENHUM arquivo fora de ambiente/ deve ser enviado para o CDN
+
 on:
   workflow_dispatch:
     inputs:
@@ -97,17 +101,14 @@ jobs:
       run: |
         echo "=== PURGE AGRESSIVO DE ARQUIVOS ==="
         
-        # Lista extendida de arquivos
+        # Lista extendida de arquivos (apenas pasta ambiente/)
         FILES=(
           "ambiente/index.html"
           "ambiente/style.css"
           "ambiente/components.css"
           "ambiente/secure-config.js"
           "ambiente/ga4-gtm-integration.js"
-          "ambiente/sites-externos.html"
-          "ambiente/ads.txt"
-          "ambiente/favicon.ico"
-          "ambiente/logo.png"
+          "ambiente/sites.txt"
         )
         
         SUCCESS_COUNT=0
