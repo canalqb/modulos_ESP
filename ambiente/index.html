@@ -861,6 +861,13 @@
                     console.log('  - tokenValid:', tokenValid);
                     console.log('  - token_valid:', config.oauth?.token_valid);
                     
+                    // Verificar se refresh automático está funcionando
+                    if (config.oauth?.token_expires < Date.now() / 1000 && tokenValid) {
+                        console.log('DEBUG - Token expirado mas token_valid=true - Refresh automático funcionando!');
+                    } else if (config.oauth?.token_expires < Date.now() / 1000 && !tokenValid) {
+                        console.log('DEBUG - Token expirado E inválido - Refresh automático NÃO funcionando!');
+                    }
+                    
                     // Se tudo estiver configurado e token válido, desativar cadeados
                     if (allFieldsComplete && tokenValid) {
                         console.log('Configuração Google completa - Desativando cadeados');
