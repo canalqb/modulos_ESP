@@ -891,7 +891,22 @@
 
                     if (data.refresh_token) {
                         S.refreshToken = data.refresh_token;
-                        await saveToEsp({ idcliente: S.clientId, secretclient: S.clientSecret, refreshclient: S.refreshToken, emaildecontadeservico: S.svcEmail });
+                        S.accessToken = data.access_token;
+                        S.tokenExpires = Math.floor(Date.now() / 1000) + (data.expires_in || 3600);
+                        
+                        // Salvar credenciais OAuth no firmware (novo formato)
+                        await saveToEsp({ 
+                            oauth: {
+                                client_id: S.clientId,
+                                client_secret: S.clientSecret,
+                                refresh_token: S.refreshToken,
+                                access_token: S.accessToken,
+                                token_expires: S.tokenExpires
+                            },
+                            gdrive: {
+                                service_email: S.svcEmail
+                            }
+                        });
 
                         showToast('Token Refresh gerado com sucesso!', 'success');
                         document.getElementById('gstep-2').classList.add('done');
@@ -961,7 +976,12 @@
                         showToast('Arquivo teste.txt criado com sucesso!', 'success');
                     }
 
-                    await saveToEsp({ iddepastadodrive: S.folderId, driveConfigFolderId: configId });
+                    await saveToEsp({ 
+                        gdrive: {
+                            folder_id: S.folderId,
+                            config_folder_id: configId
+                        }
+                    });
                     S.driveConfigured = true;
                     unlockModules();
                     updateProgress();
@@ -1019,18 +1039,60 @@
                 try {
                     const res = await fetch(`http://${S.espIp}/api/config`);
                     const data = await res.json();
+                    
+                    // Carregar credenciais OAuth do firmware (persistência)
+                    if (data.oauth) {
+                        if (data.oauth.client_id) { 
+                            document.getElementById('g-client-id').value = data.oauth.client_id; 
+                            S.clientId = data.oauth.client_id; 
+                        }
+                        if (data.oauth.client_secret) { 
+                            document.getElementById('g-client-secret').value = data.oauth.client_secret; 
+                            S.clientSecret = data.oauth.client_secret; 
+                        }
+                        if (data.oauth.refresh_token) { 
+                            S.refreshToken = data.oauth.refresh_token; 
+                        }
+                        if (data.oauth.access_token) { 
+                            S.accessToken = data.oauth.access_token; 
+                        }
+                        if (data.oauth.token_expires) { 
+                            S.tokenExpires = data.oauth.token_expires; 
+                        }
+                        
+                        // Verificar se token ainda é válido
+                        if (data.oauth.token_valid && data.oauth.access_token) {
+                            console.log('Token OAuth válido encontrado, usando credenciais salvas');
+                            document.getElementById('gstep-2').classList.add('done');
+                            document.getElementById('gstep-3').classList.add('active');
+                            document.getElementById('g-folder-id').disabled = false;
+                            document.getElementById('btn-test-drive').disabled = false;
+                            document.getElementById('drive-test-info').style.display = 'flex';
+                        }
+                    }
+                    
+                    // Google Drive settings
+                    if (data.gdrive) {
+                        if (data.gdrive.service_email) { 
+                            document.getElementById('g-svc-email').value = data.gdrive.service_email; 
+                            S.svcEmail = data.gdrive.service_email; 
+                        }
+                        if (data.gdrive.folder_id) { 
+                            document.getElementById('g-folder-id').value = data.gdrive.folder_id; 
+                            S.folderId = data.gdrive.folder_id; 
+                        }
+                    }
+                    
+                    // Compatibilidade com formato antigo (legado)
                     if (data.idcliente) { document.getElementById('g-client-id').value = data.idcliente; S.clientId = data.idcliente; }
                     if (data.secretclient) { document.getElementById('g-client-secret').value = data.secretclient; S.clientSecret = data.secretclient; }
                     if (data.emaildecontadeservico) { document.getElementById('g-svc-email').value = data.emaildecontadeservico; S.svcEmail = data.emaildecontadeservico; }
                     if (data.refreshclient) { S.refreshToken = data.refreshclient; }
                     if (data.iddepastadodrive) { document.getElementById('g-folder-id').value = data.iddepastadodrive; S.folderId = data.iddepastadodrive; }
-                    if (data.idcliente && data.secretclient && data.emaildecontadeservico) { evalGoogleStep1(); }
-                    if (data.refreshclient) {
-                        document.getElementById('gstep-2').classList.add('done');
-                        document.getElementById('gstep-3').classList.add('active');
-                        document.getElementById('g-folder-id').disabled = false;
-                        document.getElementById('btn-test-drive').disabled = false;
-                        document.getElementById('drive-test-info').style.display = 'flex';
+                    
+                    // Ativar step 1 se tiver credenciais básicas
+                    if (S.clientId && S.clientSecret && S.svcEmail) { 
+                        evalGoogleStep1(); 
                     }
                     if (data.bt_enabled !== undefined) {
                         document.getElementById('bt-enable-switch').checked = data.bt_enabled;
