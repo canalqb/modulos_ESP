@@ -17,9 +17,9 @@
     // Configuration
     const GTM_GA4_CONFIG = {
         containerId: 'GTM-W45V7S5Z',
-        measurementId: 'G-XXXXXXXXXX', // GA4 Measurement ID
-        propertyId: '392122309',
-        serviceAccount: 'esp-624@bloggerwindsurf.iam.gserviceaccount.com',
+        measurementId: window.CQB_GA4_MEASUREMENT_ID || 'G-XXXXXXXXXX', // GA4 Measurement ID (configured securely)
+        propertyId: window.CQB_GA4_PROPERTY_ID || 'XXXXXXXXXX', // GA4 Property ID (configured securely)
+        serviceAccount: window.CQB_SERVICE_ACCOUNT || null, // Service Account (configured securely)
         trackingEnabled: true,
         debugMode: false,
         customDimensions: {
