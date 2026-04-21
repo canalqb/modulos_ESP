@@ -1,0 +1,19 @@
+{
+  "name": "Alexa Integration",
+  "version": "1.0.0",
+  "description": "Integração com Amazon Alexa para controle de voz do ESP32",
+  "author": "CanalQb",
+  "category": "IoT",
+  "tags": ["alexa", "voice", "smart-home"],
+  "compatibility": {
+    "esp32": true,
+    "firmware": ">=2.0.0"
+  },
+  "files": {
+    "main": "alexa_integration.js",
+    "config": "alexa_config.json"
+  },
+  "dependencies": [],
+  "install_path": "/alexa",
+  "enabled": true
+}

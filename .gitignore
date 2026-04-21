@@ -1,6 +1,3 @@
-# Ignorar pasta marketplace completa (plugins e módulos)
-marketplace/
-
 # Manter apenas ambiente/ no CDN
 !ambiente/
 

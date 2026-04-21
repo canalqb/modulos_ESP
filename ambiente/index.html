@@ -2123,10 +2123,10 @@
                 const error = document.getElementById('marketplace-error');
                 
                 if (show) {
-                    loading.style.display = 'block';
-                    error.style.display = 'none';
+                    if (loading) loading.style.display = 'block';
+                    if (error) error.style.display = 'none';
                 } else {
-                    loading.style.display = 'none';
+                    if (loading) loading.style.display = 'none';
                 }
             },
 
@@ -2136,9 +2136,9 @@
                 const error = document.getElementById('marketplace-error');
                 const errorMessage = document.getElementById('marketplace-error-message');
                 
-                loading.style.display = 'none';
-                error.style.display = 'block';
-                errorMessage.textContent = message;
+                if (loading) loading.style.display = 'none';
+                if (error) error.style.display = 'block';
+                if (errorMessage) errorMessage.textContent = message;
             }
         };
 

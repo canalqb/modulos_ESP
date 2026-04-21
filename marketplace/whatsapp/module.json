@@ -1,0 +1,19 @@
+{
+  "name": "WhatsApp Integration",
+  "version": "1.0.0",
+  "description": "Integração com WhatsApp para notificações e controle via mensagens",
+  "author": "CanalQb",
+  "category": "Communication",
+  "tags": ["whatsapp", "messaging", "notifications"],
+  "compatibility": {
+    "esp32": true,
+    "firmware": ">=2.0.0"
+  },
+  "files": {
+    "main": "whatsapp_integration.js",
+    "config": "whatsapp_config.json"
+  },
+  "dependencies": [],
+  "install_path": "/whatsapp",
+  "enabled": true
+}
