@@ -121,7 +121,6 @@
                         <i class="fas fa-shield-halved fa-icon"></i>
                         <span class="nav-lbl">Configurações</span>
                     </a>
-
                     <a class="cqb-nav-link" onclick="factoryReset()" role="button"
                         style="color:var(--cqb-red);opacity:0.8;">
                         <i class="fas fa-trash-can fa-icon"></i>
@@ -606,6 +605,22 @@
                                             Nenhum backup realizado ainda
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <h6 style="margin-bottom:12px;color:var(--text-primary);font-weight:600;">
+                                        <i class="fas fa-trash" style="margin-right:8px;color:var(--cqb-red);"></i>
+                                        Reset de Fábrica
+                                    </h6>
+                                </div>
+                                <div class="col-12">
+                                    <button class="cqb-btn cqb-btn-danger cqb-btn-block" onclick="resetFactory()">
+                                        <i class="fas fa-undo-alt"></i> Resetar Configurações
+                                    </button>
+                                    <small style="display:block;margin-top:6px;color:var(--text-sub);font-size:0.75rem;">
+                                        Restaura as configurações de fábrica do sistema.
+                                    </small>
                                 </div>
                             </div>
                         </div>
