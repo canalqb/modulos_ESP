@@ -437,12 +437,7 @@
                                         Adicione os URIs de redirecionamento autorizados:
                                         <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px;">
                                             <code style="display:block;padding:6px 10px;background:rgba(33,150,243,0.08);border-radius:6px;font-size:0.82rem;">http://localhost:3000/auth/callback</code>
-                                            <div id="guide-esp-uri" style="display:flex;align-items:center;gap:8px;">
-                                                <code id="guide-esp-uri-code" style="display:block;padding:6px 10px;background:rgba(40,167,69,0.08);border-radius:6px;font-size:0.82rem;flex:1;">http://&lt;ip-do-esp32&gt;/auth/callback</code>
-                                                <button type="button" onclick="copyEspUri()" class="cqb-btn cqb-btn-ghost cqb-btn-sm" style="flex-shrink:0;">
-                                                    <i class="fas fa-copy"></i>
-                                                </button>
-                                            </div>
+                                            <code style="display:block;padding:6px 10px;background:rgba(40,167,69,0.08);border-radius:6px;font-size:0.82rem;">https://www.canalqb.com.br/p/oath-para-esp32.html</code>
                                         </div>
                                     </div>
                                 </div>
@@ -695,17 +690,8 @@
 
             /* preenche o URI do ESP32 no guia */
             (function updateGuideUri() {
-                const uri = `http://${S.espIp}/auth/callback`;
-                const el = document.getElementById('guide-esp-uri-code');
-                if (el) el.textContent = uri;
+                // URI de callback agora é fixo no canalqb.com.br
             })();
-
-            window.copyEspUri = function () {
-                const uri = `http://${S.espIp}/auth/callback`;
-                navigator.clipboard.writeText(uri)
-                    .then(() => showToast('URI copiado: ' + uri, 'success'))
-                    .catch(() => showToast('Copie manualmente: ' + uri, 'info'));
-            };
 
             loadSavedConfig();
 
@@ -826,50 +812,54 @@
                 }
 
                 const scope = 'https://www.googleapis.com/auth/drive';
-                const autoRedirect = `http://${S.espIp}/auth/callback`;
-                const manualRedirect = 'http://localhost:3000/auth/callback';
+                // Callback público no canalqb.com.br — o state carrega o IP do ESP32
+                const callbackRedirect = 'https://www.canalqb.com.br/p/oath-para-esp32.html';
+                const manualRedirect   = 'http://localhost:3000/auth/callback';
 
-                const buildUrl = (redirect) => 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({
+                const buildUrl = (redirect, state) => 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({
                     client_id: S.clientId,
                     redirect_uri: redirect,
                     response_type: 'code',
                     scope,
                     access_type: 'offline',
-                    prompt: 'consent'
+                    prompt: 'consent',
+                    state: state || ''
                 }).toString();
 
                 let popup;
                 try {
-                    popup = window.open(buildUrl(autoRedirect), 'oauth_auto', 'width=520,height=640,noopener=0');
+                    // Abre o OAuth com redirect para canalqb.com.br e state = IP do ESP32
+                    popup = window.open(buildUrl(callbackRedirect, S.espIp), 'oauth_cqb', 'width=520,height=640,noopener=0');
                 } catch (_) { popup = null; }
 
                 if (popup) {
-                    showToast('Nova aba aberta. Aguardando autorização...', 'info');
+                    S._oauthRedirect = callbackRedirect;
                     document.getElementById('oauth-code-box').classList.add('show');
+                    showToast('Aguardando autorização...', 'info');
 
-                    S._oauthRedirect = autoRedirect;
-                    let attempts = 0;
-                    const timer = setInterval(() => {
-                        attempts++;
-                        if (attempts > 240) { clearInterval(timer); return; }
-                        try {
-                            const url = popup.location.href;
-                            if (url && url.includes('/auth/callback') && url.includes('code=')) {
-                                clearInterval(timer);
-                                popup.close();
-                                const code = new URL(url).searchParams.get('code');
-                                if (code) {
-                                    document.getElementById('oauth-code-input').value = code;
-                                    showToast('Código capturado automaticamente! Trocando por token...', 'success');
-                                    setTimeout(() => exchangeToken(autoRedirect), 400);
-                                }
-                            }
-                        } catch (_) { }
-                        if (popup.closed) { clearInterval(timer); }
-                    }, 500);
+                    // postMessage: o callback envia o code de volta para esta janela
+                    // Funciona cross-origin (HTTPS → HTTP) sem precisar de backend
+                    function onOAuthMessage(event) {
+                        if (!event.data || !event.data.cqb_oauth_code) return;
+                        window.removeEventListener('message', onOAuthMessage);
+                        clearTimeout(oauthTimeout);
+                        try { popup.close(); } catch (_) {}
+                        const code = event.data.cqb_oauth_code;
+                        document.getElementById('oauth-code-input').value = code;
+                        showToast('Código recebido! Trocando por token...', 'success');
+                        setTimeout(() => exchangeToken(callbackRedirect), 400);
+                    }
+                    window.addEventListener('message', onOAuthMessage);
+
+                    // Timeout de segurança: 3 minutos
+                    const oauthTimeout = setTimeout(() => {
+                        window.removeEventListener('message', onOAuthMessage);
+                        showToast('Tempo esgotado. Cole o código manualmente se necessário.', 'warn');
+                    }, 180000);
                 } else {
+                    // Fallback: aba bloqueada → modo manual com localhost
                     S._oauthRedirect = manualRedirect;
-                    window.open(buildUrl(manualRedirect), '_blank', 'noopener,noreferrer');
+                    window.open(buildUrl(manualRedirect, ''), '_blank', 'noopener,noreferrer');
                     document.getElementById('oauth-code-box').classList.add('show');
                     showToast('Nova aba aberta. Autorize e copie o código da URL!', 'info');
                 }
