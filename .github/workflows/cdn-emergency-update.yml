@@ -134,7 +134,7 @@ jobs:
               SUCCESS=true
               
               # Verificar imediatamente se o arquivo está disponível
-              sleep ${{ env.WAIT_TIME }}
+              sleep $WAIT_TIME
               VERIFY_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/$file")
               
               if [ "$VERIFY_CODE" = "200" ]; then
