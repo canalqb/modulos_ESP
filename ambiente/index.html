@@ -786,7 +786,7 @@
                 svcEmail: '',
                 refreshToken: '',
                 folderId: '',
-                driveConfigured: false,
+                driveConfigured: false, // Será atualizado pela validação Google
                 theme: localStorage.getItem('cqb-theme') || 'light',
             };
 
@@ -916,6 +916,15 @@
             setTimeout(() => {
                 checkGoogleConfigComplete();
             }, 2000);
+
+            // Verificar estado inicial do Google Drive
+            setTimeout(() => {
+                if (!S.driveConfigured) {
+                    console.log('Google Drive não configurado - mantendo cadeados ativos');
+                    // Mostrar mensagem informativa se usuário tentar acessar áreas bloqueadas
+                    console.log('Mensagem pronta: "Configure completamente o Google Drive para desbloquear!"');
+                }
+            }, 3000);
 
             /* TOAST */
             function showToast(msg, type = 'info') {
