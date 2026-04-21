@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="light">
+
+<head>
+    <!-- Leitura antecipada do tema: evita FOUC (flash de tema errado no F5) -->
+    <script>(function(){try{var t=localStorage.getItem('cqb-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}}());</script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opus Hub | Portal de Controle - @CanalQb</title>
+    <meta name="description" content="Portal de controle avançado para o sistema Opus Hub do @CanalQb.">
+    <meta name="author" content="@CanalQb">
+    <meta name="copyright" content="@CanalQb 2026">
+    <meta name="version" content="3c6fb45-20260420">
+    <meta name="google-adsense-account" content="ca-pub-3614622181047762">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2316191f'/><text x='16' y='22' text-anchor='middle' font-size='18' font-family='sans-serif' fill='%2328a745'>Q</text></svg>">
+
+    <!-- Custom CSS Framework - Bootstrap Free -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/style.css">
+    <!-- Advanced Button Component System -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/components.css">
+    <!-- Font Awesome 6.5 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-W45V7S5Z');</script>
+    <!-- End Google Tag Manager -->
+</head>
+
+<body>
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W45V7S5Z"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- TOAST CONTAINER -->
+    <div id="cqb-toasts" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+    <!-- MODAL CONTAINER -->
+    <div class="cqb-modal-overlay" id="cqb-modal-overlay">
+        <div class="cqb-modal">
+            <div class="cqb-modal-header">
+                <i class="fas fa-triangle-exclamation"></i>
+                <div class="cqb-modal-title" id="modal-title">Confirmar Ação</div>
+            </div>
+            <div class="cqb-modal-body" id="modal-body">
+                Deseja realmente prosseguir com esta operação?
+            </div>
+            <div class="cqb-modal-footer">
+                <button class="cqb-btn cqb-btn-ghost cqb-btn-block" onclick="closeCqbModal()">Cancelar</button>
+                <button class="cqb-btn cqb-btn-primary cqb-btn-block" id="modal-confirm-btn"
+                    style="background:var(--cqb-red);">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOBILE OVERLAY -->
+    <div class="cqb-overlay" id="cqb-overlay" onclick="closeSidebar()"></div>
+
+    <!-- HAMBURGER -->
+    <button id="cqb-burger" onclick="toggleSidebar()" aria-label="Menu" aria-expanded="false">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="cqb-wrapper">
+        <div class="cqb-content">
+
+            <!-- ════════════ SIDEBAR ════════════ -->
+            <nav id="cqb-sidebar" aria-label="Navegação Principal">
+                <div class="cqb-sidebar-head">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgtt2Q0QwGuJ3OI0G29twmGKYmZvab5d8AV6fJd_HUdevW7fofyH2lDRAv39LAtg0A2x46Im5VwUT-1cfm0b4g7jgY9IKC_BbqqEV9bew_OhkddtGzaFlM4uL0LUeqS8nxK83Yufp3E6SOycslOyDA6O14vPpHRiPkTCSbb5H05NTE/w350/1QB.png"
+                        alt="@CanalQb" class="cqb-logo" loading="lazy">
+                    <div class="cqb-brand">
+                        <p class="cqb-brand-name">Canalqb - ESP32</p>
+                        <p class="cqb-brand-sub"> @CanalQb</p>
+                    </div>
+                    <span class="cqb-ver">V18</span>
+                </div>
+
+                <div class="cqb-nav" id="cqb-nav">
+                    <p class="cqb-nav-section">Acessos</p>
+
+                    <a class="cqb-nav-link locked" id="menu-chat" onclick="checkLock('chat')" role="button">
+                        <i class="fas fa-comments fa-icon"></i>
+                        <span class="nav-lbl">Chat AI</span>
+                        <i class="fas fa-lock" style="font-size:0.72rem;"></i>
+                    </a>
+
+                    <a class="cqb-nav-link locked" id="menu-marketplace" onclick="checkLock('marketplace')" role="button">
+                        <i class="fas fa-store fa-icon"></i>
+                        <span class="nav-lbl">Loja de módulos</span>
+                        <i class="fas fa-lock" style="font-size:0.72rem;"></i>
+                    </a>
+
+                    <hr class="nav-divider">
+
+                    <a class="cqb-nav-link" href="sites-externos.html" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-globe fa-icon"></i>
+                        <span class="nav-lbl">Sites Externos</span>
+                        <i class="fas fa-arrow-up-right-from-square" style="font-size:0.7rem;opacity:0.4;"></i>
+                    </a>
+
+                    <a class="cqb-nav-link" href="https://www.canalqb.com.br" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-book fa-icon"></i>
+                        <span class="nav-lbl">Visitar Blog por Canalqb Blog</span>
+                        <i class="fas fa-arrow-up-right-from-square" style="font-size:0.7rem;opacity:0.4;"></i>
+                    </a>
+
+                    <p class="cqb-nav-section" style="margin-top:8px;">Configurações</p>
+
+                    <a class="cqb-nav-link active" id="menu-rede" role="button" aria-expanded="true"
+                        onclick="toggleSubMenu('sub-rede', this)">
+                        <i class="fas fa-network-wired fa-icon"></i>
+                        <span class="nav-lbl">Configurações de Rede</span>
+                        <i class="fas fa-chevron-down nav-arr"></i>
+                    </a>
+                    <div class="cqb-submenu cqb-sub-open" id="sub-rede">
+                        <a class="cqb-nav-sub active" id="submenu-rede-wifi" onclick="showTab('rede','wifi')">
+                            <i class="fas fa-wifi"></i> Configurações de SSID
+                        </a>
+                    </div>
+
+                    <a class="cqb-nav-link" id="menu-google" onclick="showSection('google')" role="button">
+                        <i class="fas fa-cloud fa-icon"></i>
+                        <span class="nav-lbl">Configuração Google</span>
+                        <i class="fas fa-circle-check nav-arr" id="google-ok"
+                            style="font-size:0.75rem;color:var(--cqb-green);display:none;"></i>
+                    </a>
+
+                    <a class="cqb-nav-link" id="menu-bluetooth" onclick="showSection('bluetooth')" role="button">
+                        <i class="fab fa-bluetooth-b fa-icon"></i>
+                        <span class="nav-lbl">Configuração Bluetooth</span>
+                    </a>
+
+                    <a class="cqb-nav-link" id="menu-ai" onclick="showSection('ai')" role="button">
+                        <i class="fas fa-robot fa-icon"></i>
+                        <span class="nav-lbl">Configuração Ambiente AI</span>
+                        <i class="fas fa-circle-check nav-arr" id="ai-ok"
+                            style="font-size:0.75rem;color:var(--cqb-green);display:none;"></i>
+                    </a>
+
+                    <a class="cqb-nav-link" id="menu-config" onclick="showSection('config')" role="button">
+                        <i class="fas fa-shield-halved fa-icon"></i>
+                        <span class="nav-lbl">Reset de Fábrica</span>
+                    </a>
+
+                    <a class="cqb-nav-link" id="menu-backup" onclick="showSection('backup')" role="button">
+                        <i class="fas fa-database fa-icon"></i>
+                        <span class="nav-lbl">Restauração de Configurações</span>
+                    </a>
+
+                    <a class="cqb-nav-link" id="menu-backup" onclick="showSection('backup')" role="button">
+                        <i class="fas fa-save fa-icon"></i>
+                        <span class="nav-lbl">Backup de Configurações</span>
+                    </a>
+                </div>
+            </nav>
+            <!-- ════════════ /SIDEBAR ════════════ -->
+
+            <!-- ════════════ MAIN ════════════ -->
+            <main id="cqb-main">
+            <div class="cqb-container">
+
+                <!-- TOPBAR -->
+                <header class="cqb-topbar">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <i class="fas fa-house" style="color:var(--text-sub);font-size:0.85rem;"></i>
+                        <span class="cqb-topbar-title" id="cqb-section-title">Redes &amp; Internet</span>
+                    </div>
+                    <div class="cqb-topbar-right">
+                        <div id="badge-sistema">
+                            <span class="cqb-badge-dot"></span>
+                            SISTEMA ATIVO
+                        </div>
+                        <span class="cqb-ip-label" id="cqb-ip">...</span>
+                        <button class="cqb-theme-btn" onclick="toggleTheme()" id="theme-btn" title="Alternar tema">
+                            <i class="fas fa-moon" id="theme-icon"></i>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- PROGRESS BAR CONFIG -->
+                <div class="cqb-progress-wrap" id="config-progress" style="display:none;">
+                    <div class="cqb-progress-bar-bg">
+                        <div class="cqb-progress-fill" id="progress-fill" style="width:0%;"></div>
+                    </div>
+                    <div class="cqb-progress-labels">
+                        <span>Configuração Google</span>
+                        <span id="progress-pct">0%</span>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO: REDES -->
+                <section id="section-rede" class="cqb-section">
+                    <div class="cqb-tabs">
+                        <button class="cqb-tab active" id="tab-wifi" onclick="showTab('rede','wifi')">
+                            <i class="fas fa-wifi"></i> Configurações de Rede
+                        </button>
+                        <button class="cqb-tab" id="tab-ssid" onclick="showTab('rede','ssid')">
+                            <i class="fas fa-signal"></i> Configurações de SSID
+                        </button>
+                    </div>
+
+                    <!-- Rede / Wi-Fi -->
+                    <div id="pane-wifi" class="cqb-tab-pane active">
+                        <div class="cqb-card">
+                            <div class="cqb-card-header">
+                                <i class="fas fa-wifi hd-icon"></i> Conexão Wi-Fi
+                            </div>
+                            <div class="cqb-card-body">
+                                <div class="cqb-alert cqb-alert-info">
+                                    <i class="fas fa-circle-info"></i>
+                                    <span>O Hub Opus usará esta rede para comunicação com a nuvem. Certifique-se de que
+                                        o
+                                        sinal é estável.</span>
+                                </div>
+
+                                <div class="cqb-alert cqb-alert-success" id="wifi-status-alert" style="display:none; margin-top: 15px;">
+                                    <i class="fas fa-wifi"></i>
+                                    <span><strong>Conectado em:</strong> <span id="current-ssid-label">...</span><br>
+                                    <strong>Endereço IP:</strong> <span id="current-ip-label">...</span></span>
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="cqb-label">Redes Detectadas</label>
+                                        <div id="wifi-list">
+                                            <div class="cqb-wifi-row"
+                                                style="justify-content:center;color:var(--text-sub);border-style:dashed;cursor:default;">
+                                                <i class="fas fa-rotate"></i> Clique em
+                                                <strong>&nbsp;Escanear&nbsp;</strong> para buscar redes
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="cqb-label" for="ssid-manual">SSID (Manual ou Selecionado)</label>
+                                        <input type="text" id="ssid-manual" class="cqb-input"
+                                            placeholder="Nome da rede Wi-Fi...">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="cqb-label" for="wifi-pass">Senha</label>
+                                        <div style="display:flex;gap:8px;">
+                                            <input type="password" id="wifi-pass" class="cqb-input" placeholder="Digite a senha...">
+                                            <button class="cqb-btn cqb-btn-ghost" onclick="togglePass()" id="eye-btn" style="flex-shrink:0;">
+                                                <i class="fas fa-eye" id="eye-icon"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <button class="cqb-btn cqb-btn-primary cqb-btn-block" onclick="scanWifi()">
+                                            <i class="fas fa-search"></i> Escanear Redes
+                                        </button>
+                                    </div>
+                                    <div class="col-12">
+                                        <button class="cqb-btn cqb-btn-success cqb-btn-block" onclick="saveWifi()">
+                                            <i class="fas fa-wifi"></i> Conectar à Rede
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SSID Config -->
+                    <div id="pane-ssid" class="cqb-tab-pane">
+                        <div class="cqb-card">
+                            <div class="cqb-card-header">
+                                <i class="fas fa-signal hd-icon"></i> Configurações Avançadas de SSID
+                            </div>
+                            <div class="cqb-card-body">
+                                <div class="cqb-alert cqb-alert-warn">
+                                    <i class="fas fa-triangle-exclamation"></i>
+                                    <span>Configurações avançadas. Altere somente se souber o que está fazendo. Aqui no
+                                        @CanalQb, validamos que erros aqui podem derrubar a conectividade do Hub.</span>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="cqb-label" for="dev-hostname">Hostname do Dispositivo</label>
+                                        <input type="text" id="dev-hostname" class="cqb-input" placeholder="canalqb_esp32">
+                                    </div>
+                                    <div class="col-12 col-sm-4">
+                                        <label class="cqb-label" for="dev-channel">Canal WiFi</label>
+                                        <input type="number" id="dev-channel" class="cqb-input" placeholder="0 (Auto)" min="1" max="14">
+                                    </div>
+                                    <div class="col-12 col-sm-8">
+                                        <label class="cqb-label" for="dev-ip">IP Estático (Opcional)</label>
+                                        <input type="text" id="dev-ip" class="cqb-input" placeholder="192.168.1.100">
+                                    </div>
+                                    <div class="col-12 col-sm-4">
+                                        <label class="cqb-label" for="dev-gw">Gateway</label>
+                                        <input type="text" id="dev-gw" class="cqb-input" placeholder="192.168.1.1">
+                                    </div>
+                                    <div class="col-12 col-sm-4">
+                                        <label class="cqb-label" for="dev-dns1">DNS Primário</label>
+                                        <input type="text" id="dev-dns1" class="cqb-input" placeholder="8.8.8.8">
+                                    </div>
+                                    <div class="col-12 col-sm-4">
+                                        <label class="cqb-label" for="dev-dns2">DNS Secundário</label>
+                                        <input type="text" id="dev-dns2" class="cqb-input" placeholder="8.8.4.4">
+                                    </div>
+                                    <div class="col-12">
+                                        <button class="cqb-btn cqb-btn-primary cqb-btn-block" onclick="saveSsidConfig()">
+                                            <i class="fas fa-save"></i> Salvar Configurações de SSID
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SEÇÃO: GOOGLE -->
+                <section id="section-google" class="cqb-section d-none">
+                    <div class="cqb-card">
+                        <div class="cqb-card-header">
+                            <i class="fab fa-google hd-icon"></i> Configuração Google Drive
+                        </div>
+                        <div class="cqb-card-body">
+                            <div class="cqb-steps">
+
+                                <!-- STEP 1: Credenciais -->
+                                <div class="cqb-step active" id="gstep-1">
+                                    <div class="cqb-step-dot">1</div>
+                                    <p class="cqb-step-title">Credenciais do Google Cloud</p>
+                                    <p class="cqb-step-desc">Cole o <strong>Client ID</strong> e a <strong>Chave Secreta
+                                        (Client Secret)</strong> obtidos no Console do Google Cloud em <em>APIs e
+                                        Serviços -> Credenciais</em>.</p>
+                                    <div class="row g-3">
+                                        <div class="col-12 col-sm-6">
+                                            <label class="cqb-label" for="g-client-id">Client ID</label>
+                                            <input type="text" id="g-client-id" class="cqb-input" placeholder="...apps.googleusercontent.com" oninput="evalGoogleStep1()">
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <label class="cqb-label" for="g-client-secret">Client Secret</label>
+                                            <input type="password" id="g-client-secret" class="cqb-input" placeholder="GOCSPX-..." oninput="evalGoogleStep1()">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- STEP 2: Service Account + OAuth -->
+                                <div class="cqb-step" id="gstep-2">
+                                    <div class="cqb-step-dot">2</div>
+                                    <p class="cqb-step-title">E-mail de Conta de Serviço &amp; Geração do Token</p>
+                                    <p class="cqb-step-desc">
+                                        Informe o e-mail que foi adicionado como <strong>Usuário de Teste</strong> no OAuth
+                                        consent screen.
+                                        Em seguida, clique em <strong>Iniciar Autorização</strong> - uma nova aba abrirá
+                                        para você conceder permissão ao Drive.
+                                    </p>
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-12">
+                                            <label class="cqb-label" for="g-svc-email">E-mail de Conta de Serviço (Usuário
+                                                de Teste)</label>
+                                            <input type="email" id="g-svc-email" class="cqb-input" placeholder="seuemail@gmail.com" oninput="evalGoogleStep1()">
+                                        </div>
+                                    </div>
+                                    <button class="cqb-btn cqb-btn-primary" id="btn-oauth" onclick="startOAuth()" disabled>
+                                        <i class="fas fa-arrow-up-right-from-square"></i> Iniciar Autorização OAuth
+                                    </button>
+
+                                    <!-- Code input box -->
+                                    <div class="cqb-code-box" id="oauth-code-box">
+                                        <p>
+                                            <i class="fas fa-circle-info" style="color:var(--cqb-blue);margin-right:6px;"></i>
+                                            Uma nova aba foi aberta. Após aceitar as permissões, a URL mostrará
+                                            <code>?code=4/0A...</code> - copie apenas o valor do parâmetro <code>code</code>
+                                            e cole abaixo.
+                                        </p>
+                                        <div style="display:flex;gap:8px;margin-top:10px;">
+                                            <input type="text" id="oauth-code-input" class="cqb-input" placeholder="4/0AanRRrsBq... (cole o código aqui)">
+                                            <button class="cqb-btn cqb-btn-success" onclick="exchangeToken()" style="flex-shrink:0;">
+                                                <i class="fas fa-key"></i> Trocar por Token
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- STEP 3: Drive Folder -->
+                                <div class="cqb-step" id="gstep-3">
+                                    <div class="cqb-step-dot">3</div>
+                                    <p class="cqb-step-title">Pasta Raiz no Google Drive</p>
+                                    <p class="cqb-step-desc">
+                                        Abra o Google Drive, acesse a pasta que deseja usar como raiz e copie o <strong>ID
+                                        da pasta</strong> da URL
+                                        (parte após <code>/folders/</code>). Cole abaixo e clique em <strong>Testar
+                                        Conexão</strong>.
+                                    </p>
+                                    <div class="row g-3 align-items-end">
+                                        <div class="col-12 col-sm-8">
+                                            <label class="cqb-label" for="g-folder-id">ID da Pasta Raiz</label>
+                                            <input type="text" id="g-folder-id" class="cqb-input" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs..." disabled>
+                                        </div>
+                                        <div class="col-12 col-sm-4">
+                                            <button class="cqb-btn cqb-btn-outline cqb-btn-block" id="btn-test-drive" onclick="testDriveSetup()" disabled>
+                                                <i class="fas fa-circle-check"></i> Testar Conexão
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="cqb-alert cqb-alert-info" style="margin-top:14px;display:none;" id="drive-test-info">
+                                        <i class="fas fa-folder-open"></i>
+                                        <span>O sistema irá criar a pasta <strong>CanalQb_Config</strong> e um arquivo
+                                        <strong>teste.txt</strong> - sem duplicatas. Ao concluir com sucesso, os módulos
+                                        serão liberados.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GUIA DE CONFIGURAÇÃO -->
+                    <div class="cqb-guide-card" id="guide-card">
+                        <div class="cqb-guide-head" onclick="toggleGuide()">
+                            <div class="cqb-guide-title">
+                                <i class="fas fa-book"></i> Guia Completo de Configuração
+                            </div>
+                            <i class="fas fa-chevron-down cqb-guide-arrow" id="guide-arr"></i>
+                        </div>
+                        <div class="cqb-guide-collapse" id="guide-body">
+                            <div class="cqb-guide-body">
+                                <p style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--text-primary);margin-bottom:14px;">
+                                    Siga estes passos para configurar o Google Drive corretamente:
+                                </p>
+
+                                <!-- Passo 1 -->
+                                <div class="cqb-guide-step">
+                                    <span class="cqb-guide-num">1</span>
+                                    <div>
+                                        Acesse o <strong>Console do Google Cloud</strong> e crie um novo projeto ou use um existente.
+                                        Vá para <strong>APIs e Serviços -> Biblioteca</strong> e habilite a <strong>Google Drive API</strong>.
+                                    </div>
+                                </div>
+
+                                <!-- Passo 2 -->
+                                <div class="cqb-guide-step">
+                                    <span class="cqb-guide-num">2</span>
+                                    <div>
+                                        Em <strong>APIs e Serviços -> Tela de consentimento OAuth</strong>, configure o aplicativo
+                                        como <strong>Externo</strong>, adicione os escopos necessários e salve.
+                                    </div>
+                                </div>
+
+                                <!-- Passo 3 -->
+                                <div class="cqb-guide-step">
+                                    <span class="cqb-guide-num">3</span>
+                                    <div>
+                                        Em <strong>APIs e Serviços -> Credenciais</strong>, crie uma nova <strong>ID do cliente OAuth</strong>.
+                                        Selecione <strong>Aplicativo da Web</strong> como tipo de aplicativo.
+                                    </div>
+                                </div>
+
+                                <!-- Passo 4 -->
+                                <div class="cqb-guide-step">
+                                    <span class="cqb-guide-num">4</span>
+                                    <div>
+                                        Adicione os URIs de redirecionamento autorizados:
+                                        <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px;">
+                                            <code style="display:block;padding:6px 10px;background:rgba(33,150,243,0.08);border-radius:6px;font-size:0.82rem;">http://localhost:3000/auth/callback</code>
+                                            <code style="display:block;padding:6px 10px;background:rgba(40,167,69,0.08);border-radius:6px;font-size:0.82rem;">https://www.canalqb.com.br/p/oath-para-esp32.html</code>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Passo 5 -->
+                                <div class="cqb-guide-step">
+                                    <span class="cqb-guide-num">5</span>
+                                    <div>
+                                        Copie o <strong>Client ID</strong> e a <strong>Chave Secreta</strong> gerados e cole nos campos
+                                        correspondentes na seção acima.
+                                    </div>
+                                </div>
+
+                                <!-- Passo 6 -->
+                                <div class="cqb-guide-step">
+                                    <span class="cqb-guide-num">6</span>
+                                    <div>
+                                        Preencha o campo de e-mail e clique em <strong>Iniciar Autorização OAuth</strong>.
+                                        Uma nova aba abrirá para você conceder permissão ao Google Drive.
+                                    </div>
+                                </div>
+
+                                <!-- Passo 7 -->
+                                <div class="cqb-guide-step">
+                                    <span class="cqb-guide-num">7</span>
+                                    <div>
+                                        Após autorizar, copie o código da URL e cole no campo fornecido, ou aguarde a captura
+                                        automática. O sistema irá gerar o token de acesso.
+                                    </div>
+                                </div>
+
+                                <!-- Passo 8 -->
+                                <div class="cqb-guide-step">
+                                    <span class="cqb-guide-num">8</span>
+                                    <div>
+                                        No Google Drive, escolha a pasta raiz para os arquivos e copie o ID da pasta.
+                                        Cole no campo correspondente e clique em <strong>Testar Conexão</strong>.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SEÇÃO: BLUETOOTH -->
+                <section id="section-bluetooth" class="cqb-section d-none">
+                    <div class="cqb-card">
+                        <div class="cqb-card-header">
+                            <i class="fab fa-bluetooth hd-icon"></i> Configurações Bluetooth
+                        </div>
+                        <div class="cqb-card-body">
+                            <div class="cqb-alert cqb-alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <span>O Bluetooth permite que o dispositivo seja localizado por outros aparelhos. O PIN
+                                    padrão é <strong>1234</strong>.</span>
+                            </div>
+
+                            <div class="cqb-switch-wrap">
+                                <label class="cqb-label" for="bt-enable-switch" style="margin:0;">
+                                    <i class="fab fa-bluetooth-b"></i> Ativar Visibilidade Bluetooth
+                                </label>
+                                <input class="cqb-switch" type="checkbox" id="bt-enable-switch" onchange="updateBtStatus()">
+                            </div>
+
+                            <div class="cqb-form-row">
+                                <div class="cqb-form-group">
+                                    <label class="cqb-label">
+                                        <i class="fas fa-tag"></i> Nome do Dispositivo
+                                    </label>
+                                    <input type="text" id="bt-name-input" class="cqb-input" placeholder="Canalqb - ESP32">
+                                </div>
+                                <div class="cqb-form-group">
+                                    <label class="cqb-label">
+                                        <i class="fas fa-key"></i> PIN de Pareamento
+                                    </label>
+                                    <input type="text" id="bt-pin-input" class="cqb-input" placeholder="1234" maxlength="4">
+                                </div>
+                            </div>
+
+                            <button class="cqb-btn cqb-btn-primary cqb-btn-block" onclick="saveBtConfig()" style="margin-top:8px;">
+                                <i class="fas fa-floppy-disk"></i> Salvar e Aplicar Configurações
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SEÇÃO: MARKETPLACE -->
+                <section id="section-marketplace" class="cqb-section d-none">
+                    <div class="cqb-card">
+                        <div class="cqb-card-header">
+                            <i class="fas fa-store hd-icon"></i> Marketplace @CanalQb
+                        </div>
+                        <div class="cqb-card-body">
+                            <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:20px;">
+                                Scripts, automações e módulos desenvolvidos e validados pelo @CanalQb para o ecossistema
+                                Opus.
+                            </p>
+                            <div id="market-list" class="row g-3"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SEÇÃO: CHAT -->
+                <section id="section-chat" class="cqb-section d-none">
+                    <div class="cqb-card">
+                        <div class="cqb-card-header">
+                            <i class="fas fa-comments hd-icon"></i> Chat Opus AI
+                        </div>
+                        <div class="cqb-card-body">
+                            <div class="cqb-empty">
+                                <div class="cqb-empty-icon"><i class="fas fa-robot"></i></div>
+                                <p class="cqb-empty-title">Em Desenvolvimento</p>
+                                <p class="cqb-empty-sub">O módulo de Chat Opus AI chega em breve.<br>Fique ligado no @CanalQb!</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SEÇÃO: AMBIENTE AI -->
+                <section id="section-ai" class="cqb-section d-none">
+                    <div class="cqb-card">
+                        <div class="cqb-card-header">
+                            <i class="fas fa-robot hd-icon"></i> Configuração Ambiente AI
+                        </div>
+                        <div class="cqb-card-body">
+                            <div class="cqb-alert cqb-alert-info">
+                                <i class="fas fa-circle-info"></i>
+                                <span>Configure as APIs e serviços de IA para o ambiente do CanalQB ESP32.</span>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="cqb-label" for="ai-provider">Provedor de IA</label>
+                                    <select id="ai-provider" class="cqb-input">
+                                        <option value="openai">OpenAI (GPT)</option>
+                                        <option value="claude">Anthropic Claude</option>
+                                        <option value="gemini">Google Gemini</option>
+                                        <option value="local">Modelo Local</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label class="cqb-label" for="ai-api-key">Chave da API</label>
+                                    <div style="display:flex;gap:8px;">
+                                        <input type="password" id="ai-api-key" class="cqb-input" placeholder="Digite sua chave de API...">
+                                        <button class="cqb-btn cqb-btn-ghost" onclick="toggleAiKeyVisibility()" style="flex-shrink:0;">
+                                            <i class="fas fa-eye" id="ai-key-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label class="cqb-label" for="ai-model">Modelo</label>
+                                    <select id="ai-model" class="cqb-input">
+                                        <option value="gpt-4">GPT-4</option>
+                                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                                        <option value="claude-3">Claude 3</option>
+                                        <option value="gemini-pro">Gemini Pro</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label class="cqb-label" for="ai-temperature">Temperatura (Criatividade)</label>
+                                    <input type="range" id="ai-temperature" class="cqb-input" min="0" max="1" step="0.1" value="0.7">
+                                    <small style="color:var(--text-sub);">0 = Conservador, 1 = Criativo</small>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label class="cqb-label" for="ai-max-tokens">Tokens Máximos</label>
+                                    <input type="number" id="ai-max-tokens" class="cqb-input" placeholder="1000" min="100" max="4000">
+                                </div>
+                                
+                                <div class="col-12">
+                                    <button class="cqb-btn cqb-btn-primary cqb-btn-block" onclick="testAiConnection()">
+                                        <i class="fas fa-plug"></i> Testar Conexão
+                                    </button>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <button class="cqb-btn cqb-btn-success cqb-btn-block" onclick="saveAiConfig()">
+                                        <i class="fas fa-save"></i> Salvar Configurações AI
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SEÇÃO: CONFIG -->
+                <section id="section-config" class="cqb-section d-none">
+                    <div class="cqb-card">
+                        <div class="cqb-card-header">
+                            <i class="fas fa-gear hd-icon"></i> Configurações Avançadas
+                        </div>
+                        <div class="cqb-card-body">
+                            <div class="cqb-alert cqb-alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Use estas ferramentas para backup e restauração das configurações do sistema. Ideal para trocas de firmware ou reset do ESP32.</span>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <h6 style="margin-bottom:12px;color:var(--text-primary);font-weight:600;">
+                                        <i class="fas fa-download" style="margin-right:8px;color:var(--cqb-blue);"></i>
+                                        Backup de Configurações
+                                    </h6>
+                                </div>
+                                <div class="col-12">
+                                    <button class="cqb-btn cqb-btn-primary cqb-btn-block" onclick="exportConfig()">
+                                        <i class="fas fa-file-export"></i> Exportar Configurações
+                                    </button>
+                                    <small style="display:block;margin-top:6px;color:var(--text-sub);font-size:0.75rem;">
+                                        Baixa todas as configurações em um arquivo JSON para backup seguro.
+                                    </small>
+                                </div>
+                                <div class="col-12">
+                                    <h6 style="margin-bottom:12px;color:var(--text-primary);font-weight:600;">
+                                        <i class="fas fa-upload" style="margin-right:8px;color:var(--cqb-green);"></i>
+                                        Restauração de Configurações
+                                    </h6>
+                                </div>
+                                <div class="col-12">
+                                    <input type="file" id="config-import-file" accept=".json" style="display:none;" onchange="importConfig(event)">
+                                    <button class="cqb-btn cqb-btn-success cqb-btn-block" onclick="document.getElementById('config-import-file').click()">
+                                        <i class="fas fa-file-import"></i> Importar Configurações
+                                    </button>
+                                    <small style="display:block;margin-top:6px;color:var(--text-sub);font-size:0.75rem;">
+                                        Carrega configurações de um arquivo JSON de backup.
+                                    </small>
+                                </div>
+                                <div class="col-12">
+                                    <div class="cqb-form-group">
+                                        <label class="cqb-label">
+                                            <i class="fas fa-clock-rotate-left"></i> Último Backup
+                                        </label>
+                                        <div id="last-backup-info" style="padding:8px;background:rgba(0,0,0,0.02);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-sub);">
+                                            Nenhum backup realizado ainda
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <h6 style="margin-bottom:12px;color:var(--text-primary);font-weight:600;">
+                                        <i class="fas fa-trash" style="margin-right:8px;color:var(--cqb-red);"></i>
+                                        Reset de Fábrica
+                                    </h6>
+                                </div>
+                                <div class="col-12">
+                                    <button class="cqb-btn cqb-btn-danger cqb-btn-block" onclick="resetFactory()">
+                                        <i class="fas fa-undo-alt"></i> Resetar Configurações
+                                    </button>
+                                    <small style="display:block;margin-top:6px;color:var(--text-sub);font-size:0.75rem;">
+                                        Restaura as configurações de fábrica do sistema.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- FOOTER -->
+                <footer class="cqb-footer">
+                    <div class="cqb-footer-donation">
+                        <div class="don-text">
+                            <h6><i class="fas fa-mug-hot" style="margin-right:6px;color:var(--cqb-yellow);"></i>Apoie o
+                                @CanalQb</h6>
+                            <p>Sua ajuda mantém o projeto ativo. Todo apoio é bem-vindo!</p>
+                        </div>
+                        <div class="don-btns">
+                            <button class="cqb-btn cqb-btn-dark cqb-btn-sm" onclick="copyPix()">
+                                <i class="fas fa-qrcode"></i> Pix: qrodrigob@gmail.com
+                            </button>
+                            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=qrodrigob@gmail.com&currency_code=BRL"
+                                class="cqb-btn cqb-btn-primary cqb-btn-sm" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-hand-holding-dollar"></i> Doação via PayPal
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="cqb-footer-copy">
+                        Desenvolvido com
+                        <a href="https://canalqb.blogspot.com/?c=Claude" target="_blank"
+                            rel="noopener noreferrer">Master
+                            Rules Claude</a>
+                        &nbsp;·&nbsp;
+                        <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer">Tailwind CSS 3</a>
+                        &nbsp;·&nbsp; &copy; 2026 @CanalQb. Todos os direitos reservados.
+                    </div>
+                </footer>
+            </div><!-- /cqb-container -->
+            </main><!-- /cqb-main -->
+
+        </div><!-- /cqb-content -->
+    </div><!-- /cqb-wrapper -->
+
+    <!-- 100% Vanilla JS -->
+    <script>
+        (function () {
+            'use strict';
+
+            /* STATE */
+            const S = {
+                espIp: new URLSearchParams(window.location.search).get('ip') || window.location.hostname,
+                clientId: '',
+                clientSecret: '',
+                svcEmail: '',
+                refreshToken: '',
+                folderId: '',
+                driveConfigured: false,
+                theme: localStorage.getItem('cqb-theme') || 'light',
+            };
+
+            /* INIT */
+            document.getElementById('cqb-ip').textContent = S.espIp;
+            applyTheme(S.theme);
+
+            /* guide - vanilla collapse */
+            window.toggleGuide = function () {
+                const card = document.getElementById('guide-card');
+                const body = document.getElementById('guide-body');
+                const arr = document.getElementById('guide-arr');
+                const open = body.classList.toggle('open');
+                card.classList.toggle('open', open);
+                arr.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
+            };
+
+            /* Inicializa setas dos submenus */
+            document.querySelectorAll('.cqb-submenu.cqb-sub-open').forEach(function (submenu) {
+                const trigger = document.querySelector('[onclick*="' + submenu.id + '"]');
+                if (trigger) {
+                    const arr = trigger.querySelector('.nav-arr');
+                    if (arr) arr.style.transform = 'rotate(180deg)';
+                }
+            });
+
+            /* preenche o URI do ESP32 no guia */
+            (function updateGuideUri() {
+                // URI de callback agora é fixo no canalqb.com.br
+            })();
+
+            loadSavedConfig();
+
+            /* TOAST */
+            function showToast(msg, type = 'info') {
+                const icons = { success: 'fas fa-circle-check', error: 'fas fa-circle-xmark', info: 'fas fa-circle-info', warn: 'fas fa-triangle-exclamation' };
+                const el = document.createElement('div');
+                el.className = `cqb-toast ${type}`;
+                el.innerHTML = `<i class="${icons[type] || icons.info} cqb-ti"></i><span>${msg}</span>`;
+                document.getElementById('cqb-toasts').appendChild(el);
+                requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
+                setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 500); }, 4500);
+            }
+            window.showToast = showToast;
+
+            /* THEME */
+            function applyTheme(t) {
+                document.documentElement.setAttribute('data-theme', t);
+                document.getElementById('theme-icon').className = t === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+                localStorage.setItem('cqb-theme', t);
+                S.theme = t;
+            }
+            window.toggleTheme = () => applyTheme(S.theme === 'light' ? 'dark' : 'light');
+
+            /* SIDEBAR */
+            window.toggleSidebar = function () {
+                const s = document.getElementById('cqb-sidebar');
+                const o = document.getElementById('cqb-overlay');
+                const b = document.getElementById('cqb-burger');
+                const open = s.classList.toggle('open');
+                o.classList.toggle('show', open);
+                b.setAttribute('aria-expanded', String(open));
+            };
+
+            /* sub-menu vanilla toggle */
+            window.toggleSubMenu = function (id, trigger) {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const open = el.classList.toggle('cqb-sub-open');
+                if (trigger) {
+                    trigger.setAttribute('aria-expanded', String(open));
+                    const arr = trigger.querySelector('.nav-arr');
+                    if (arr) arr.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
+                }
+            };
+            window.closeSidebar = function () {
+                document.getElementById('cqb-sidebar').classList.remove('open');
+                document.getElementById('cqb-overlay').classList.remove('show');
+                document.getElementById('cqb-burger').setAttribute('aria-expanded', 'false');
+            };
+
+            /* NAVIGATION */
+            window.showSection = function (id) {
+                const m = document.getElementById('menu-' + id);
+                if (m && m.classList.contains('locked')) { showToast('Configure o Google Drive primeiro!', 'error'); return; }
+                document.querySelectorAll('.cqb-section').forEach(s => s.classList.add('d-none'));
+                const sec = document.getElementById('section-' + id);
+                if (sec) sec.classList.remove('d-none');
+                document.querySelectorAll('.cqb-nav-link').forEach(l => l.classList.remove('active'));
+                if (m) m.classList.add('active');
+                const lbl = { rede: 'Redes & Internet', google: 'Configuração Google', bluetooth: 'Bluetooth', ai: 'Configuração Ambiente AI', marketplace: 'Marketplace', chat: 'Canalqb AI', config: 'Configurações' };
+                document.getElementById('cqb-section-title').textContent = lbl[id] || id;
+                closeSidebar();
+                if (id === 'google') { document.getElementById('config-progress').style.display = 'block'; updateProgress(); }
+                else if (id === 'rede') { scanWifi(); }
+                else { document.getElementById('config-progress').style.display = 'none'; }
+            };
+
+            window.checkLock = function (id) {
+                if (!S.driveConfigured) { showToast('Configure completamente o Google Drive para desbloquear!', 'error'); }
+                else { showSection(id); }
+            };
+
+            window.showTab = function (section, tab) {
+                showSection(section);
+                ['wifi', 'ssid'].forEach(t => {
+                    document.getElementById('pane-' + t)?.classList.toggle('active', t === tab);
+                    document.getElementById('tab-' + t)?.classList.toggle('active', t === tab);
+                    document.getElementById('submenu-rede-' + t)?.classList.toggle('active', t === tab);
+                });
+            };
+
+            /* SISTEMA ATIVO */
+            function updateSystemStatus() {
+                const ok = S.clientId && S.clientSecret && S.svcEmail && S.driveConfigured;
+                document.getElementById('badge-sistema').classList.toggle('visible', !!ok);
+                document.getElementById('google-ok').style.display = ok ? 'inline-block' : 'none';
+            }
+
+            /* PROGRESS BAR */
+            function updateProgress() {
+                const steps = [!!S.clientId, !!S.clientSecret, !!S.svcEmail, !!S.refreshToken, !!S.folderId, !!S.driveConfigured];
+                const pct = Math.round((steps.filter(Boolean).length / steps.length) * 100);
+                document.getElementById('progress-fill').style.width = pct + '%';
+                document.getElementById('progress-pct').textContent = pct + '%';
+            }
+
+            /* STEP EVAL */
+            window.evalGoogleStep1 = function () {
+                S.clientId = document.getElementById('g-client-id').value.trim();
+                S.clientSecret = document.getElementById('g-client-secret').value.trim();
+                S.svcEmail = document.getElementById('g-svc-email').value.trim();
+                const ready = S.clientId && S.clientSecret && S.svcEmail;
+                document.getElementById('btn-oauth').disabled = !ready;
+                if (ready) {
+                    document.getElementById('gstep-2').classList.add('active');
+                }
+                updateProgress();
+            };
+
+            /* OAUTH FLOW */
+            window.startOAuth = function () {
+                S.clientId = document.getElementById('g-client-id').value.trim();
+                S.clientSecret = document.getElementById('g-client-secret').value.trim();
+                S.svcEmail = document.getElementById('g-svc-email').value.trim();
+                if (!S.clientId || !S.clientSecret || !S.svcEmail) {
+                    showToast('Preencha Client ID, Client Secret e E-mail!', 'error'); return;
+                }
+
+                const scope = 'https://www.googleapis.com/auth/drive';
+                // Callback público no canalqb.com.br — o state carrega o IP do ESP32
+                const callbackRedirect = 'https://www.canalqb.com.br/p/oath-para-esp32.html';
+                const manualRedirect   = 'http://localhost:3000/auth/callback';
+
+                const buildUrl = (redirect, state) => 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({
+                    client_id: S.clientId,
+                    redirect_uri: redirect,
+                    response_type: 'code',
+                    scope,
+                    access_type: 'offline',
+                    prompt: 'consent',
+                    state: state || ''
+                }).toString();
+
+                let popup;
+                try {
+                    // Abre o OAuth com redirect para canalqb.com.br e state = IP do ESP32
+                    popup = window.open(buildUrl(callbackRedirect, S.espIp), 'oauth_cqb', 'width=520,height=640,noopener=0');
+                } catch (_) { popup = null; }
+
+                if (popup) {
+                    S._oauthRedirect = callbackRedirect;
+                    document.getElementById('oauth-code-box').classList.add('show');
+                    showToast('Aguardando autorização...', 'info');
+
+                    // postMessage: o callback envia o code de volta para esta janela
+                    // Funciona cross-origin (HTTPS → HTTP) sem precisar de backend
+                    function onOAuthMessage(event) {
+                        if (!event.data || !event.data.cqb_oauth_code) return;
+                        window.removeEventListener('message', onOAuthMessage);
+                        clearTimeout(oauthTimeout);
+                        try { popup.close(); } catch (_) {}
+                        const code = event.data.cqb_oauth_code;
+                        document.getElementById('oauth-code-input').value = code;
+                        showToast('Código recebido! Trocando por token...', 'success');
+                        setTimeout(() => exchangeToken(callbackRedirect), 400);
+                    }
+                    window.addEventListener('message', onOAuthMessage);
+
+                    // Timeout de segurança: 3 minutos
+                    const oauthTimeout = setTimeout(() => {
+                        window.removeEventListener('message', onOAuthMessage);
+                        showToast('Tempo esgotado. Cole o código manualmente se necessário.', 'warn');
+                    }, 180000);
+                } else {
+                    // Fallback: aba bloqueada → modo manual com localhost
+                    S._oauthRedirect = manualRedirect;
+                    window.open(buildUrl(manualRedirect, ''), '_blank', 'noopener,noreferrer');
+                    document.getElementById('oauth-code-box').classList.add('show');
+                    showToast('Nova aba aberta. Autorize e copie o código da URL!', 'info');
+                }
+            };
+
+            window.exchangeToken = async function (redirectOverride) {
+                const code = document.getElementById('oauth-code-input').value.trim();
+                if (!code) { showToast('Cole o código OAuth primeiro!', 'error'); return; }
+
+                const redirect = redirectOverride || S._oauthRedirect || 'http://localhost:3000/auth/callback';
+
+                const btn = document.querySelector('[onclick="exchangeToken()"]') ||
+                    document.querySelector('button[onclick^="exchangeToken"]');
+                if (btn) { btn.innerHTML = '<i class="fas fa-rotate cqb-spin"></i> Trocando...'; btn.disabled = true; }
+
+                try {
+                    const res = await fetch('https://oauth2.googleapis.com/token', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams({
+                            code,
+                            client_id: S.clientId,
+                            client_secret: S.clientSecret,
+                            redirect_uri: redirect,
+                            grant_type: 'authorization_code'
+                        })
+                    });
+                    const data = await res.json();
+
+                    if (data.refresh_token) {
+                        S.refreshToken = data.refresh_token;
+                        S.accessToken = data.access_token;
+                        S.tokenExpires = Math.floor(Date.now() / 1000) + (data.expires_in || 3600);
+                        
+                        // Salvar credenciais OAuth no firmware (novo formato)
+                        await saveToEsp({ 
+                            oauth: {
+                                client_id: S.clientId,
+                                client_secret: S.clientSecret,
+                                refresh_token: S.refreshToken,
+                                access_token: S.accessToken,
+                                token_expires: S.tokenExpires
+                            },
+                            gdrive: {
+                                service_email: S.svcEmail
+                            }
+                        });
+
+                        showToast('Token Refresh gerado com sucesso!', 'success');
+                        document.getElementById('gstep-2').classList.add('done');
+                        document.getElementById('gstep-3').classList.add('active');
+                        document.getElementById('g-folder-id').disabled = false;
+                        document.getElementById('btn-test-drive').disabled = false;
+                        document.getElementById('drive-test-info').style.display = 'flex';
+                        document.getElementById('oauth-code-box').classList.remove('show');
+                        updateProgress();
+                    } else {
+                        showToast('Erro OAuth: ' + (data.error_description || data.error || 'token não retornado'), 'error');
+                        if (btn) { btn.innerHTML = '<i class="fas fa-key"></i> Trocar por Token'; btn.disabled = false; }
+                    }
+                } catch (_) {
+                    showToast('Falha de rede ao trocar token.', 'error');
+                    if (btn) { btn.innerHTML = '<i class="fas fa-key"></i> Trocar por Token'; btn.disabled = false; }
+                }
+            };
+
+            /* DRIVE TEST */
+            window.testDriveSetup = async function () {
+                S.folderId = document.getElementById('g-folder-id').value.trim();
+                if (!S.folderId) { showToast('Informe o ID da pasta!', 'error'); return; }
+                if (!S.refreshToken) { showToast('Token OAuth não gerado!', 'error'); return; }
+
+                const btn = document.getElementById('btn-test-drive');
+                btn.innerHTML = '<i class="fas fa-rotate cqb-spin"></i> Testando...';
+                btn.disabled = true;
+                showToast('Conectando ao Google Drive...', 'info');
+
+                try {
+                    const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams({ client_id: S.clientId, client_secret: S.clientSecret, refresh_token: S.refreshToken, grant_type: 'refresh_token' })
+                    });
+                    const tokenData = await tokenRes.json();
+                    if (!tokenData.access_token) throw new Error('access_token indisponível');
+                    const access = tokenData.access_token;
+
+                    const folderQ = `'${S.folderId}' in parents and name='CanalQb_Config' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+                    const folderSR = await driveList(access, folderQ);
+                    let configId;
+                    if (folderSR.files.length > 0) {
+                        configId = folderSR.files[0].id;
+                        showToast('Pasta CanalQb_Config já existe - reutilizando.', 'info');
+                    } else {
+                        const cRes = await driveCreate(access, { name: 'CanalQb_Config', mimeType: 'application/vnd.google-apps.folder', parents: [S.folderId] });
+                        configId = cRes.id;
+                        showToast('Pasta CanalQb_Config criada!', 'success');
+                    }
+
+                    const fileQ = `'${configId}' in parents and name='teste.txt' and trashed=false`;
+                    const fileSR = await driveList(access, fileQ);
+                    if (fileSR.files.length > 0) {
+                        showToast('Arquivo teste.txt já existe - sem duplicata.', 'info');
+                    } else {
+                        const content = `CanalQb CanalQb Config Test\nData: ${new Date().toISOString()}\nSite: https://canalqb.com.br\nDevice IP: ${S.espIp}`;
+                        const boundary = 'cqb_boundary_2026';
+                        const meta = JSON.stringify({ name: 'teste.txt', parents: [configId] });
+                        const body = `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${meta}\r\n--${boundary}\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n${content}\r\n--${boundary}--`;
+                        await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                            method: 'POST',
+                            headers: { Authorization: `Bearer ${access}`, 'Content-Type': `multipart/related; boundary=${boundary}` },
+                            body
+                        });
+                        showToast('Arquivo teste.txt criado com sucesso!', 'success');
+                    }
+
+                    await saveToEsp({ 
+                        gdrive: {
+                            folder_id: S.folderId,
+                            config_folder_id: configId
+                        }
+                    });
+                    S.driveConfigured = true;
+                    unlockModules();
+                    updateProgress();
+                    updateSystemStatus();
+                    document.getElementById('gstep-3').classList.add('done');
+                    showToast('Drive validado! Módulos liberados.', 'success');
+                    
+                    // Resetar botão após sucesso
+                    btn.innerHTML = '<i class="fas fa-circle-check"></i> Testar Conexão';
+                    btn.disabled = false;
+
+                } catch (err) {
+                    showToast('Erro ao testar Drive: ' + (err.message || 'verifique credenciais'), 'error');
+                    btn.innerHTML = '<i class="fas fa-circle-check"></i> Testar Conexão';
+                    btn.disabled = false;
+                }
+            };
+
+            async function driveList(token, q) {
+                const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id,name)`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                return res.json();
+            }
+            async function driveCreate(token, meta) {
+                const res = await fetch('https://www.googleapis.com/drive/v3/files', {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(meta)
+                });
+                return res.json();
+            }
+
+            /* UNLOCK */
+            function unlockModules() {
+                // Verificar se Google Drive está configurado para liberar módulos
+                const googleConfigured = S.driveConfigured && S.folderId;
+                
+                if (googleConfigured) {
+                    // Liberar Chat AI se Google configurado
+                    const chatMenu = document.getElementById('menu-chat');
+                    if (chatMenu) {
+                        chatMenu.classList.remove('locked');
+                        // Remover ícone de cadeado
+                        const lockIcon = chatMenu.querySelector('.fa-lock');
+                        if (lockIcon) {
+                            lockIcon.remove();
+                        }
+                    }
+                    
+                    // Liberar Marketplace se Google configurado
+                    const marketplaceMenu = document.getElementById('menu-marketplace');
+                    if (marketplaceMenu) {
+                        marketplaceMenu.classList.remove('locked');
+                        // Remover ícone de cadeado
+                        const lockIcon = marketplaceMenu.querySelector('.fa-lock');
+                        if (lockIcon) {
+                            lockIcon.remove();
+                        }
+                    }
+                    
+                    console.log('Módulos liberados: Chat AI e Marketplace');
+                } else {
+                    // Manter cadeados se Google não configurado
+                    ['marketplace', 'chat'].forEach(id => {
+                        const m = document.getElementById('menu-' + id);
+                        if (m) {
+                            m.classList.add('locked');
+                            // Adicionar ícone de cadeado se não existir
+                            if (!m.querySelector('.fa-lock')) {
+                                const lockIcon = document.createElement('i');
+                                lockIcon.className = 'fas fa-lock';
+                                lockIcon.style.fontSize = '0.72rem';
+                                m.appendChild(lockIcon);
+                            }
+                        }
+                    });
+                    
+                    console.log('Módulos bloqueados: aguardando configuração do Google Drive');
+                }
+            }
+
+            /* ESP32 SAVE */
+            async function saveToEsp(payload) {
+                try {
+                    await fetch(`http://${S.espIp}/api/settings`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                } catch (_) { }
+            }
+
+            /* LOAD SAVED CONFIG */
+            async function loadSavedConfig() {
+                try {
+                    const res = await fetch(`http://${S.espIp}/api/config`);
+                    const data = await res.json();
+                    
+                    // Carregar credenciais OAuth do firmware (persistência)
+                    if (data.oauth) {
+                        if (data.oauth.client_id) { 
+                            document.getElementById('g-client-id').value = data.oauth.client_id; 
+                            S.clientId = data.oauth.client_id; 
+                        }
+                        if (data.oauth.client_secret) { 
+                            document.getElementById('g-client-secret').value = data.oauth.client_secret; 
+                            S.clientSecret = data.oauth.client_secret; 
+                        }
+                        if (data.oauth.refresh_token) { 
+                            S.refreshToken = data.oauth.refresh_token; 
+                        }
+                        if (data.oauth.access_token) { 
+                            S.accessToken = data.oauth.access_token; 
+                        }
+                        if (data.oauth.token_expires) { 
+                            S.tokenExpires = data.oauth.token_expires; 
+                        }
+                        
+                        // Verificar se token ainda é válido
+                        if (data.oauth.token_valid && data.oauth.access_token) {
+                            console.log('Token OAuth válido encontrado, usando credenciais salvas');
+                            document.getElementById('gstep-2').classList.add('done');
+                            document.getElementById('gstep-3').classList.add('active');
+                            document.getElementById('g-folder-id').disabled = false;
+                            document.getElementById('btn-test-drive').disabled = false;
+                            document.getElementById('drive-test-info').style.display = 'flex';
+                        }
+                    }
+                    
+                    // Google Drive settings
+                    if (data.gdrive) {
+                        if (data.gdrive.service_email) { 
+                            document.getElementById('g-svc-email').value = data.gdrive.service_email; 
+                            S.svcEmail = data.gdrive.service_email; 
+                        }
+                        if (data.gdrive.folder_id) { 
+                            document.getElementById('g-folder-id').value = data.gdrive.folder_id; 
+                            S.folderId = data.gdrive.folder_id; 
+                        }
+                    }
+                    
+                    // Compatibilidade com formato antigo (legado)
+                    if (data.idcliente) { document.getElementById('g-client-id').value = data.idcliente; S.clientId = data.idcliente; }
+                    if (data.secretclient) { document.getElementById('g-client-secret').value = data.secretclient; S.clientSecret = data.secretclient; }
+                    if (data.emaildecontadeservico) { document.getElementById('g-svc-email').value = data.emaildecontadeservico; S.svcEmail = data.emaildecontadeservico; }
+                    if (data.refreshclient) { S.refreshToken = data.refreshclient; }
+                    if (data.iddepastadodrive) { document.getElementById('g-folder-id').value = data.iddepastadodrive; S.folderId = data.iddepastadodrive; }
+                    
+                    // Ativar step 1 se tiver credenciais básicas
+                    if (S.clientId && S.clientSecret && S.svcEmail) { 
+                        evalGoogleStep1(); 
+                    }
+                    if (data.bt_enabled !== undefined) {
+                        document.getElementById('bt-enable-switch').checked = data.bt_enabled;
+                        document.getElementById('bt-name-input').value = data.bt_name || 'Canalqb - ESP32';
+                        document.getElementById('bt-pin-input').value = data.bt_pin || '1234';
+                    } else if (data.bluetooth && data.bluetooth.enabled !== undefined) {
+                        document.getElementById('bt-enable-switch').checked = data.bluetooth.enabled;
+                        document.getElementById('bt-name-input').value = data.bluetooth.name || 'Canalqb - ESP32';
+                        document.getElementById('bt-pin-input').value = data.bluetooth.pin || '1234';
+                    }
+                    
+                    if (data.driveConfigured !== undefined) {
+                        S.driveConfigured = data.driveConfigured;
+                    } else if (data.iddepastadodrive && data.refreshclient) {
+                        S.driveConfigured = true;
+                    } else if (data.refreshclient && data.iddepastadodrive) {
+                        S.driveConfigured = true;
+                    } else if (data.refreshclient && !data.iddepastadodrive) {
+                        S.driveConfigured = false;
+                    } else if (!data.refreshclient && !data.iddepastadodrive) {
+                        S.driveConfigured = false;
+                    }
+                    
+                    updateSystemStatus();
+                    updateProgress();
+                    
+                    if (S.clientId && S.clientSecret && S.svcEmail && S.driveConfigured) {
+                        unlockModules();
+                    }
+
+                    try {
+                        const statusRes = await fetch(`http://${S.espIp}/api/status`);
+                        if (statusRes.ok) {
+                            const statusData = await statusRes.json();
+                            if (statusData.connected || (data.wifi && data.wifi.ssid)) {
+                                const ssidLabel = statusData.ssid || (data.wifi && data.wifi.ssid) || 'Desconhecido';
+                                const ipLabel = statusData.ip || S.espIp || 'Desconhecido';
+                                
+                                document.getElementById('current-ssid-label').textContent = ssidLabel;
+                                document.getElementById('current-ip-label').textContent = ipLabel;
+                                document.getElementById('wifi-status-alert').style.display = 'flex';
+                            }
+                        }
+                    } catch (e) {
+                        console.log('Erro ao obter status da conexão na inicialização:', e);
+                    }
+
+                } catch (error) { 
+                    console.error('Erro ao carregar configurações do ESP32:', error);
+                    showToast('Erro ao carregar configurações salvas: ' + error.message, 'warn');
+                }
+            }
+
+            /* BLUETOOTH */
+            window.updateBtStatus = function () {
+                const en = document.getElementById('bt-enable-switch').checked;
+                showToast(en ? 'O Bluetooth será ativado imediatamente ao salvar.' : 'O Bluetooth será desativado imediatamente ao salvar.', 'info');
+            };
+            window.saveBtConfig = async function () {
+                const enabled = document.getElementById('bt-enable-switch').checked;
+                const name = document.getElementById('bt-name-input').value || 'Canalqb - ESP32';
+                const pin = document.getElementById('bt-pin-input').value || '1234';
+
+                showToast('Aplicando configurações Bluetooth...', 'info');
+
+                try {
+                    const res = await fetch(`http://${S.espIp}/api/bt_config?enabled=${enabled}&name=${encodeURIComponent(name)}&pin=${encodeURIComponent(pin)}`);
+                    const data = await res.json();
+
+                    if (data.status === 'success') {
+                        showToast(enabled ? 'Bluetooth ativado com sucesso!' : 'Bluetooth desativado com sucesso!', 'success');
+                    } else {
+                        showToast('Erro ao configurar Bluetooth: ' + (data.message || 'desconhecido'), 'error');
+                    }
+                } catch (error) {
+                    showToast('Falha na comunicação com o ESP32', 'error');
+                }
+            };
+
+            /* WIFI */
+            let selectedSsid = '';
+            let scanInterval = null;
+            let scanAttempts = 0;
+            const MAX_SCAN_ATTEMPTS = 5;
+
+            window.scanWifi = async function () {
+                if (scanInterval) {
+                    clearInterval(scanInterval);
+                    scanInterval = null;
+                }
+
+                scanAttempts = 0;
+                showToast('Iniciando scan de redes Wi-Fi...', 'info');
+                const list = document.getElementById('wifi-list');
+                list.innerHTML = `<div class="cqb-wifi-row" style="justify-content:center;color:var(--text-sub);border-style:dashed;cursor:default;"><i class="fas fa-rotate cqb-spin"></i>&nbsp;Buscando redes...</div>`;
+
+                await performWifiScan();
+            };
+
+            async function performWifiScan() {
+                const apiUrl = `http://${S.espIp}/api/scan`;
+                console.log(`Tentando scan WiFi em: ${apiUrl}`);
+                
+                try {
+                    const healthRes = await fetch(`http://${S.espIp}/api/config`, {
+                        method: 'GET',
+                        timeout: 5000
+                    });
+                    
+                    if (!healthRes.ok) {
+                        throw new Error(`ESP32 offline: HTTP ${healthRes.status}`);
+                    }
+                    
+                    console.log('ESP32 online, iniciando scan...');
+                    
+                    const res = await fetch(apiUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Cache-Control': 'no-cache'
+                        },
+                        timeout: 15000
+                    });
+
+                    console.log(`Resposta do scan: ${res.status}`);
+
+                    if (res.status === 202) {
+                        scanAttempts++;
+                        if (scanAttempts < MAX_SCAN_ATTEMPTS) {
+                            showToast(`Scan em andamento (${scanAttempts}/${MAX_SCAN_ATTEMPTS})...`, 'info');
+                            scanInterval = setTimeout(() => performWifiScan(), 2000);
+                        } else {
+                            showToast('Timeout ao escanear redes', 'error');
+                            renderWifi([]);
+                        }
+                        return;
+                    }
+
+                    if (!res.ok) {
+                        throw new Error(`HTTP ${res.status}`);
+                    }
+
+                    const nets = await res.json();
+                    console.log('Redes encontradas:', nets);
+                    
+                    if (!Array.isArray(nets)) {
+                        console.error('Resposta inválida:', nets);
+                        throw new Error('Resposta inválida da API');
+                    }
+                    
+                    renderWifi(nets);
+                    showToast(`${nets.length} redes encontradas`, 'success');
+
+                } catch (error) {
+                    console.error('Erro ao escanear WiFi:', error);
+                    showToast(`Erro ao escanear redes: ${error.message}`, 'error');
+                    renderWifi([]);
+                    showToast('Não foi possível detectar redes WiFi. Verifique o ESP32.', 'error');
+                }
+            }
+
+            function sigIcon(rssi, auth) {
+                let icon = '';
+                if (rssi >= -55) icon = '<i class="fas fa-wifi" style="color:var(--cqb-green);"></i>';
+                else if (rssi >= -70) icon = '<i class="fas fa-wifi" style="color:var(--cqb-yellow);"></i>';
+                else icon = '<i class="fas fa-wifi" style="color:var(--cqb-red);"></i>';
+
+                if (auth) {
+                    icon += '<i class="fas fa-lock" style="font-size:0.7rem;color:var(--text-sub);margin-left:4px;"></i>';
+                }
+
+                return icon;
+            }
+
+            function renderWifi(nets) {
+                const list = document.getElementById('wifi-list');
+
+                if (!nets?.length) {
+                    list.innerHTML = `<div class="cqb-wifi-row" style="color:var(--text-sub);justify-content:center;cursor:default;">
+                        <i class="fas fa-wifi-slash" style="margin-right:8px;opacity:0.5;"></i>
+                        Nenhuma rede encontrada. Verifique se o WiFi está ativo.
+                    </div>`;
+                    return;
+                }
+
+                nets.sort((a, b) => a.rssi - b.rssi);
+
+                list.innerHTML = nets.map((n, index) => {
+                    const isSecure = n.auth !== false;
+                    const signalClass = n.rssi >= -55 ? 'success' : n.rssi >= -70 ? 'warning' : 'danger';
+                    const signalText = n.rssi >= -55 ? 'Excelente' : n.rssi >= -70 ? 'Bom' : 'Fraco';
+
+                    return `
+      <div class="cqb-wifi-row" onclick="selectWifi('${n.ssid}',this)" role="button" tabindex="0" data-ssid="${n.ssid}" data-rssi="${n.rssi}" data-auth="${isSecure}">
+        <span class="cqb-wifi-sig">${sigIcon(n.rssi, isSecure)}</span>
+        <span style="flex:1;font-weight:500;">${n.ssid}</span>
+        <span style="font-size:0.72rem;color:var(--text-${signalClass});font-family:'JetBrains Mono',monospace;">${signalText}</span>
+        <span style="font-size:0.68rem;color:var(--text-sub);font-family:'JetBrains Mono',monospace;margin-left:4px;">${n.rssi} dBm</span>
+      </div>`;
+                }).join('');
+
+                list.querySelectorAll('.cqb-wifi-row').forEach(row => {
+                    row.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            const ssid = row.dataset.ssid;
+                            selectWifi(ssid, row);
+                        }
+                    });
+                });
+            }
+
+            window.selectWifi = function (ssid, el) {
+                selectedSsid = ssid;
+                document.getElementById('ssid-manual').value = ssid;
+
+                document.querySelectorAll('.cqb-wifi-row').forEach(r => r.classList.remove('selected'));
+                el.classList.add('selected');
+
+                const passField = document.getElementById('wifi-pass');
+                passField.focus();
+
+                const rssi = el.dataset.rssi;
+                const auth = el.dataset.auth === 'true';
+                let message = `Rede "${ssid}" selecionada`;
+
+                if (auth) {
+                    message += ' (protegida)';
+                }
+
+                showToast(message, 'info');
+
+                if (!auth) {
+                    passField.value = '';
+                    passField.placeholder = 'Rede aberta (sem senha)';
+                } else {
+                    passField.placeholder = 'Digite a senha...';
+                }
+            };
+
+            window.togglePass = function () {
+                const i = document.getElementById('wifi-pass'), e = document.getElementById('eye-icon');
+                i.type = i.type === 'password' ? 'text' : 'password';
+                e.className = i.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+            };
+
+            window.saveWifi = async function () {
+                const ssid = document.getElementById('ssid-manual').value.trim() || selectedSsid;
+                const pass = document.getElementById('wifi-pass').value;
+
+                if (!ssid) {
+                    showToast('Selecione ou digite o nome da rede!', 'error');
+                    return;
+                }
+
+                showToast('Conectando à rede...', 'info');
+
+                try {
+                    const res = await fetch(`http://${S.espIp}/api/connect`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ssid, password: pass })
+                    });
+                    const status = await res.json();
+                    
+                    if (status.connected) {
+                        showToast('Conectado com sucesso!', 'success');
+                        document.getElementById('current-ssid-label').textContent = status.ssid || ssid;
+                        document.getElementById('current-ip-label').textContent = status.ip || 'Desconhecido';
+                        document.getElementById('wifi-status-alert').style.display = 'flex';
+                    } else {
+                        showToast('Falha na conexão. Verifique a senha.', 'error');
+                    }
+                } catch (error) {
+                    showToast('Erro ao conectar: ' + error.message, 'error');
+                }
+            };
+
+            window.saveSsidConfig = async function () {
+                const hostname = document.getElementById('dev-hostname').value.trim();
+                const channel = parseInt(document.getElementById('dev-channel').value) || 0;
+                const staticIp = document.getElementById('dev-ip').value.trim();
+                const gateway = document.getElementById('dev-gw').value.trim();
+                const dns1 = document.getElementById('dev-dns1').value.trim();
+                const dns2 = document.getElementById('dev-dns2').value.trim();
+
+                showToast('Salvando configurações avançadas...', 'info');
+
+                try {
+                    const payload = { hostname, channel };
+                    if (staticIp) {
+                        payload.static_ip = staticIp;
+                        payload.gateway = gateway;
+                        payload.dns1 = dns1;
+                        payload.dns2 = dns2;
+                    }
+
+                    const res = await fetch(`http://${S.espIp}/api/ssid_config`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+
+                    if (data.status === 'success') {
+                        showToast('Configurações avançadas salvas!', 'success');
+                    } else {
+                        showToast('Erro ao salvar configurações: ' + (data.message || 'desconhecido'), 'error');
+                    }
+                } catch (error) {
+                    showToast('Erro ao conectar: ' + error.message, 'error');
+                }
+            };
+
+            /* MARKETPLACE */
+            function loadMarket() {
+                const list = document.getElementById('market-list');
+                const items = [
+                    { ico: 'fas fa-code', title: 'Script Monitoramento', desc: 'Monitora status do sistema em tempo real', tag: 'Premium' },
+                    { ico: 'fas fa-chart-line', title: 'Dashboard Analytics', desc: 'Visualização de dados e métricas', tag: 'Pro' },
+                    { ico: 'fas fa-robot', title: 'Auto Backup', desc: 'Backup automático agendado', tag: 'Free' },
+                    { ico: 'fas fa-shield-halved', title: 'Security Suite', desc: 'Proteção avançada do sistema', tag: 'Premium' },
+                    { ico: 'fas fa-bell', title: 'Notificações Push', desc: 'Alertas em tempo real', tag: 'Pro' },
+                    { ico: 'fas fa-database', title: 'Data Logger', desc: 'Registro completo de eventos', tag: 'Free' }
+                ];
+
+                list.innerHTML = items.map(item => `
+                    <div class="col-12 col-sm-6">
+                        <div class="cqb-market-card">
+                            <div class="cqb-market-ico">${item.ico}</div>
+                            <div class="cqb-market-title">${item.title}</div>
+                            <div class="cqb-market-desc">${item.desc}</div>
+                            <span class="cqb-badge" style="background:${item.tag === 'Premium' ? 'var(--cqb-yellow)' : item.tag === 'Pro' ? 'var(--cqb-blue)' : 'var(--cqb-green)'};color:white;font-size:0.7rem;padding:4px 8px;border-radius:4px;">${item.tag}</span>
+                        </div>
+                    </div>`).join('');
+            }
+
+            /* MODAL SYSTEM */
+            function openCqbModal(title, body, onConfirm) {
+                document.getElementById('modal-title').textContent = title;
+                document.getElementById('modal-body').innerHTML = body;
+                const btn = document.getElementById('modal-confirm-btn');
+                btn.onclick = () => {
+                    closeCqbModal();
+                    onConfirm();
+                };
+                document.getElementById('cqb-modal-overlay').classList.add('show');
+            }
+            window.openCqbModal = openCqbModal;
+            window.closeCqbModal = function () {
+                document.getElementById('cqb-modal-overlay').classList.remove('show');
+            };
+
+            /* RESET DE FÁBRICA */
+            window.factoryReset = function () {
+                openCqbModal(
+                    "Reset de Fábrica",
+                    "Isso apagará <strong>TODAS</strong> as configurações (Wi-Fi, Google, Módulos).<br><br>Esta ação é irreversível. O dispositivo voltará ao estado original de fábrica.",
+                    async () => {
+                        try {
+                            const res = await fetch(`http://${S.espIp}/api/factory_reset`, { method: 'POST' });
+                            const data = await res.json();
+                            if (data.status === 'success') {
+                                showToast('Reset de fábrica realizado! Reiniciando...', 'success');
+                                setTimeout(() => location.reload(), 3000);
+                            } else {
+                                showToast('Erro no reset: ' + (data.message || 'desconhecido'), 'error');
+                            }
+                        } catch (error) {
+                            showToast('Falha na comunicação com ESP32', 'error');
+                        }
+                    }
+                );
+            };
+
+            /* EXPORT/IMPORT CONFIG */
+            window.exportConfig = async function () {
+                try {
+                    showToast('Coletando configurações...', 'info');
+                    
+                    const espConfigRes = await fetch(`http://${S.espIp}/api/config`);
+                    if (!espConfigRes.ok) throw new Error('Falha ao obter config do ESP32');
+                    
+                    const config = await espConfigRes.json();
+                    
+                    config._ui = {
+                        timestamp: new Date().toISOString(),
+                        version: '1.0',
+                        espIp: S.espIp,
+                        theme: S.theme
+                    };
+
+                    const jsonString = JSON.stringify(config, null, 2);
+                    const blob = new Blob([jsonString], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `canalqb-esp32-config-${new Date().toISOString().split('T')[0]}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    showToast('Configurações exportadas com sucesso!', 'success');
+                    document.getElementById('last-backup-info').textContent = new Date().toLocaleString('pt-BR');
+                    
+                    console.log('Configurações exportadas:', config);
+
+                } catch (error) {
+                    console.error('Erro ao exportar configurações:', error);
+                    showToast('Erro ao exportar configurações: ' + error.message, 'error');
+                }
+            };
+
+            window.importConfig = function (event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    try {
+                        const config = JSON.parse(e.target.result);
+                        console.log('Configurações importadas:', config);
+
+                        if (!config) {
+                            throw new Error('Arquivo de configuração inválido ou corrompido');
+                        }
+
+                        openCqbModal(
+                            'Confirmar Restauração',
+                            `Deseja restaurar as configurações deste backup?<br><br>
+                            <strong>Atenção:</strong> Isso irá sobrescrever todas as configurações atuais do ESP32.`,
+                            async () => {
+                                await restoreConfig(config);
+                            }
+                        );
+                    } catch (error) {
+                        showToast('Erro ao ler arquivo de configurações: ' + error.message, 'error');
+                    }
+                };
+                reader.readAsText(file);
+                event.target.value = '';
+            };
+
+            async function restoreConfig(config) {
+                try {
+                    showToast('Restaurando configurações...', 'info');
+
+                    const uiConfig = config._ui;
+                    delete config._ui;
+
+                    await saveToEsp(config);
+
+                    if (uiConfig && uiConfig.theme) {
+                        applyTheme(uiConfig.theme);
+                    }
+
+                    await loadSavedConfig();
+
+                    showToast(`Configurações restauradas com sucesso!`, 'success');
+                    console.log(`Configuração restaurada enviada ao ESP32.`);
+                } catch (error) {
+                    showToast('Erro ao restaurar configurações: ' + error.message, 'error');
+                }
+            }
+
+            /* AMBIENTE AI */
+            window.toggleAiKeyVisibility = function () {
+                const input = document.getElementById('ai-api-key');
+                const icon = document.getElementById('ai-key-eye');
+                input.type = input.type === 'password' ? 'text' : 'password';
+                icon.className = input.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+            };
+
+            window.testAiConnection = async function () {
+                const provider = document.getElementById('ai-provider').value;
+                const apiKey = document.getElementById('ai-api-key').value.trim();
+                const model = document.getElementById('ai-model').value;
+
+                if (!apiKey) {
+                    showToast('Digite a chave da API primeiro!', 'error');
+                    return;
+                }
+
+                showToast('Testando conexão com ' + provider + '...', 'info');
+
+                try {
+                    const res = await fetch(`http://${S.espIp}/api/ai_test`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ provider, apiKey, model })
+                    });
+                    const data = await res.json();
+
+                    if (data.status === 'success') {
+                        showToast('Conexão com ' + provider + ' testada com sucesso!', 'success');
+                        document.getElementById('ai-ok').style.display = 'inline-block';
+                    } else {
+                        showToast('Erro na conexão: ' + (data.message || 'desconhecido'), 'error');
+                    }
+                } catch (error) {
+                    showToast('Erro ao testar conexão: ' + error.message, 'error');
+                }
+            };
+
+            window.saveAiConfig = async function () {
+                const provider = document.getElementById('ai-provider').value;
+                const apiKey = document.getElementById('ai-api-key').value.trim();
+                const model = document.getElementById('ai-model').value;
+                const temperature = parseFloat(document.getElementById('ai-temperature').value);
+                const maxTokens = parseInt(document.getElementById('ai-max-tokens').value) || 1000;
+
+                if (!apiKey) {
+                    showToast('Digite a chave da API!', 'error');
+                    return;
+                }
+
+                showToast('Salvando configurações AI...', 'info');
+
+                try {
+                    const res = await fetch(`http://${S.espIp}/api/ai_config`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            provider, 
+                            apiKey, 
+                            model, 
+                            temperature, 
+                            maxTokens 
+                        })
+                    });
+                    const data = await res.json();
+
+                    if (data.status === 'success') {
+                        showToast('Configurações AI salvas com sucesso!', 'success');
+                        document.getElementById('ai-ok').style.display = 'inline-block';
+                    } else {
+                        showToast('Erro ao salvar: ' + (data.message || 'desconhecido'), 'error');
+                    }
+                } catch (error) {
+                    showToast('Erro ao conectar: ' + error.message, 'error');
+                }
+            };
+
+        })();
+    </script>
+
+    <!-- Secure Configuration Loader -->
+    <script src="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/secure-config.js"></script>
+
+    <!-- Google Analytics 4 + GTM Integration Script -->
+    <script src="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/ga4-gtm-integration.js"></script>
+
+</body>
+
+</html>
