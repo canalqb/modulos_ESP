@@ -1,8 +1,5 @@
-# Ignorar pastas de plugins do CDN
-alexa/
-samsung/
-scheduler/
-whatsapp/
+# Ignorar pasta marketplace completa (plugins e módulos)
+marketplace/
 
 # Manter apenas ambiente/ no CDN
 !ambiente/
