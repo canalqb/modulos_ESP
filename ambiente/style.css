@@ -734,7 +734,7 @@ border: 1px solid var(--cqb-blue);
     align-items: center;
     gap: 12px;
     padding: 16px 20px;
-    background: white;
+    background: var(--bg-card);
     border-radius: var(--radius);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     margin-bottom: 12px;
@@ -742,6 +742,7 @@ border: 1px solid var(--cqb-blue);
     transform: translateX(100%);
     transition: all 0.3s var(--anim);
     max-width: 400px;
+    color: var(--text-primary);
 }
 
 .cqb-toast.show {
