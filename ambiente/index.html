@@ -842,6 +842,9 @@
                         folder_id: config.gdrive?.folder_id
                     };
                     
+                    // Debug: Log dos campos obtidos
+                    console.log('DEBUG - Campos Google obtidos:', requiredFields);
+                    
                     // Verificar se todos os campos existem e não estão vazios
                     const allFieldsComplete = Object.values(requiredFields).every(field => 
                         field && field !== '' && field !== null && field !== undefined
@@ -849,7 +852,17 @@
                     
                     // Verificar se o token ainda é válido
                     const tokenValid = config.oauth?.token_valid === true;
-                    const tokenNotExpired = config.oauth?.token_expires > Date.now() / 1000;
+                    const currentTime = Date.now() / 1000;
+                    const tokenNotExpired = config.oauth?.token_expires > currentTime;
+                    
+                    // Debug: Log das validações
+                    console.log('DEBUG - Validações Google:');
+                    console.log('  - allFieldsComplete:', allFieldsComplete);
+                    console.log('  - tokenValid:', tokenValid);
+                    console.log('  - tokenNotExpired:', tokenNotExpired);
+                    console.log('  - token_expires:', config.oauth?.token_expires);
+                    console.log('  - currentTime:', currentTime);
+                    console.log('  - token_valid:', config.oauth?.token_valid);
                     
                     // Se tudo estiver configurado e token válido, desativar cadeados
                     if (allFieldsComplete && tokenValid && tokenNotExpired) {
