@@ -32,8 +32,8 @@
   
   /* Button Dimensions */
   --_size: 1rem;
-  --_padding-inline: 1.75ch;
-  --_padding-block: .75ch;
+  --_padding-inline: 1.25ch;
+  --_padding-block: .6ch;
   --_border-radius: .5ch;
   
   /* Shadows */
@@ -126,7 +126,7 @@
   
   /* Sizing */
   font-size: var(--_size);
-  min-block-size: 2.5ch 1.2lh;
+  min-block-size: 2ch 1lh;
   box-sizing: border-box;
   
   /* Colors & Background */
@@ -325,8 +325,9 @@
 /* Small Button Variant */
 .btn-small {
   --_size: 0.875rem;
-  --_padding-inline: 1.5ch;
-  --_padding-block: .6ch;
+  --_padding-inline: 1ch;
+  --_padding-block: .5ch;
+  min-height: 28px;
 }
 
 /* Vibrant Button Variant */
