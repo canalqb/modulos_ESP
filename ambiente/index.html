@@ -820,6 +820,11 @@
 
             loadSavedConfig();
 
+            // Executar validação após carregar configurações salvas
+            setTimeout(() => {
+                checkGoogleConfigComplete();
+            }, 3000);
+
             /* VALIDAÇÃO GOOGLE - Desativar cadeados se tudo configurado */
             window.checkGoogleConfigComplete = async function() {
                 try {
@@ -910,7 +915,7 @@
             // Executar validação ao carregar a página
             setTimeout(() => {
                 checkGoogleConfigComplete();
-            }, 1000);
+            }, 2000);
 
             /* TOAST */
             function showToast(msg, type = 'info') {
