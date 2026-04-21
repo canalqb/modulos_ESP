@@ -1507,10 +1507,8 @@
                 showToast('Conectando à rede...', 'info');
 
                 try {
-                    const res = await fetch(`http://${S.espIp}/wifi/connect`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ ssid, password: pass })
+                    const res = await fetch(`http://${S.espIp}/api/connect?ssid=${encodeURIComponent(ssid)}&pass=${encodeURIComponent(pass)}`, {
+                        method: 'GET'
                     });
                     const status = await res.json();
                     
