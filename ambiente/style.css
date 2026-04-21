@@ -618,7 +618,8 @@ transform: translateY(-1px);
 }
 
 .cqb-btn-block {
-width: 100%;
+    width: auto;
+    display: block;
 }
 
 .cqb-btn-sm {
