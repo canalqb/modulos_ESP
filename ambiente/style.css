@@ -59,7 +59,7 @@
     --bg-body: #ffffff;
     --bg-card: #ffffff;
     --bg-input: #f8fafc;
-    --bg-sidebar: #0f172a;
+    --bg-sidebar: #f8fafc;
     --bg-topbar: #ffffff;
     --bg-code: #f1f5f9;
     --text-primary: #0f172a;
@@ -68,8 +68,8 @@
     --border: rgba(0, 0, 0, 0.06);
     --border-input: #e2e8f0;
     --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
-    --sidebar-text: rgba(255, 255, 255, 0.6);
-    --sidebar-head: rgba(0, 0, 0, 0.2);
+    --sidebar-text: #475569;
+    --sidebar-head: #64748b;
     --step-line: #e2e8f0;
     --collapse-bg: #f8fafc;
     --tab-bg: #f1f5f9;
@@ -255,8 +255,8 @@ body {
 }
 
 .cqb-nav-link:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: white;
+    background: rgba(0, 0, 0, 0.05);
+    color: #0f172a;
 }
 
 .cqb-nav-link.active {
@@ -301,8 +301,8 @@ body {
 }
 
 .cqb-nav-sub:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: white;
+    background: rgba(0, 0, 0, 0.05);
+    color: #0f172a;
 }
 
 .cqb-nav-sub.active {
