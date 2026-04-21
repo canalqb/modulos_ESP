@@ -105,11 +105,22 @@
 
                     <hr class="nav-divider">
 
-                    <a class="cqb-nav-link" href="sites-externos.html" target="_blank" rel="noopener noreferrer">
-                        <i class="fas fa-globe fa-icon"></i>
-                        <span class="nav-lbl">Sites Externos</span>
-                        <i class="fas fa-arrow-up-right-from-square" style="font-size:0.7rem;opacity:0.4;"></i>
-                    </a>
+                    <div class="cqb-nav-section">
+                        <div class="cqb-nav-header">
+                            <i class="fas fa-globe fa-icon"></i>
+                            <span class="nav-lbl">Sites Externos</span>
+                        </div>
+                        <div id="external-sites-list" class="nav-sites-list">
+                            <!-- Sites serão carregados dinamicamente aqui -->
+                        </div>
+                        
+                        <!-- Link fixo do Blog CanalQb -->
+                        <a class="cqb-nav-link" href="https://www.canalqb.com.br" target="_blank" rel="noopener noreferrer">
+                            <i class="fas fa-book fa-icon"></i>
+                            <span class="nav-lbl">Visitar Blog por CanalQb</span>
+                            <i class="fas fa-arrow-up-right-from-square" style="font-size:0.7rem;opacity:0.4;"></i>
+                        </a>
+                    </div>
 
                     <a class="cqb-nav-link" href="https://www.canalqb.com.br" target="_blank" rel="noopener noreferrer">
                         <i class="fas fa-book fa-icon"></i>
@@ -1795,6 +1806,43 @@
 
     <!-- Secure Configuration Loader -->
     <script src="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/secure-config.js"></script>
+
+    <!-- External Sites Loader -->
+    <script>
+        async function loadExternalSites() {
+            const container = document.getElementById('external-sites-list');
+            
+            try {
+                const response = await fetch('sites.txt');
+                const text = await response.text();
+                
+                const linhas = text.trim().split('\n');
+                
+                linhas.forEach(linha => {
+                    const [titulo, link] = linha.split(';');
+                    if (titulo && link) {
+                        const siteLink = document.createElement('a');
+                        siteLink.className = 'cqb-nav-link';
+                        siteLink.href = link.trim();
+                        siteLink.target = '_blank';
+                        siteLink.rel = 'noopener noreferrer';
+                        siteLink.innerHTML = `
+                            <i class="fas fa-globe fa-icon"></i>
+                            <span class="nav-lbl">Visitar ${titulo.trim()}</span>
+                            <i class="fas fa-arrow-up-right-from-square" style="font-size:0.7rem;opacity:0.4;"></i>
+                        `;
+                        container.appendChild(siteLink);
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Erro ao carregar sites externos:', error);
+            }
+        }
+
+        // Carregar sites quando página carregar
+        document.addEventListener('DOMContentLoaded', loadExternalSites);
+    </script>
 
     <!-- Google Analytics 4 + GTM Integration Script -->
     <script src="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ga4-gtm-integration.js"></script>
