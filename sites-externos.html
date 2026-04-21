@@ -65,57 +65,58 @@
     </div>
 
     <script>
-        // Lista de sites externos
-        const sitesExternos = [
-            {
-                titulo: "CanalQb Blog",
-                link: "https://www.canalqb.com.br",
-                descricao: "Blog oficial com tutoriais e novidades",
-                icone: "fas fa-blog"
-            },
-            {
-                titulo: "Documentação Oficial",
-                link: "https://docs.canalqb.com.br",
-                descricao: "Documentação completa e guias",
-                icone: "fas fa-book"
-            },
-            {
-                titulo: "Comunidade Discord",
-                link: "https://discord.gg/canalqb",
-                descricao: "Comunidade oficial para suporte",
-                icone: "fab fa-discord"
-            },
-            {
-                titulo: "GitHub Repository",
-                link: "https://github.com/canalqb",
-                descricao: "Código-fonte e desenvolvimento",
-                icone: "fab fa-github"
-            }
-        ];
-
-        // Função para carregar sites
-        function carregarSites() {
+        // Função para carregar sites do arquivo sites.txt
+        async function carregarSites() {
             const container = document.getElementById('sites-list');
             
-            sitesExternos.forEach(site => {
-                const col = document.createElement('div');
-                col.className = 'col-12 col-sm-6';
+            try {
+                // Ler arquivo sites.txt
+                const response = await fetch('sites.txt');
+                const text = await response.text();
                 
-                col.innerHTML = `
-                    <div class="cqb-card" style="cursor:pointer;" onclick="window.open('${site.link}', '_blank')">
-                        <div class="cqb-card-body" style="text-align:center;padding:20px;">
-                            <i class="${site.icone}" style="font-size:2rem;color:var(--cqb-blue);margin-bottom:12px;"></i>
-                            <h6 style="margin-bottom:8px;color:var(--text-primary);">${site.titulo}</h6>
-                            <p style="font-size:0.85rem;color:var(--text-sub);margin:0;">${site.descricao}</p>
-                            <button class="cqb-btn cqb-btn-primary cqb-btn-block">
-                                <i class="fas fa-external-link-alt"></i> Visitar Site
-                            </button>
+                // Processar linhas do arquivo
+                const linhas = text.trim().split('\n');
+                const sites = [];
+                
+                linhas.forEach(linha => {
+                    const [titulo, link] = linha.split(';');
+                    if (titulo && link) {
+                        sites.push({ titulo: titulo.trim(), link: link.trim() });
+                    }
+                });
+                
+                // Criar cards para cada site
+                sites.forEach(site => {
+                    const col = document.createElement('div');
+                    col.className = 'col-12 col-sm-6';
+                    
+                    col.innerHTML = `
+                        <div class="cqb-card" style="cursor:pointer;" onclick="window.open('${site.link}', '_blank')">
+                            <div class="cqb-card-body" style="text-align:center;padding:20px;">
+                                <i class="fas fa-external-link-alt" style="font-size:2rem;color:var(--cqb-blue);margin-bottom:12px;"></i>
+                                <h6 style="margin-bottom:8px;color:var(--text-primary);">${site.titulo}</h6>
+                                <p style="font-size:0.85rem;color:var(--text-sub);margin:0;">Visitar ${site.titulo}</p>
+                                <button class="cqb-btn cqb-btn-primary cqb-btn-block">
+                                    <i class="fas fa-external-link-alt"></i> Visitar ${site.titulo}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(col);
+                });
+                
+            } catch (error) {
+                console.error('Erro ao carregar sites:', error);
+                container.innerHTML = `
+                    <div class="col-12">
+                        <div class="cqb-alert cqb-alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Erro ao carregar sites externos. Verifique o arquivo sites.txt</span>
                         </div>
                     </div>
                 `;
-                
-                container.appendChild(col);
-            });
+            }
         }
 
         // Função de tema
