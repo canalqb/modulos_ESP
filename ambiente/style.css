@@ -224,7 +224,7 @@ body {
 .cqb-ver {
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    color: var(--sidebar-head);
+    color: #ffffff;
     background: rgba(255, 255, 255, 0.1);
     padding: 4px 8px;
     border-radius: var(--radius-sm);
