@@ -76,20 +76,43 @@
                 </div>
 
                 <div class="cqb-nav" id="cqb-nav">
-                    <p class="cqb-nav-section">Infraestrutura</p>
+                    <p class="cqb-nav-section">Acessos</p>
+
+                    <a class="cqb-nav-link locked" id="menu-chat" onclick="checkLock('chat')" role="button">
+                        <i class="fas fa-comments fa-icon"></i>
+                        <span class="nav-lbl">Chat AI</span>
+                        <i class="fas fa-lock" style="font-size:0.72rem;"></i>
+                    </a>
+
+                    <a class="cqb-nav-link locked" id="menu-marketplace" onclick="checkLock('marketplace')" role="button">
+                        <i class="fas fa-store fa-icon"></i>
+                        <span class="nav-lbl">Loja de módulos</span>
+                        <i class="fas fa-lock" style="font-size:0.72rem;"></i>
+                    </a>
+
+                    <a class="cqb-nav-link" href="sites-externos.html" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-globe fa-icon"></i>
+                        <span class="nav-lbl">Sites Externos</span>
+                        <i class="fas fa-arrow-up-right-from-square" style="font-size:0.7rem;opacity:0.4;"></i>
+                    </a>
+
+                    <a class="cqb-nav-link" href="https://www.canalqb.com.br" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-book fa-icon"></i>
+                        <span class="nav-lbl">Visitar Blog por Canalqb Blog</span>
+                        <i class="fas fa-arrow-up-right-from-square" style="font-size:0.7rem;opacity:0.4;"></i>
+                    </a>
+
+                    <p class="cqb-nav-section" style="margin-top:8px;">Configurações</p>
 
                     <a class="cqb-nav-link active" id="menu-rede" role="button" aria-expanded="true"
                         onclick="toggleSubMenu('sub-rede', this)">
                         <i class="fas fa-network-wired fa-icon"></i>
-                        <span class="nav-lbl">Redes &amp; Internet</span>
+                        <span class="nav-lbl">Configurações de Rede</span>
                         <i class="fas fa-chevron-down nav-arr"></i>
                     </a>
                     <div class="cqb-submenu cqb-sub-open" id="sub-rede">
                         <a class="cqb-nav-sub active" id="submenu-rede-wifi" onclick="showTab('rede','wifi')">
-                            <i class="fas fa-wifi"></i> Configurações de Rede
-                        </a>
-                        <a class="cqb-nav-sub" id="submenu-rede-ssid" onclick="showTab('rede','ssid')">
-                            <i class="fas fa-signal"></i> Configurações de SSID
+                            <i class="fas fa-wifi"></i> Configurações de SSID
                         </a>
                     </div>
 
@@ -105,35 +128,26 @@
                         <span class="nav-lbl">Configuração Bluetooth</span>
                     </a>
 
-                    <p class="cqb-nav-section" style="margin-top:8px;">Módulos</p>
-
-                    <a class="cqb-nav-link locked" id="menu-marketplace" onclick="checkLock('marketplace')" role="button">
-                        <i class="fas fa-store fa-icon"></i>
-                        <span class="nav-lbl">Marketplace</span>
-                        <i class="fas fa-lock" style="font-size:0.72rem;"></i>
-                    </a>
-
-                    <a class="cqb-nav-link locked" id="menu-chat" onclick="checkLock('chat')" role="button">
-                        <i class="fas fa-comments fa-icon"></i>
-                        <span class="nav-lbl">Chat Opus AI</span>
-                        <i class="fas fa-lock" style="font-size:0.72rem;"></i>
+                    <a class="cqb-nav-link" id="menu-ai" onclick="showSection('ai')" role="button">
+                        <i class="fas fa-robot fa-icon"></i>
+                        <span class="nav-lbl">Configuração Ambiente AI</span>
+                        <i class="fas fa-circle-check nav-arr" id="ai-ok"
+                            style="font-size:0.75rem;color:var(--cqb-green);display:none;"></i>
                     </a>
 
                     <a class="cqb-nav-link" id="menu-config" onclick="showSection('config')" role="button">
                         <i class="fas fa-shield-halved fa-icon"></i>
-                        <span class="nav-lbl">Configurações</span>
-                    </a>
-                    <a class="cqb-nav-link" onclick="factoryReset()" role="button"
-                        style="color:var(--cqb-red);opacity:0.8;">
-                        <i class="fas fa-trash-can fa-icon"></i>
                         <span class="nav-lbl">Reset de Fábrica</span>
                     </a>
 
-                    <p class="cqb-nav-section" style="margin-top:8px;">Externo</p>
-                    <a class="cqb-nav-link" href="https://www.canalqb.com.br" target="_blank" rel="noopener noreferrer">
-                        <i class="fas fa-book fa-icon"></i>
-                        <span class="nav-lbl">Visitar Blog</span>
-                        <i class="fas fa-arrow-up-right-from-square" style="font-size:0.7rem;opacity:0.4;"></i>
+                    <a class="cqb-nav-link" id="menu-backup" onclick="showSection('backup')" role="button">
+                        <i class="fas fa-database fa-icon"></i>
+                        <span class="nav-lbl">Restauração de Configurações</span>
+                    </a>
+
+                    <a class="cqb-nav-link" id="menu-backup" onclick="showSection('backup')" role="button">
+                        <i class="fas fa-save fa-icon"></i>
+                        <span class="nav-lbl">Backup de Configurações</span>
                     </a>
                 </div>
             </nav>
@@ -1029,14 +1043,30 @@
 
             /* UNLOCK */
             function unlockModules() {
-                ['marketplace', 'chat'].forEach(id => {
-                    const m = document.getElementById('menu-' + id);
-                    if (m) {
-                        m.classList.remove('locked');
-                        m.querySelector('.fa-lock')?.remove();
+                // Verificar se Google está configurado para liberar módulos
+                const googleConfigured = S.gdrive && S.gdrive.folder_id;
+                
+                if (googleConfigured) {
+                    // Liberar Chat AI se Google configurado
+                    const chatMenu = document.getElementById('menu-chat');
+                    if (chatMenu) {
+                        chatMenu.classList.remove('locked');
                     }
-                });
-                loadMarket();
+                    
+                    // Liberar Marketplace se Google configurado
+                    const marketplaceMenu = document.getElementById('menu-marketplace');
+                    if (marketplaceMenu) {
+                        marketplaceMenu.classList.remove('locked');
+                    }
+                } else {
+                    // Manter cadeados se Google não configurado
+                    ['marketplace', 'chat'].forEach(id => {
+                        const m = document.getElementById('menu-' + id);
+                        if (m) {
+                            m.classList.add('locked');
+                        }
+                    });
+                }
             }
 
             /* ESP32 SAVE */
