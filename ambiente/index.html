@@ -2,6 +2,9 @@
 <html lang="pt-br" data-theme="light">
 
 <head>
+    <!-- Leitura antecipada do tema: evita FOUC (flash de tema errado no F5) -->
+    <script>(function(){try{var t=localStorage.getItem('cqb-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}}());</script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opus Hub | Portal de Controle - @CanalQb</title>
@@ -12,8 +15,8 @@
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2316191f'/><text x='16' y='22' text-anchor='middle' font-size='18' font-family='sans-serif' fill='%2328a745'>Q</text></svg>">
 
-    <!-- Custom CSS Framework - Bootstrap Free -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@c75fb59/ambiente/style.css">
+    <!-- Custom CSS Framework — Zero Bootstrap -->
+    <link rel="stylesheet" href="style.css">
     <!-- Font Awesome 6.5 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -22,17 +25,6 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
-
-    <!-- Patch: vanilla collapse para .cqb-guide-collapse -->
-    <style>
-        .cqb-guide-collapse {
-            display: none;
-        }
-
-        .cqb-guide-collapse.open {
-            display: block;
-        }
-    </style>
 </head>
 
 <body>
@@ -67,94 +59,87 @@
     </button>
 
     <div class="cqb-wrapper">
-        <!-- CONTENT WRAPPER -->
         <div class="cqb-content">
 
-            <!-- SIDEBAR -->
+            <!-- ════════════ SIDEBAR ════════════ -->
             <nav id="cqb-sidebar" aria-label="Navegação Principal">
-            <div class="cqb-sidebar-head">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgtt2Q0QwGuJ3OI0G29twmGKYmZvab5d8AV6fJd_HUdevW7fofyH2lDRAv39LAtg0A2x46Im5VwUT-1cfm0b4g7jgY9IKC_BbqqEV9bew_OhkddtGzaFlM4uL0LUeqS8nxK83Yufp3E6SOycslOyDA6O14vPpHRiPkTCSbb5H05NTE/w350/1QB.png"
-                    alt="@CanalQb" class="cqb-logo" loading="lazy">
-                <div class="cqb-brand">
-                    <p class="cqb-brand-name">Canalqb - ESP32</p>
-                    <p class="cqb-brand-sub">Portal Industrial @CanalQb</p>
-                </div>
-                <span class="cqb-ver">V18</span>
-            </div>
-
-            <div class="cqb-nav" id="cqb-nav">
-                <p class="cqb-nav-section">Infraestrutura</p>
-
-                <!-- Redes & Internet (collapsible sub) -->
-                <a class="cqb-nav-link active" id="menu-rede" role="button" aria-expanded="true"
-                    onclick="toggleSubMenu('sub-rede', this)">
-                    <i class="fas fa-network-wired fa-icon"></i>
-                    <span class="nav-lbl">Redes &amp; Internet</span>
-                    <i class="fas fa-chevron-down nav-arr"></i>
-                </a>
-                <div class="cqb-submenu cqb-sub-open" id="sub-rede">
-                    <a class="cqb-nav-sub active" id="submenu-rede-wifi" onclick="showTab('rede','wifi')">
-                        <i class="fas fa-wifi"></i> Configurações de Rede
-                    </a>
-                    <a class="cqb-nav-sub" id="submenu-rede-ssid" onclick="showTab('rede','ssid')">
-                        <i class="fas fa-signal"></i> Configurações de SSID
-                    </a>
+                <div class="cqb-sidebar-head">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgtt2Q0QwGuJ3OI0G29twmGKYmZvab5d8AV6fJd_HUdevW7fofyH2lDRAv39LAtg0A2x46Im5VwUT-1cfm0b4g7jgY9IKC_BbqqEV9bew_OhkddtGzaFlM4uL0LUeqS8nxK83Yufp3E6SOycslOyDA6O14vPpHRiPkTCSbb5H05NTE/w350/1QB.png"
+                        alt="@CanalQb" class="cqb-logo" loading="lazy">
+                    <div class="cqb-brand">
+                        <p class="cqb-brand-name">Canalqb - ESP32</p>
+                        <p class="cqb-brand-sub"> @CanalQb</p>
+                    </div>
+                    <span class="cqb-ver">V18</span>
                 </div>
 
-                <!-- Google Config -->
-                <a class="cqb-nav-link" id="menu-google" onclick="showSection('google')" role="button">
-                    <i class="fas fa-cloud fa-icon"></i>
-                    <span class="nav-lbl">Configuração Google</span>
-                    <i class="fas fa-circle-check nav-arr" id="google-ok"
-                        style="font-size:0.75rem;color:var(--cqb-green);display:none;"></i>
-                </a>
+                <div class="cqb-nav" id="cqb-nav">
+                    <p class="cqb-nav-section">Infraestrutura</p>
 
-                <!-- Bluetooth Config -->
-                <a class="cqb-nav-link" id="menu-bluetooth" onclick="showSection('bluetooth')" role="button">
-                    <i class="fab fa-bluetooth-b fa-icon"></i>
-                    <span class="nav-lbl">Configuração Bluetooth</span>
-                </a>
+                    <a class="cqb-nav-link active" id="menu-rede" role="button" aria-expanded="true"
+                        onclick="toggleSubMenu('sub-rede', this)">
+                        <i class="fas fa-network-wired fa-icon"></i>
+                        <span class="nav-lbl">Redes &amp; Internet</span>
+                        <i class="fas fa-chevron-down nav-arr"></i>
+                    </a>
+                    <div class="cqb-submenu cqb-sub-open" id="sub-rede">
+                        <a class="cqb-nav-sub active" id="submenu-rede-wifi" onclick="showTab('rede','wifi')">
+                            <i class="fas fa-wifi"></i> Configurações de Rede
+                        </a>
+                        <a class="cqb-nav-sub" id="submenu-rede-ssid" onclick="showTab('rede','ssid')">
+                            <i class="fas fa-signal"></i> Configurações de SSID
+                        </a>
+                    </div>
 
-                <p class="cqb-nav-section" style="margin-top:8px;">Módulos</p>
+                    <a class="cqb-nav-link" id="menu-google" onclick="showSection('google')" role="button">
+                        <i class="fas fa-cloud fa-icon"></i>
+                        <span class="nav-lbl">Configuração Google</span>
+                        <i class="fas fa-circle-check nav-arr" id="google-ok"
+                            style="font-size:0.75rem;color:var(--cqb-green);display:none;"></i>
+                    </a>
 
-                <!-- Marketplace (locked) -->
-                <a class="cqb-nav-link locked" id="menu-marketplace" onclick="checkLock('marketplace')" role="button">
-                    <i class="fas fa-store fa-icon"></i>
-                    <span class="nav-lbl">Marketplace</span>
-                    <i class="fas fa-lock" style="font-size:0.72rem;"></i>
-                </a>
+                    <a class="cqb-nav-link" id="menu-bluetooth" onclick="showSection('bluetooth')" role="button">
+                        <i class="fab fa-bluetooth-b fa-icon"></i>
+                        <span class="nav-lbl">Configuração Bluetooth</span>
+                    </a>
 
-                <!-- Chat (locked) -->
-                <a class="cqb-nav-link locked" id="menu-chat" onclick="checkLock('chat')" role="button">
-                    <i class="fas fa-comments fa-icon"></i>
-                    <span class="nav-lbl">Chat Opus AI</span>
-                    <i class="fas fa-lock" style="font-size:0.72rem;"></i>
-                </a>
+                    <p class="cqb-nav-section" style="margin-top:8px;">Módulos</p>
 
-                <!-- Configurações (locked) -->
-                <a class="cqb-nav-link locked" id="menu-config" onclick="checkLock('config')" role="button">
-                    <i class="fas fa-shield-halved fa-icon"></i>
-                    <span class="nav-lbl">Configurações</span>
-                    <i class="fas fa-lock" style="font-size:0.72rem;"></i>
-                </a>
+                    <a class="cqb-nav-link locked" id="menu-marketplace" onclick="checkLock('marketplace')" role="button">
+                        <i class="fas fa-store fa-icon"></i>
+                        <span class="nav-lbl">Marketplace</span>
+                        <i class="fas fa-lock" style="font-size:0.72rem;"></i>
+                    </a>
 
-                <!-- Reset de Fábrica -->
-                <a class="cqb-nav-link" onclick="factoryReset()" role="button"
-                    style="color:var(--cqb-red);opacity:0.8;">
-                    <i class="fas fa-trash-can fa-icon"></i>
-                    <span class="nav-lbl">Reset de Fábrica</span>
-                </a>
+                    <a class="cqb-nav-link locked" id="menu-chat" onclick="checkLock('chat')" role="button">
+                        <i class="fas fa-comments fa-icon"></i>
+                        <span class="nav-lbl">Chat Opus AI</span>
+                        <i class="fas fa-lock" style="font-size:0.72rem;"></i>
+                    </a>
 
-                <p class="cqb-nav-section" style="margin-top:8px;">Externo</p>
-                <a class="cqb-nav-link" href="https://www.canalqb.com.br" target="_blank" rel="noopener noreferrer">
-                    <i class="fas fa-book fa-icon"></i>
-                    <span class="nav-lbl">Visitar Blog</span>
-                    <i class="fas fa-arrow-up-right-from-square" style="font-size:0.7rem;opacity:0.4;"></i>
-                </a>
-            </div>
-        </nav>
+                    <a class="cqb-nav-link locked" id="menu-config" onclick="checkLock('config')" role="button">
+                        <i class="fas fa-shield-halved fa-icon"></i>
+                        <span class="nav-lbl">Configurações</span>
+                        <i class="fas fa-lock" style="font-size:0.72rem;"></i>
+                    </a>
 
-            <!-- MAIN -->
+                    <a class="cqb-nav-link" onclick="factoryReset()" role="button"
+                        style="color:var(--cqb-red);opacity:0.8;">
+                        <i class="fas fa-trash-can fa-icon"></i>
+                        <span class="nav-lbl">Reset de Fábrica</span>
+                    </a>
+
+                    <p class="cqb-nav-section" style="margin-top:8px;">Externo</p>
+                    <a class="cqb-nav-link" href="https://www.canalqb.com.br" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-book fa-icon"></i>
+                        <span class="nav-lbl">Visitar Blog</span>
+                        <i class="fas fa-arrow-up-right-from-square" style="font-size:0.7rem;opacity:0.4;"></i>
+                    </a>
+                </div>
+            </nav>
+            <!-- ════════════ /SIDEBAR ════════════ -->
+
+            <!-- ════════════ MAIN ════════════ -->
             <main id="cqb-main">
             <div class="cqb-container">
 
@@ -356,7 +341,7 @@
                                     </button>
 
                                     <!-- Code input box -->
-                                    <div class="cqb-code-box" id="oauth-code-box" style="display:none; margin-top: 16px; padding: 16px; background: var(--bg-input); border-radius: var(--radius); border: 1px solid var(--border);">
+                                    <div class="cqb-code-box" id="oauth-code-box">
                                         <p>
                                             <i class="fas fa-circle-info" style="color:var(--cqb-blue);margin-right:6px;"></i>
                                             Uma nova aba foi aberta. Após aceitar as permissões, a URL mostrará
@@ -662,10 +647,11 @@
                         &nbsp;·&nbsp; &copy; 2026 @CanalQb. Todos os direitos reservados.
                     </div>
                 </footer>
-            </div>
-        </main>
-        </div><!-- /content -->
-    </div><!-- /wrapper -->
+            </div><!-- /cqb-container -->
+            </main><!-- /cqb-main -->
+
+        </div><!-- /cqb-content -->
+    </div><!-- /cqb-wrapper -->
 
     <!-- 100% Vanilla JS -->
     <script>

@@ -8,9 +8,23 @@
     margin-left: -12px;
 }
 
-.col-12 { flex: 0 0 100%; max-width: 100%; }
-.col-sm-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
-.col-sm-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+/* Base: mobile first — todos 100% */
+.col-12,
+.col-sm-4,
+.col-sm-6,
+.col-sm-8 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+/* Breakpoint sm ≥ 576px — aplica as colunas fracionadas */
+@media (min-width: 576px) {
+    .col-sm-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+    .col-sm-6 { flex: 0 0 50%;        max-width: 50%;        }
+    .col-sm-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+}
 
 .g-3 > * { padding: 12px; }
 .g-3 { margin: -12px; }
@@ -125,22 +139,25 @@ body {
     position: relative;
 }
 
+/* Flex row: sidebar fixa (position:fixed) + main ocupa o resto via margin-left */
 .cqb-content {
     display: flex;
+    flex-direction: row;
     min-height: 100vh;
 }
 
-.cqb-main {
+/* Corrigido: id="cqb-main" no HTML — usar #cqb-main, não .cqb-main */
+#cqb-main {
     flex: 1;
     display: flex;
     flex-direction: column;
     margin-left: var(--sidebar-w);
     transition: margin-left 0.3s var(--anim);
-    min-width: 0; /* Prevents flex item overflow */
+    min-width: 0;
 }
 
 @media (max-width: 768px) {
-    .cqb-main {
+    #cqb-main {
         margin-left: 0;
     }
 }
@@ -607,6 +624,34 @@ body {
     font-size: 0.82rem;
 }
 
+.cqb-btn-outline {
+    background: transparent;
+    color: var(--cqb-blue);
+    border: 1px solid var(--cqb-blue);
+}
+
+.cqb-btn-outline:hover:not(:disabled) {
+    background: var(--cqb-blue);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+/* -- CODE BOX (OAuth) -- */
+.cqb-code-box {
+    display: none;
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--bg-input);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-input);
+}
+
+.cqb-code-box.show {
+    display: block;
+    animation: slideDown 0.3s var(--anim);
+}
+
 /* -- TABS -- */
 .cqb-tabs {
     display: flex;
@@ -724,7 +769,23 @@ body {
 .cqb-toast.info .cqb-ti { color: var(--cqb-blue); }
 .cqb-toast.warn .cqb-ti { color: var(--cqb-yellow); }
 
+/* -- SEÇÕES DE CONTEÚDO -- */
+.cqb-section {
+    animation: fadeIn 0.2s var(--anim);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0);   }
+}
+
 /* -- MODAL -- */
+.cqb-modal-title {
+    font-family: var(--font-brand);
+    font-weight: 700;
+    font-size: 1rem;
+}
+
 .cqb-modal-overlay {
     position: fixed;
     top: 0;
@@ -814,6 +875,22 @@ body {
     justify-content: space-between;
     font-size: 0.82rem;
     color: var(--text-sub);
+}
+
+.cqb-step-dot {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    background: var(--cqb-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin-bottom: 8px;
 }
 
 /* -- STEPS -- */
