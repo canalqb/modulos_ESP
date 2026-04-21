@@ -1105,12 +1105,12 @@
                     showToast('Drive validado! Módulos liberados.', 'success');
                     
                     // Resetar botão após sucesso
-                    btn.innerHTML = '<i class="fas fa-circle-check"></i> Testar Conexão';
+                    btn.innerHTML = '<i class="fas fa-circle-check"><\/i> Testar Conexão';
                     btn.disabled = false;
 
                 } catch (err) {
                     showToast('Erro ao testar Drive: ' + (err.message || 'verifique credenciais'), 'error');
-                    btn.innerHTML = '<i class="fas fa-circle-check"></i> Testar Conexão';
+                    btn.innerHTML = '<i class="fas fa-circle-check"><\/i> Testar Conexão';
                     btn.disabled = false;
                 }
             };
