@@ -854,20 +854,15 @@
                     
                     // Verificar se o token ainda é válido
                     const tokenValid = config.oauth?.token_valid === true;
-                    const currentTime = Date.now() / 1000;
-                    const tokenNotExpired = config.oauth?.token_expires > currentTime;
                     
                     // Debug: Log das validações
                     console.log('DEBUG - Validações Google:');
                     console.log('  - allFieldsComplete:', allFieldsComplete);
                     console.log('  - tokenValid:', tokenValid);
-                    console.log('  - tokenNotExpired:', tokenNotExpired);
-                    console.log('  - token_expires:', config.oauth?.token_expires);
-                    console.log('  - currentTime:', currentTime);
                     console.log('  - token_valid:', config.oauth?.token_valid);
                     
                     // Se tudo estiver configurado e token válido, desativar cadeados
-                    if (allFieldsComplete && tokenValid && tokenNotExpired) {
+                    if (allFieldsComplete && tokenValid) {
                         console.log('Configuração Google completa - Desativando cadeados');
                         
                         // Desativar cadeado do Google Drive
@@ -1926,7 +1921,7 @@
     </script>
 
     <!-- Secure Configuration Loader -->
-    <script src="secure-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/secure-config.js"></script>
 
     <!-- External Sites Loader -->
     <script>
@@ -2250,7 +2245,7 @@
     </style>
 
     <!-- Google Analytics 4 + GTM Integration Script -->
-    <script src="ga4-gtm-integration.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/ga4-gtm-integration.js"></script>
 
 </body>
 
