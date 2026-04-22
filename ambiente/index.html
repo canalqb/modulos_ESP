@@ -29,7 +29,7 @@
         rel="stylesheet">
 
     <!-- Secure Configuration Loader & GA4 GTM Integration via CDN -->
-    <script src="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/secure-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/config.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente/ga4-gtm-integration.js"></script>
 
     <!-- Google Tag Manager -->
@@ -925,9 +925,15 @@
         (function () {
             'use strict';
 
+            /* SANITIZE IP */
+            function sanitizeIp(ip) {
+                const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$|^localhost$/;
+                return ipRegex.test(ip) ? ip : window.location.hostname;
+            }
+
             /* STATE */
             const S = {
-                espIp: new URLSearchParams(window.location.search).get('ip') || window.location.hostname,
+                espIp: sanitizeIp(new URLSearchParams(window.location.search).get('ip') || window.location.hostname),
                 clientId: '',
                 clientSecret: '',
                 svcEmail: '',

@@ -106,7 +106,7 @@ jobs:
           "ambiente/index.html"
           "ambiente/style.css"
           "ambiente/components.css"
-          "ambiente/secure-config.js"
+          "ambiente/config.js"
           "ambiente/ga4-gtm-integration.js"
           "ambiente/sites.txt"
         )

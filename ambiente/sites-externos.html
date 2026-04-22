@@ -65,57 +65,63 @@
     </div>
 
     <script>
-        // Lista de sites externos
-        const sitesExternos = [
-            {
-                titulo: "CanalQb Blog",
-                link: "https://www.canalqb.com.br",
-                descricao: "Blog oficial com tutoriais e novidades",
-                icone: "fas fa-blog"
-            },
-            {
-                titulo: "Documentação Oficial",
-                link: "https://docs.canalqb.com.br",
-                descricao: "Documentação completa e guias",
-                icone: "fas fa-book"
-            },
-            {
-                titulo: "Comunidade Discord",
-                link: "https://discord.gg/canalqb",
-                descricao: "Comunidade oficial para suporte",
-                icone: "fab fa-discord"
-            },
-            {
-                titulo: "GitHub Repository",
-                link: "https://github.com/canalqb",
-                descricao: "Código-fonte e desenvolvimento",
-                icone: "fab fa-github"
-            }
-        ];
-
-        // Função para carregar sites
-        function carregarSites() {
+        // Função para carregar sites dinamicamente
+        async function carregarSites() {
             const container = document.getElementById('sites-list');
+            container.innerHTML = '<div style="width:100%;text-align:center;padding:20px;color:var(--text-sub);"><i class="fas fa-spinner fa-spin"></i> Carregando sites recomendados...</div>';
             
-            sitesExternos.forEach(site => {
-                const col = document.createElement('div');
-                col.className = 'col-12 col-sm-6';
+            try {
+                // Tenta carregar do CDN ou localmente (usando a URL relativa)
+                const response = await fetch('sites.txt');
+                if (!response.ok) throw new Error('Não foi possível carregar a lista');
                 
-                col.innerHTML = `
-                    <div class="cqb-card" style="cursor:pointer;" onclick="window.open('${site.link}', '_blank')">
-                        <div class="cqb-card-body" style="text-align:center;padding:20px;">
-                            <i class="${site.icone}" style="font-size:2rem;color:var(--cqb-blue);margin-bottom:12px;"></i>
-                            <h6 style="margin-bottom:8px;color:var(--text-primary);">${site.titulo}</h6>
-                            <p style="font-size:0.85rem;color:var(--text-sub);margin:0;">${site.descricao}</p>
-                            <button class="cqb-btn cqb-btn-primary cqb-btn-block">
-                                <i class="fas fa-external-link-alt"></i> Visitar Site
-                            </button>
-                        </div>
-                    </div>
-                `;
+                const text = await response.text();
+                const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0 && !l.startsWith('#'));
                 
-                container.appendChild(col);
-            });
+                container.innerHTML = '';
+                
+                if (lines.length === 0) {
+                    container.innerHTML = '<div class="cqb-alert cqb-alert-info">Nenhum site encontrado na lista.</div>';
+                    return;
+                }
+                
+                lines.forEach(line => {
+                    const parts = line.split(';');
+                    if (parts.length >= 2) {
+                        const titulo = parts[0].trim();
+                        const link = parts[1].trim();
+                        
+                        // Inferir ícone com base no título/link se não houver um terceiro parâmetro
+                        let icone = "fas fa-globe";
+                        if (link.includes('github')) icone = "fab fa-github";
+                        else if (link.includes('discord')) icone = "fab fa-discord";
+                        else if (link.includes('youtube')) icone = "fab fa-youtube";
+                        
+                        if (parts.length >= 3 && parts[2].trim()) {
+                            icone = parts[2].trim();
+                        }
+                        
+                        const col = document.createElement('div');
+                        col.className = 'col-12 col-sm-6';
+                        
+                        col.innerHTML = `
+                            <div class="cqb-card" style="cursor:pointer;" onclick="window.open('${link}', '_blank')">
+                                <div class="cqb-card-body" style="text-align:center;padding:20px;">
+                                    <i class="${icone}" style="font-size:2rem;color:var(--cqb-blue);margin-bottom:12px;"></i>
+                                    <h6 style="margin-bottom:12px;color:var(--text-primary);">${titulo}</h6>
+                                    <button class="cqb-btn cqb-btn-primary cqb-btn-block">
+                                        <i class="fas fa-external-link-alt"></i> Visitar Site
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        container.appendChild(col);
+                    }
+                });
+            } catch (error) {
+                console.error('Erro ao buscar sites:', error);
+                container.innerHTML = '<div class="cqb-alert cqb-alert-danger"><i class="fas fa-exclamation-triangle"></i> Falha ao carregar a lista de sites. Tente atualizar a página.</div>';
+            }
         }
 
         // Função de tema

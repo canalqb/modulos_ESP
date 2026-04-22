@@ -82,7 +82,7 @@ jobs:
           "ambiente/index.html"
           "ambiente/style.css"
           "ambiente/components.css"
-          "ambiente/secure-config.js"
+          "ambiente/config.js"
           "ambiente/ga4-gtm-integration.js"
           "ambiente/sites.txt"
         )
@@ -143,7 +143,7 @@ jobs:
           "ambiente/index.html"
           "ambiente/style.css"
           "ambiente/components.css"
-          "ambiente/secure-config.js"
+          "ambiente/config.js"
           "ambiente/ga4-gtm-integration.js"
           "ambiente/sites-externos.html"
           "ambiente/ads.txt"
@@ -247,7 +247,7 @@ jobs:
         echo "- ambiente/index.html" >> $GITHUB_STEP_SUMMARY
         echo "- ambiente/style.css" >> $GITHUB_STEP_SUMMARY
         echo "- ambiente/components.css" >> $GITHUB_STEP_SUMMARY
-        echo "- ambiente/secure-config.js" >> $GITHUB_STEP_SUMMARY
+        echo "- ambiente/config.js" >> $GITHUB_STEP_SUMMARY
         echo "- ambiente/ga4-gtm-integration.js" >> $GITHUB_STEP_SUMMARY
         echo "- ambiente/sites-externos.html" >> $GITHUB_STEP_SUMMARY
         echo "- ambiente/ads.txt" >> $GITHUB_STEP_SUMMARY
