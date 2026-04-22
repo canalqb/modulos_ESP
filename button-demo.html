@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CanalQb - Component System de Botões</title>
+    <link rel="stylesheet" href="components.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 2rem;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+        .demo-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .demo-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .demo-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            background: #1e293b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="document.documentElement.toggleAttribute('data-theme')">
+        🌓 Tema: <span id="theme-text">Claro</span>
+    </button>
+
+    <div class="demo-section">
+        <h1 class="demo-title">🎯 Sistema de Componentes de Botões CanalQb</h1>
+        <p style="color: #64748b; margin-bottom: 2rem;">
+            Botões responsivos, acessíveis e adaptáveis a temas claro/escuro seguindo as melhores práticas modernas.
+        </p>
+
+        <div class="demo-grid">
+            <div class="demo-item">
+                <button>Botão Padrão</button>
+                <input type="button" value="Input Button">
+                <button type="submit">Submit Button</button>
+                <button type="reset">Reset Button</button>
+                <button disabled>Disabled Button</button>
+            </div>
+
+            <div class="demo-item">
+                <button class="btn-large">Botão Grande</button>
+                <button class="btn-small">Botão Pequeno</button>
+                <button class="btn-vibrant">Botão Vibrante</button>
+            </div>
+
+            <div class="demo-item">
+                <button>
+                    <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                        <path d="M18 10h-1.264a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4l-3 3v2a2 2 0 0 0 2-2h4l-3-3v-2a2 2 0 0 0 2-2h-1.264m7.072 4.072H9.072a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4l-3 3v2a2 2 0 0 0 2-2h4l-3-3v-2a2 2 0 0 0 2-2h-1.264m7.072 4.072H9.072a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4l-3 3v2a2 2 0 0 0 2-2h4l-3-3v-2a2 2 0 0 0 2-2h-1.264" />
+                    </svg>
+                    Ícone
+                </button>
+                <button data-icon="cloud">Ícone Cloud</button>
+                <input type="file">
+            </div>
+        </div>
+
+        <div class="demo-item">
+            <strong>🎨 Características Implementadas:</strong>
+            <ul style="color: #374151; padding-left: 1.5rem;">
+                <li>✅ Design responsivo com largura limitada</li>
+                <li>✅ Adaptabilidade automática tema claro/escuro</li>
+                <li>✅ Acessibilidade WCAG com foco e teclado</li>
+                <li>✅ Suporte a ícones SVG e data-attributes</li>
+                <li>✅ Variantes: pequeno, grande, vibrante</li>
+                <li>✅ Animações suaves com reduced-motion</li>
+                <li>✅ Contraste alto e modo de leitura</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Atualizar texto do botão de tema
+        function updateThemeText() {
+            const theme = document.documentElement.getAttribute('data-theme');
+            document.getElementById('theme-text').textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+        }
+        
+        updateThemeText();
+        document.documentElement.addEventListener('change', updateThemeText);
+    </script>
+</body>
+</html>
