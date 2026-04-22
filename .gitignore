@@ -1,0 +1,19 @@
+# Ignorar pasta marketplace completa (plugins e módulos)
+marketplace/
+
+# Manter apenas ambiente/ no CDN
+!ambiente/
+
+# Ignorar arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar logs e arquivos temporários
+*.log
+*.tmp
+temp/
+logs/
+
+# Ignorar arquivos de configuração local
+.env.local
+.env.*.local
