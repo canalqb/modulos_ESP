@@ -2525,33 +2525,138 @@
         // Marketplace - Loja de Módulos
         window.Marketplace = {
             modules: [],
-            installedModules: [],
+            installedModules: {}, // Agora é um objeto map: nome -> { id, version }
             folderId: null,
 
             // Inicializar marketplace
             async init() {
                 try {
+                    this.showLoading(true);
                     await this.loadConfig();
-                    await this.loadAvailableModules();
                     await this.loadInstalledModules();
+                    await this.loadAvailableModules();
                     this.renderModules();
                 } catch (error) {
                     this.showError('Erro ao inicializar marketplace: ' + error.message);
+                } finally {
+                    this.showLoading(false);
                 }
+            },
+
+            // Extrai versão do conteúdo de um arquivo HTML ou JSON
+            extractVersion(text) {
+                let match = text.match(/"version"\s*:\s*"([^"]+)"/i);
+                if (match) return match[1];
+                match = text.match(/<meta[^>]+name=["']version["'][^>]+content=["']([^"']+)["']/i);
+                if (match) return match[1];
+                match = text.match(/version[\s:=]+([0-9\.]+)/i);
+                if (match) return match[1];
+                return "0.0.0";
+            },
+
+            // Compara v1 com v2 (retorna 1 se v1 > v2, -1 se v1 < v2, 0 se iguais)
+            compareVersions(v1, v2) {
+                const parts1 = v1.split('.').map(Number);
+                const parts2 = v2.split('.').map(Number);
+                for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
+                    const n1 = parts1[i] || 0;
+                    const n2 = parts2[i] || 0;
+                    if (n1 > n2) return 1;
+                    if (n1 < n2) return -1;
+                }
+                return 0;
+            },
+
+            // Obter token (helpers)
+            async getValidToken() {
+                const espIp = (window.S && window.S.espIp) || new URLSearchParams(window.location.search).get('ip') || window.location.hostname;
+                const res = await fetch(`http://${espIp}/api/config`);
+                const config = await res.json();
+                
+                this.folderId = config.gdrive ? config.gdrive.folder_id : null;
+                
+                if (!config.oauth || !config.oauth.refresh_token) {
+                    throw new Error('OAuth não configurado no ESP32. Vá em Configuração Google.');
+                }
+                
+                if (config.oauth.token_valid && config.oauth.access_token) {
+                    return config.oauth.access_token;
+                }
+                
+                const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ 
+                        client_id: config.oauth.client_id, 
+                        client_secret: config.oauth.client_secret, 
+                        refresh_token: config.oauth.refresh_token, 
+                        grant_type: 'refresh_token' 
+                    })
+                });
+                const tokenData = await tokenRes.json();
+                if (!tokenData.access_token) throw new Error('Falha ao atualizar token OAuth');
+                return tokenData.access_token;
             },
 
             // Carregar configuração do ESP32
             async loadConfig() {
                 try {
-                    const response = await fetch(`http://${S.espIp}/api/config`);
+                    const espIp = (window.S && window.S.espIp) || new URLSearchParams(window.location.search).get('ip') || window.location.hostname;
+                    const response = await fetch(`http://${espIp}/api/config`);
                     const config = await response.json();
-                    this.folderId = config.gdrive_folder_id;
+                    this.folderId = config.gdrive?.folder_id;
                     
                     if (!this.folderId) {
-                        throw new Error('Folder ID não encontrado na configuração');
+                        throw new Error('Folder ID do Google Drive não encontrado.');
                     }
                 } catch (error) {
                     throw new Error('Não foi possível obter configuração do ESP32');
+                }
+            },
+
+            // Carregar módulos instalados do Google Drive
+            async loadInstalledModules() {
+                try {
+                    const token = await this.getValidToken();
+                    this.installedModules = {};
+                    
+                    const cqConfigQ = `'${this.folderId}' in parents and name='CanalQb_Config' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+                    const cqRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(cqConfigQ)}`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }).then(r=>r.json());
+                    
+                    if (!cqRes.files || cqRes.files.length === 0) return;
+                    
+                    const configFolderId = cqRes.files[0].id;
+                    const modQ = `'${configFolderId}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+                    const modRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(modQ)}`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }).then(r=>r.json());
+                    
+                    if (!modRes.files) return;
+                    
+                    for (const folder of modRes.files) {
+                        let version = "0.0.0";
+                        const fileQ = `'${folder.id}' in parents and (name='index.html' or name='module.json') and trashed=false`;
+                        const fileRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(fileQ)}&fields=files(id,name)`, {
+                            headers: { Authorization: `Bearer ${token}` }
+                        }).then(r=>r.json());
+                        
+                        if (fileRes.files && fileRes.files.length > 0) {
+                            const fileId = fileRes.files[0].id;
+                            const contentRes = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+                                headers: { Authorization: `Bearer ${token}` }
+                            });
+                            if (contentRes.ok) {
+                                const text = await contentRes.text();
+                                version = this.extractVersion(text);
+                            }
+                        }
+                        
+                        this.installedModules[folder.name] = { id: folder.id, version: version };
+                    }
+                } catch (error) {
+                    console.warn('Erro ao verificar módulos no Drive:', error);
                 }
             },
 
@@ -2561,33 +2666,30 @@
                     const response = await fetch('https://api.github.com/repos/canalqb/modulos_ESP/contents/marketplace');
                     const items = await response.json();
                     
-                    this.modules = items
-                        .filter(item => item.type === 'dir')
-                        .map(item => ({
-                            name: item.name,
-                            path: item.path,
-                            installed: false
-                        }));
+                    this.modules = [];
+                    for (const item of items) {
+                        if (item.type === 'dir') {
+                            let version = "0.0.0";
+                            try {
+                                let fileRes = await fetch(`https://raw.githubusercontent.com/canalqb/modulos_ESP/main/marketplace/${item.name}/index.html`);
+                                if (!fileRes.ok) {
+                                    fileRes = await fetch(`https://raw.githubusercontent.com/canalqb/modulos_ESP/main/marketplace/${item.name}/module.json`);
+                                }
+                                if (fileRes.ok) {
+                                    const text = await fileRes.text();
+                                    version = this.extractVersion(text);
+                                }
+                            } catch (e) { }
+                            
+                            this.modules.push({
+                                name: item.name,
+                                path: item.path,
+                                version: version
+                            });
+                        }
+                    }
                 } catch (error) {
-                    throw new Error('Não foi possível carregar módulos disponíveis');
-                }
-            },
-
-            // Carregar módulos instalados do Google Drive
-            async loadInstalledModules() {
-                try {
-                    const configPath = `${this.folderId}/CanalQb_Config/`;
-                    
-                    // Simulação - implementar chamada real à API do Google Drive
-                    // Por enquanto, vamos usar uma lista mock
-                    this.installedModules = ['modulo_exemplo']; // Mock
-                    
-                    // Atualizar status de instalação
-                    this.modules.forEach(module => {
-                        module.installed = this.installedModules.includes(module.name);
-                    });
-                } catch (error) {
-                    console.warn('Não foi possível verificar módulos instalados:', error);
+                    throw new Error('Não foi possível carregar módulos disponíveis no GitHub');
                 }
             },
 
@@ -2595,7 +2697,6 @@
             renderModules() {
                 const container = document.getElementById('modules-list');
                 container.innerHTML = '';
-
                 this.modules.forEach(module => {
                     const moduleCard = this.createModuleCard(module);
                     container.appendChild(moduleCard);
@@ -2604,25 +2705,59 @@
 
             // Criar card de módulo
             createModuleCard(module) {
+                const installed = this.installedModules[module.name];
+                const isInstalled = !!installed;
+                const hasUpdate = isInstalled && this.compareVersions(module.version, installed.version) > 0;
+                
+                let installBtnClass = "cqb-btn-ghost";
+                let updateBtnClass = "cqb-btn-ghost";
+                let uninstallBtnClass = "cqb-btn-ghost";
+                let installDisabled = true;
+                let updateDisabled = true;
+                let uninstallDisabled = true;
+                
+                if (!isInstalled) {
+                    installBtnClass = "cqb-btn-success";
+                    installDisabled = false;
+                } else if (hasUpdate) {
+                    updateBtnClass = "cqb-btn-primary"; 
+                    updateDisabled = false;
+                    uninstallBtnClass = "cqb-btn-danger";
+                    uninstallDisabled = false;
+                } else {
+                    uninstallBtnClass = "cqb-btn-danger";
+                    uninstallDisabled = false;
+                }
+                
+                const updateStyle = updateDisabled ? "" : "background-color: #3b82f6; color: white; border-color: #3b82f6;";
+                
                 const card = document.createElement('div');
                 card.className = 'module-card';
                 card.innerHTML = `
                     <div class="module-header">
-                        <h3 class="module-name">${module.name}</h3>
-                        <span class="module-status ${module.installed ? 'installed' : 'available'}">
-                            ${module.installed ? 'Instalado' : 'Disponível'}
+                        <div>
+                            <h3 class="module-name">${module.name}</h3>
+                            <small style="color:var(--text-secondary)">v${module.version}</small>
+                        </div>
+                        <span class="module-status ${isInstalled ? (hasUpdate ? 'available' : 'installed') : 'available'}" style="${isInstalled && hasUpdate ? 'background:#3b82f6;' : ''}">
+                            ${isInstalled ? (hasUpdate ? 'Atualização Disp.' : 'Instalado') : 'Disponível'}
                         </span>
                     </div>
-                    <div class="module-actions">
-                        <button class="cqb-btn ${module.installed ? 'cqb-btn-ghost' : 'cqb-btn-success'} cqb-btn-sm" 
+                    <div class="module-actions" style="display:flex; gap:10px; margin-top:15px;">
+                        <button class="cqb-btn ${installBtnClass} cqb-btn-sm" 
                                 onclick="Marketplace.installModule('${module.name}')"
-                                ${module.installed ? 'disabled' : ''}>
-                            <i class="fas fa-download"></i> Instalar
+                                ${installDisabled ? 'disabled' : ''} title="Instalar" style="min-width:unset; flex:1;">
+                            <i class="fas fa-download"></i>
                         </button>
-                        <button class="cqb-btn ${module.installed ? 'cqb-btn-danger' : 'cqb-btn-ghost'} cqb-btn-sm"
-                                onclick="Marketplace.uninstallModule('${module.name}')"
-                                ${!module.installed ? 'disabled' : ''}>
-                            <i class="fas fa-trash"></i> Desinstalar
+                        <button class="cqb-btn ${updateBtnClass} cqb-btn-sm" 
+                                onclick="Marketplace.updateModule('${module.name}')"
+                                ${updateDisabled ? 'disabled' : ''} title="Atualizar" style="min-width:unset; flex:1; ${updateStyle}">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button class="cqb-btn ${uninstallBtnClass} cqb-btn-sm"
+                                onclick="Marketplace.uninstallModule('${module.name}', true)"
+                                ${uninstallDisabled ? 'disabled' : ''} title="Desinstalar" style="min-width:unset; flex:1;">
+                            <i class="fas fa-trash"></i>
                         </button>
                     </div>
                 `;
@@ -2633,75 +2768,94 @@
             async installModule(moduleName) {
                 try {
                     this.showLoading(true);
+                    const token = await this.getValidToken();
                     
-                    // Criar pasta no Google Drive
-                    const configPath = `${this.folderId}/CanalQb_Config/${moduleName}`;
+                    const cqConfigQ = `'${this.folderId}' in parents and name='CanalQb_Config' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+                    const cqRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(cqConfigQ)}`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }).then(r=>r.json());
                     
-                    // Simulação - implementar chamada real à API do Google Drive
-                    await this.createFolder(configPath);
-                    
-                    // Atualizar status
-                    const module = this.modules.find(m => m.name === moduleName);
-                    if (module) {
-                        module.installed = true;
-                        this.installedModules.push(moduleName);
+                    let configFolderId;
+                    if (cqRes.files && cqRes.files.length > 0) {
+                        configFolderId = cqRes.files[0].id;
+                    } else {
+                        const cRes = await fetch('https://www.googleapis.com/drive/v3/files', {
+                            method: 'POST',
+                            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name: 'CanalQb_Config', mimeType: 'application/vnd.google-apps.folder', parents: [this.folderId] })
+                        }).then(r=>r.json());
+                        configFolderId = cRes.id;
                     }
                     
-                    this.renderModules();
+                    const modFolderRes = await fetch('https://www.googleapis.com/drive/v3/files', {
+                        method: 'POST',
+                        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: moduleName, mimeType: 'application/vnd.google-apps.folder', parents: [configFolderId] })
+                    }).then(r=>r.json());
+                    const modFolderId = modFolderRes.id;
+                    
+                    const ghFiles = await fetch(`https://api.github.com/repos/canalqb/modulos_ESP/contents/marketplace/${moduleName}`).then(r=>r.json());
+                    
+                    for (const file of ghFiles) {
+                        if (file.type === 'file') {
+                            const rawRes = await fetch(file.download_url);
+                            const text = await rawRes.text();
+                            const boundary = 'cqb_boundary_file';
+                            const meta = JSON.stringify({ name: file.name, parents: [modFolderId] });
+                            const body = \`--\${boundary}\\r\\nContent-Type: application/json; charset=UTF-8\\r\\n\\r\\n\${meta}\\r\\n--\${boundary}\\r\\nContent-Type: text/plain; charset=UTF-8\\r\\n\\r\\n\${text}\\r\\n--\${boundary}--\`;
+                            
+                            await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                                method: 'POST',
+                                headers: { Authorization: `Bearer ${token}`, 'Content-Type': `multipart/related; boundary=${boundary}` },
+                                body: body
+                            });
+                        }
+                    }
+                    
                     showToast(`Módulo "${moduleName}" instalado com sucesso!`, 'success');
+                    await this.init();
                 } catch (error) {
-                    showToast(`Erro ao instalar módulo: ${error.message}`, 'error');
+                    showToast(`Erro ao instalar: ${error.message}`, 'error');
                 } finally {
                     this.showLoading(false);
                 }
+            },
+
+            // Atualizar módulo
+            async updateModule(moduleName) {
+                await this.uninstallModule(moduleName, false);
+                await this.installModule(moduleName);
             },
 
             // Desinstalar módulo
-            async uninstallModule(moduleName) {
+            async uninstallModule(moduleName, reload = true) {
                 try {
                     this.showLoading(true);
+                    const token = await this.getValidToken();
                     
-                    // Remover pasta do Google Drive
-                    const configPath = `${this.folderId}/CanalQb_Config/${moduleName}`;
-                    
-                    // Simulação - implementar chamada real à API do Google Drive
-                    await this.deleteFolder(configPath);
-                    
-                    // Atualizar status
-                    const module = this.modules.find(m => m.name === moduleName);
-                    if (module) {
-                        module.installed = false;
-                        this.installedModules = this.installedModules.filter(m => m !== moduleName);
+                    const installed = this.installedModules[moduleName];
+                    if (installed && installed.id) {
+                        await fetch(`https://www.googleapis.com/drive/v3/files/${installed.id}`, {
+                            method: 'DELETE',
+                            headers: { Authorization: `Bearer ${token}` }
+                        });
                     }
                     
-                    this.renderModules();
-                    showToast(`Módulo "${moduleName}" desinstalado com sucesso!`, 'success');
+                    if (reload) {
+                        showToast(`Módulo "${moduleName}" removido com sucesso!`, 'success');
+                        await this.init();
+                    }
                 } catch (error) {
-                    showToast(`Erro ao desinstalar módulo: ${error.message}`, 'error');
+                    showToast(`Erro ao remover: ${error.message}`, 'error');
                 } finally {
-                    this.showLoading(false);
+                    if (reload) this.showLoading(false);
                 }
-            },
-
-            // Criar pasta (simulação)
-            async createFolder(path) {
-                // Implementar chamada real à API do Google Drive
-                console.log('Criando pasta:', path);
-                return new Promise(resolve => setTimeout(resolve, 1000));
-            },
-
-            // Deletar pasta (simulação)
-            async deleteFolder(path) {
-                // Implementar chamada real à API do Google Drive
-                console.log('Deletando pasta:', path);
-                return new Promise(resolve => setTimeout(resolve, 1000));
             },
 
             // Mostrar loading
             showLoading(show) {
                 const loading = document.getElementById('marketplace-loading');
                 const error = document.getElementById('marketplace-error');
-                
                 if (show) {
                     if (loading) loading.style.display = 'block';
                     if (error) error.style.display = 'none';
@@ -2715,7 +2869,6 @@
                 const loading = document.getElementById('marketplace-loading');
                 const error = document.getElementById('marketplace-error');
                 const errorMessage = document.getElementById('marketplace-error-message');
-                
                 if (loading) loading.style.display = 'none';
                 if (error) error.style.display = 'block';
                 if (errorMessage) errorMessage.textContent = message;
