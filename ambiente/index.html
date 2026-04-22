@@ -935,6 +935,7 @@
                 refreshToken: '',
                 folderId: '',
                 driveConfigured: false, // Será atualizado pela validação Google
+                aiConfigured: false, // Será atualizado pela validação AI
                 theme: localStorage.getItem('cqb-theme') || 'light',
             };
 
@@ -1158,8 +1159,21 @@
             };
 
             window.checkLock = function (id) {
-                if (!S.driveConfigured) { showToast('Configure completamente o Google Drive para desbloquear!', 'error'); }
-                else { showSection(id); }
+                if (id === 'chat') {
+                    // Verificar se AI está configurado para liberar Chat AI
+                    if (!S.aiConfigured) { 
+                        showToast('Configure a Ambiente AI para desbloquear o Chat!', 'error'); 
+                    } else { 
+                        showSection(id); 
+                    }
+                } else {
+                    // Para outros módulos, verificar Google Drive
+                    if (!S.driveConfigured) { 
+                        showToast('Configure completamente o Google Drive para desbloquear!', 'error'); 
+                    } else { 
+                        showSection(id); 
+                    }
+                }
             };
 
             window.showTab = function (section, tab) {
@@ -1414,11 +1428,11 @@
 
             /* UNLOCK */
             function unlockModules() {
-                // Verificar se Google Drive está configurado para liberar módulos
-                const googleConfigured = S.driveConfigured && S.folderId;
+                // Verificar se AI está configurado para liberar Chat AI
+                const aiConfigured = S.aiConfigured;
                 
-                if (googleConfigured) {
-                    // Liberar Chat AI se Google configurado
+                if (aiConfigured) {
+                    // Liberar Chat AI se AI configurado
                     const chatMenu = document.getElementById('menu-chat');
                     if (chatMenu) {
                         chatMenu.classList.remove('locked');
@@ -1428,6 +1442,12 @@
                             lockIcon.remove();
                         }
                     }
+                }
+                
+                // Verificar se Google Drive está configurado para liberar outros módulos
+                const googleConfigured = S.driveConfigured && S.folderId;
+                
+                if (googleConfigured) {
                     
                     // Liberar Marketplace se Google configurado
                     const marketplaceMenu = document.getElementById('menu-marketplace');
@@ -2286,10 +2306,16 @@
                         document.getElementById('ai-api-key').value = config.ai.apiKey || '';
                         document.getElementById('ai-model').value = config.ai.model || '';
                         
-                        // Mostrar indicador de configuração completa
+                        // Atualizar estado do sistema
                         if (config.ai.apiKey && config.ai.model) {
+                            S.aiConfigured = true;
                             this.showConfigured();
+                            unlockModules(); // Verificar se precisa liberar Chat AI
+                        } else {
+                            S.aiConfigured = false;
                         }
+                    } else {
+                        S.aiConfigured = false;
                     }
                 } catch (error) {
                     console.error('Error loading AI config:', error);
