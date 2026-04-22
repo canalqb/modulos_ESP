@@ -1,10 +1,10 @@
 /**
  * CanalQb ESP32 Hub - Firmware Principal
- * 
+ *
  * Sistema dual-mode:
  * - Fase 1: AP Mode com portal de configuração Wi-Fi
  * - Fase 2: STA Mode com Streaming Proxy do GitHub
- * 
+ *
  * Regras Obrigatórias:
  * - NUNCA redirecionar navegador para URL externa
  * - NUNCA usar alert() ou confirm() - usar modais customizados
@@ -13,19 +13,20 @@
  */
 
 #include <Arduino.h>
-#include <WiFi.h>
-#include <ESPAsyncWebServer.h>
-#include <DNSServer.h>
-#include <Preferences.h>
-#include <LittleFS.h>
 #include <ArduinoJson.h>
-#include <WiFiClientSecure.h>
-#include <HTTPClient.h>
 #include <BluetoothSerial.h>
+#include <DNSServer.h>
+#include <ESPAsyncWebServer.h>
+#include <HTTPClient.h>
+#include <LittleFS.h>
+#include <Preferences.h>
+#include <WiFi.h>
+#include <WiFiClientSecure.h>
+
 
 // Configurações do AP
-const char* AP_SSID = "CanalQb-ESP32";
-const char* AP_PASSWORD = "";  // Rede aberta
+const char *AP_SSID = "CanalQb-ESP32";
+const char *AP_PASSWORD = ""; // Rede aberta
 const IPAddress AP_IP(192, 168, 4, 1);
 
 // Portas e configurações
@@ -51,7 +52,7 @@ struct Config {
   bool bluetooth_enabled = false;
   String bt_name = "CanalQb-ESP32";
   String bt_pin = "1234";
-  
+
   // OAuth e Google Drive
   String oauth_client_id = "";
   String oauth_client_secret = "";
@@ -347,12 +348,12 @@ const char setup_html[] PROGMEM = R"HTML(
                     <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#0f172a; color:white; font-family:sans-serif;">
                         <div class="spinner"></div>
                         <h2 style="margin-top:20px;">Carregando CanalQb Dashboard...</h2>
-                        <p style="color:#94a3b8; margin-top:10px;">Sincronizando com modulos_ESP/main</p>
+                        <p style="color:#94a3b8; margin-top:10px;">Sincronizando com ESP_ambiente/main</p>
                     </div>
                 `;
                 
                 try {
-                    const baseUrl = "https://cdn.jsdelivr.net/gh/canalqb/modulos_ESP@main/ambiente";
+                    const baseUrl = "https://cdn.jsdelivr.net/gh/canalqb/ESP_ambiente@main";
                     
                     const response = await fetch(`${baseUrl}/index.html`);
                     if (response.ok) {
@@ -553,16 +554,16 @@ void loadConfig() {
     Serial.println("Arquivo de configuração não encontrado, usando padrões");
     return;
   }
-  
+
   JsonDocument doc;
   DeserializationError error = deserializeJson(doc, file);
   file.close();
-  
+
   if (error) {
     Serial.println("Erro ao ler configuração: " + String(error.c_str()));
     return;
   }
-  
+
   // Carregar configurações
   if (doc["wifi"]["ssid"].is<String>()) {
     config.wifi_ssid = doc["wifi"]["ssid"].as<String>();
@@ -582,13 +583,13 @@ void loadConfig() {
   if (doc["bluetooth"]["pin"].is<String>()) {
     config.bt_pin = doc["bluetooth"]["pin"].as<String>();
   }
-  
+
   Serial.println("Configuração carregada com sucesso");
 }
 
 void saveConfig() {
   JsonDocument doc;
-  
+
   // Estrutura do JSON
   doc["wifi"]["ssid"] = config.wifi_ssid;
   doc["wifi"]["password"] = config.wifi_password;
@@ -596,49 +597,49 @@ void saveConfig() {
   doc["bluetooth"]["enabled"] = config.bluetooth_enabled;
   doc["bluetooth"]["name"] = config.bt_name;
   doc["bluetooth"]["pin"] = config.bt_pin;
-  
+
   File file = LittleFS.open("/config.json", "w");
   if (!file) {
     Serial.println("Erro ao criar arquivo de configuração");
     return;
   }
-  
+
   if (serializeJson(doc, file) == 0) {
     Serial.println("Erro ao escrever configuração");
   }
   file.close();
-  
+
   Serial.println("Configuração salva com sucesso");
 }
 
 // Handlers da API
 void handleScan(AsyncWebServerRequest *request) {
   int n = WiFi.scanComplete();
-  
+
   if (n == WIFI_SCAN_RUNNING) {
     request->send(202, "application/json", "[]");
     return;
   }
-  
+
   if (n == -1) {
     WiFi.scanNetworks(true, false);
     request->send(202, "application/json", "[]");
     return;
   }
-  
+
   JsonDocument doc;
   JsonArray networks = doc.to<JsonArray>();
-  
+
   for (int i = 0; i < n; i++) {
     JsonObject network = networks.add<JsonObject>();
     network["ssid"] = WiFi.SSID(i);
     network["rssi"] = WiFi.RSSI(i);
     network["auth"] = WiFi.encryptionType(i) != WIFI_AUTH_OPEN;
   }
-  
+
   WiFi.scanDelete();
   WiFi.scanNetworks(true, false);
-  
+
   String response;
   serializeJson(doc, response);
   request->send(200, "application/json", response);
@@ -646,90 +647,144 @@ void handleScan(AsyncWebServerRequest *request) {
 
 void handleConnect(AsyncWebServerRequest *request) {
   if (!request->hasParam("ssid") || !request->hasParam("pass")) {
-    request->send(400, "application/json", "{\"error\":\"Parâmetros ausentes\"}");
+    request->send(400, "application/json",
+                  "{\"error\":\"Parâmetros ausentes\"}");
     return;
   }
-  
+
   String ssid = request->getParam("ssid")->value();
   String pass = request->getParam("pass")->value();
-  
+
   ssid.trim();
   pass.trim();
-  
+
   Serial.println("Tentando conectar em: " + ssid);
-  
+
   WiFi.begin(ssid.c_str(), pass.c_str());
-  
+
   unsigned long startTime = millis();
   while (WiFi.status() != WL_CONNECTED && millis() - startTime < 15000) {
     delay(100);
   }
-  
+
   if (WiFi.status() == WL_CONNECTED) {
     // Salvar configuração
     config.wifi_ssid = ssid;
     config.wifi_password = pass;
     saveConfig();
-    
+
     JsonDocument doc;
     doc["ip"] = WiFi.localIP().toString();
     doc["mac"] = WiFi.macAddress();
     doc["gateway"] = WiFi.gatewayIP().toString();
-    
+
     String response;
     serializeJson(doc, response);
     request->send(200, "application/json", response);
-    
+
     Serial.println("Conectado com sucesso!");
-    
+
   } else {
     WiFi.disconnect();
-    request->send(200, "application/json", "{\"error\":\"Senha incorreta ou rede inacessível\"}");
+    request->send(200, "application/json",
+                  "{\"error\":\"Senha incorreta ou rede inacessível\"}");
     Serial.println("Falha na conexão");
   }
 }
 
 void handleRestart(AsyncWebServerRequest *request) {
   request->send(200, "application/json", "{\"status\":\"ok\"}");
-  
+
   shouldRestart = true;
-  restartTime = millis() + 1000; // Aguardar 1 segundo antes de iniciar o processo
-  
+  restartTime =
+      millis() + 1000; // Aguardar 1 segundo antes de iniciar o processo
+
   Serial.println("Reiniciando ESP32...");
+}
+
+// Função de auto-refresh do token
+bool refreshAccessToken() {
+  if (config.oauth_refresh_token.length() == 0 ||
+      config.oauth_client_secret.length() == 0) {
+    return false;
+  }
+
+  WiFiClientSecure client;
+  client.setInsecure(); // Para HTTPS sem certificado
+
+  HTTPClient http;
+  http.begin(client, "https://oauth2.googleapis.com/token");
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+  String postData = "refresh_token=" + config.oauth_refresh_token +
+                    "&client_id=" + config.oauth_client_id +
+                    "&client_secret=" + config.oauth_client_secret +
+                    "&grant_type=refresh_token";
+
+  int httpCode = http.POST(postData);
+
+  if (httpCode == HTTP_CODE_OK) {
+    String payload = http.getString();
+    JsonDocument doc;
+    deserializeJson(doc, payload);
+
+    if (doc["access_token"]) {
+      config.oauth_access_token = doc["access_token"].as<String>();
+      config.oauth_token_expires =
+          (millis() / 1000) + doc["expires_in"].as<long>();
+
+      // Salvar configurações atualizadas
+      saveConfig();
+
+      Serial.println("Token refresh realizado com sucesso!");
+      return true;
+    }
+  }
+
+  Serial.println("Falha no refresh do token: " + String(httpCode));
+  return false;
 }
 
 void handleConfig(AsyncWebServerRequest *request) {
   JsonDocument doc;
   doc["wifi"]["ssid"] = config.wifi_ssid;
   doc["network"]["hostname"] = config.hostname;
-  
+
   // Enviar em ambos os formatos para compatibilidade total
   doc["bluetooth"]["enabled"] = config.bluetooth_enabled;
   doc["bluetooth"]["name"] = config.bt_name;
   doc["bluetooth"]["pin"] = config.bt_pin;
-  
+
   // Formato plano (esperado pelo index.html atual)
   doc["bt_enabled"] = config.bluetooth_enabled;
   doc["bt_name"] = config.bt_name;
   doc["bt_pin"] = config.bt_pin;
-  
+
   // OAuth e Google Drive - persistência de credenciais
   doc["oauth"]["client_id"] = config.oauth_client_id;
   doc["oauth"]["client_secret"] = config.oauth_client_secret;
   doc["oauth"]["refresh_token"] = config.oauth_refresh_token;
   doc["oauth"]["access_token"] = config.oauth_access_token;
   doc["oauth"]["token_expires"] = config.oauth_token_expires;
-  
+
   // Google Drive
   doc["gdrive"]["service_email"] = config.gdrive_service_email;
   doc["gdrive"]["folder_id"] = config.gdrive_folder_id;
-  
-  // Verificar se token ainda é válido
+
+  // Verificar se token ainda é válido e fazer refresh se necessário
   long currentTime = millis() / 1000;
-  bool tokenValid = config.oauth_access_token.length() > 0 && 
-                    (config.oauth_token_expires == 0 || currentTime < config.oauth_token_expires);
+  bool tokenValid = config.oauth_access_token.length() > 0 &&
+                    (config.oauth_token_expires == 0 ||
+                     currentTime < config.oauth_token_expires);
+
+  // Se token expirou, tentar fazer refresh automático
+  if (!tokenValid && config.oauth_refresh_token.length() > 0) {
+    Serial.println("Token expirado, tentando refresh automático...");
+    tokenValid = refreshAccessToken();
+  }
+
   doc["oauth"]["token_valid"] = tokenValid;
-  
+
   String response;
   serializeJson(doc, response);
   request->send(200, "application/json", response);
@@ -737,7 +792,7 @@ void handleConfig(AsyncWebServerRequest *request) {
 
 void handleStatus(AsyncWebServerRequest *request) {
   JsonDocument doc;
-  
+
   // Status da conexão WiFi
   doc["wifi"]["connected"] = (WiFi.status() == WL_CONNECTED);
   doc["wifi"]["ssid"] = WiFi.SSID();
@@ -745,23 +800,25 @@ void handleStatus(AsyncWebServerRequest *request) {
   doc["wifi"]["ip"] = WiFi.localIP().toString();
   doc["wifi"]["gateway"] = WiFi.gatewayIP().toString();
   doc["wifi"]["dns"] = WiFi.dnsIP().toString();
-  doc["wifi"]["mode"] = WiFi.getMode() == WIFI_STA ? "STA" : WiFi.getMode() == WIFI_AP ? "AP" : "AP_STA";
-  
+  doc["wifi"]["mode"] = WiFi.getMode() == WIFI_STA  ? "STA"
+                        : WiFi.getMode() == WIFI_AP ? "AP"
+                                                    : "AP_STA";
+
   // Status do Bluetooth
   doc["bluetooth"]["enabled"] = config.bluetooth_enabled;
   doc["bluetooth"]["active"] = SerialBT.hasClient();
   doc["bluetooth"]["name"] = config.bt_name;
-  
+
   // Informações do sistema
   doc["system"]["uptime"] = millis();
   doc["system"]["free_heap"] = ESP.getFreeHeap();
   doc["system"]["chip_id"] = ESP.getChipModel();
   doc["system"]["flash_size"] = ESP.getFlashChipSize();
-  
+
   // Status geral
   doc["status"] = "ok";
   doc["connected"] = (WiFi.status() == WL_CONNECTED);
-  
+
   String response;
   serializeJson(doc, response);
   request->send(200, "application/json", response);
@@ -771,18 +828,21 @@ void handleBtConfig(AsyncWebServerRequest *request) {
   bool oldEnabled = config.bluetooth_enabled;
   String oldName = config.bt_name;
   String oldPin = config.bt_pin;
-  
-  if (request->hasParam("enabled")) config.bluetooth_enabled = request->getParam("enabled")->value() == "true";
-  if (request->hasParam("name")) config.bt_name = request->getParam("name")->value();
-  if (request->hasParam("pin")) config.bt_pin = request->getParam("pin")->value();
-  
+
+  if (request->hasParam("enabled"))
+    config.bluetooth_enabled = request->getParam("enabled")->value() == "true";
+  if (request->hasParam("name"))
+    config.bt_name = request->getParam("name")->value();
+  if (request->hasParam("pin"))
+    config.bt_pin = request->getParam("pin")->value();
+
   saveConfig();
-  
+
   // Aplicar mudanças em tempo real sem reiniciar
   if (config.bluetooth_enabled) {
     if (!oldEnabled || oldName != config.bt_name || oldPin != config.bt_pin) {
       Serial.println("Ativando/Atualizando Bluetooth dinamicamente...");
-      SerialBT.end(); 
+      SerialBT.end();
       delay(100);
       SerialBT.setPin(config.bt_pin.c_str());
       if (SerialBT.begin(config.bt_name.c_str())) {
@@ -798,8 +858,10 @@ void handleBtConfig(AsyncWebServerRequest *request) {
       btStop(); // Libera hardware
     }
   }
-  
-  request->send(200, "application/json", "{\"status\":\"success\",\"message\":\"Bluetooth atualizado (Mudanças aplicadas imediatamente)\"}");
+
+  request->send(200, "application/json",
+                "{\"status\":\"success\",\"message\":\"Bluetooth atualizado "
+                "(Mudanças aplicadas imediatamente)\"}");
 }
 
 void handleRoot(AsyncWebServerRequest *request) {
@@ -819,19 +881,19 @@ void setup() {
   Serial.begin(115200);
   Serial.println("\n=== CanalQb ESP32 Hub ===");
   Serial.println("Versão: 1.0");
-  
+
   // Inicializar LittleFS (formatar se falhar)
   if (!LittleFS.begin(true)) {
     Serial.println("Falha crítica no LittleFS");
     return;
   }
-  
+
   // Carregar configuração
   loadConfig();
-  
+
   // Configurar hostname
   WiFi.setHostname(config.hostname.c_str());
-  
+
   // Verificar se temos configuração Wi-Fi
   if (config.wifi_ssid.length() == 0) {
     isAPMode = true;
@@ -840,42 +902,42 @@ void setup() {
     isAPMode = false;
     setupSTAMode();
   }
-  
+
   // Inicializar Bluetooth se habilitado
   if (config.bluetooth_enabled) {
     SerialBT.setPin(config.bt_pin.c_str());
     SerialBT.begin(config.bt_name.c_str());
     Serial.println("Bluetooth iniciado: " + config.bt_name);
   }
-  
+
   // Iniciar servidor web APENAS UMA VEZ ao final de tudo
   setupWebServer();
-  
+
   Serial.println("Setup concluído");
 }
 
 void setupAPMode() {
   Serial.println("Entrando em modo AP...");
-  
+
   // Configurar modo Wi-Fi
   WiFi.mode(WIFI_AP);
   WiFi.softAP(AP_SSID, AP_PASSWORD);
   WiFi.softAPConfig(AP_IP, AP_IP, IPAddress(255, 255, 255, 0));
-  
+
   // Configurar DNS para Captive Portal
   dnsServer.start(DNS_PORT, "*", AP_IP);
-  
+
   // Configurar modo Wi-Fi
   WiFi.mode(WIFI_AP);
   WiFi.softAP(AP_SSID, AP_PASSWORD);
   WiFi.softAPConfig(AP_IP, AP_IP, IPAddress(255, 255, 255, 0));
-  
+
   // Configurar DNS para Captive Portal
   dnsServer.start(DNS_PORT, "*", AP_IP);
-  
+
   // Iniciar scan de redes
   WiFi.scanNetworks(true, false);
-  
+
   Serial.println("Modo AP iniciado");
   Serial.print("SSID: ");
   Serial.println(AP_SSID);
@@ -886,25 +948,25 @@ void setupAPMode() {
 void setupSTAMode() {
   Serial.println("Tentando conectar ao Wi-Fi...");
   Serial.println("SSID: " + config.wifi_ssid);
-  
+
   // Garantir que o rádio AP esteja desligado
   WiFi.softAPdisconnect(true);
   WiFi.mode(WIFI_STA);
   WiFi.begin(config.wifi_ssid.c_str(), config.wifi_password.c_str());
-  
+
   unsigned long startTime = millis();
   while (WiFi.status() != WL_CONNECTED && millis() - startTime < 30000) {
     delay(500);
     Serial.print(".");
   }
-  
+
   if (WiFi.status() == WL_CONNECTED) {
     Serial.println("\nWi-Fi conectado!");
     Serial.print("IP: ");
     Serial.println(WiFi.localIP());
     Serial.print("MAC: ");
     Serial.println(WiFi.macAddress());
-    
+
     Serial.print("MAC: ");
     Serial.println(WiFi.macAddress());
   } else {
@@ -918,7 +980,12 @@ void setupWebServer() {
   // Handlers principais
   server.on("/", HTTP_GET, handleRoot);
   server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(200, "image/svg+xml", "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='#16191f'/><text x='16' y='22' text-anchor='middle' font-size='18' font-family='sans-serif' fill='#28a745'>Q</text></svg>");
+    request->send(
+        200, "image/svg+xml",
+        "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect "
+        "width='32' height='32' rx='8' fill='#16191f'/><text x='16' y='22' "
+        "text-anchor='middle' font-size='18' font-family='sans-serif' "
+        "fill='#28a745'>Q</text></svg>");
   });
   server.on("/api/scan", HTTP_GET, handleScan);
   server.on("/api/connect", HTTP_GET, handleConnect);
@@ -926,94 +993,103 @@ void setupWebServer() {
   server.on("/api/config", HTTP_GET, handleConfig);
   server.on("/api/bt_config", HTTP_GET, handleBtConfig);
   server.on("/api/status", HTTP_GET, handleStatus);
-  server.on("/api/settings", HTTP_POST, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
-    // Handler para POST JSON
-    JsonDocument doc;
-    DeserializationError error = deserializeJson(doc, (const char*)data, len);
-    
-    if (!error) {
-      // Bluetooth settings
-      if (doc["bt_enabled"].is<bool>()) {
-        config.bluetooth_enabled = doc["bt_enabled"];
-      }
-      if (doc["bt_name"].is<const char*>()) {
-        config.bt_name = doc["bt_name"].as<String>();
-      }
-      if (doc["bt_pin"].is<const char*>()) {
-        config.bt_pin = doc["bt_pin"].as<String>();
-      }
-      
-      // OAuth settings
-      if (doc["oauth"].is<JsonObject>()) {
-        JsonObject oauth = doc["oauth"];
-        if (oauth["client_id"].is<const char*>()) {
-          config.oauth_client_id = oauth["client_id"].as<String>();
+  server.on(
+      "/api/settings", HTTP_POST, [](AsyncWebServerRequest *request) {}, NULL,
+      [](AsyncWebServerRequest *request, uint8_t *data, size_t len,
+         size_t index, size_t total) {
+        // Handler para POST JSON
+        JsonDocument doc;
+        DeserializationError error =
+            deserializeJson(doc, (const char *)data, len);
+
+        if (!error) {
+          // Bluetooth settings
+          if (doc["bt_enabled"].is<bool>()) {
+            config.bluetooth_enabled = doc["bt_enabled"];
+          }
+          if (doc["bt_name"].is<const char *>()) {
+            config.bt_name = doc["bt_name"].as<String>();
+          }
+          if (doc["bt_pin"].is<const char *>()) {
+            config.bt_pin = doc["bt_pin"].as<String>();
+          }
+
+          // OAuth settings
+          if (doc["oauth"].is<JsonObject>()) {
+            JsonObject oauth = doc["oauth"];
+            if (oauth["client_id"].is<const char *>()) {
+              config.oauth_client_id = oauth["client_id"].as<String>();
+            }
+            if (oauth["client_secret"].is<const char *>()) {
+              config.oauth_client_secret = oauth["client_secret"].as<String>();
+            }
+            if (oauth["refresh_token"].is<const char *>()) {
+              config.oauth_refresh_token = oauth["refresh_token"].as<String>();
+            }
+            if (oauth["access_token"].is<const char *>()) {
+              config.oauth_access_token = oauth["access_token"].as<String>();
+            }
+            if (oauth["token_expires"].is<long>()) {
+              config.oauth_token_expires = oauth["token_expires"];
+            }
+          }
+
+          // Google Drive settings
+          if (doc["gdrive"].is<JsonObject>()) {
+            JsonObject gdrive = doc["gdrive"];
+            if (gdrive["service_email"].is<const char *>()) {
+              config.gdrive_service_email =
+                  gdrive["service_email"].as<String>();
+            }
+            if (gdrive["folder_id"].is<const char *>()) {
+              config.gdrive_folder_id = gdrive["folder_id"].as<String>();
+            }
+          }
+
+          saveConfig();
+
+          // Aplicar mudanças em tempo real
+          if (config.bluetooth_enabled) {
+            SerialBT.end();
+            delay(50);
+            SerialBT.setPin(config.bt_pin.c_str());
+            SerialBT.begin(config.bt_name.c_str());
+          } else {
+            SerialBT.end();
+            btStop();
+          }
+
+          request->send(200, "application/json",
+                        "{\"status\":\"success\",\"message\":\"Configurações "
+                        "salvas e aplicadas imediatamente\"}");
+        } else {
+          request->send(400, "application/json",
+                        "{\"status\":\"error\",\"message\":\"JSON inválido\"}");
         }
-        if (oauth["client_secret"].is<const char*>()) {
-          config.oauth_client_secret = oauth["client_secret"].as<String>();
-        }
-        if (oauth["refresh_token"].is<const char*>()) {
-          config.oauth_refresh_token = oauth["refresh_token"].as<String>();
-        }
-        if (oauth["access_token"].is<const char*>()) {
-          config.oauth_access_token = oauth["access_token"].as<String>();
-        }
-        if (oauth["token_expires"].is<long>()) {
-          config.oauth_token_expires = oauth["token_expires"];
-        }
-      }
-      
-      // Google Drive settings
-      if (doc["gdrive"].is<JsonObject>()) {
-        JsonObject gdrive = doc["gdrive"];
-        if (gdrive["service_email"].is<const char*>()) {
-          config.gdrive_service_email = gdrive["service_email"].as<String>();
-        }
-        if (gdrive["folder_id"].is<const char*>()) {
-          config.gdrive_folder_id = gdrive["folder_id"].as<String>();
-        }
-      }
-      
-      saveConfig();
-      
-      // Aplicar mudanças em tempo real
-      if (config.bluetooth_enabled) {
-        SerialBT.end();
-        delay(50);
-        SerialBT.setPin(config.bt_pin.c_str());
-        SerialBT.begin(config.bt_name.c_str());
-      } else {
-        SerialBT.end();
-        btStop();
-      }
-      
-      request->send(200, "application/json", "{\"status\":\"success\",\"message\":\"Configurações salvas e aplicadas imediatamente\"}");
-    } else {
-      request->send(400, "application/json", "{\"status\":\"error\",\"message\":\"JSON inválido\"}");
-    }
-  });
-  
+      });
+
   // Captive Portal handlers
   server.on("/generate_204", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->redirect("http://canalqb.com.br");
   });
-  
+
   server.on("/connecttest.txt", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(200, "text/plain", "Microsoft Connect Test");
   });
-  
+
   server.on("/ncsi.txt", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(200, "text/plain", "Microsoft NCSI");
   });
-  
-  server.on("/hotspot-detect.html", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->redirect("http://192.168.4.1");
-  });
-  
+
+  server.on("/hotspot-detect.html", HTTP_GET,
+            [](AsyncWebServerRequest *request) {
+              request->redirect("http://192.168.4.1");
+            });
+
   server.on("/redirect", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->redirect("http://192.168.4.1");
   });
-  
+
   server.onNotFound([](AsyncWebServerRequest *request) {
     String host = request->host();
     if (host == "canalqb.com.br" || host.indexOf("192.168.4.1") >= 0) {
@@ -1022,7 +1098,7 @@ void setupWebServer() {
       handleNotFound(request);
     }
   });
-  
+
   server.begin();
   Serial.println("Servidor web iniciado");
 }
@@ -1032,7 +1108,7 @@ void loop() {
   if (isAPMode) {
     dnsServer.processNextRequest();
   }
-  
+
   // Gerenciar reinicialização
   if (shouldRestart && millis() >= restartTime) {
     Serial.println("Reiniciando ESP32...");
