@@ -635,30 +635,144 @@
                                     </small>
                                 </div>
                                 
-                                <div class="col-12">
-                                    <label class="cqb-label" for="ai-temperature">
-                                        <i class="fas fa-sliders-h"></i> Temperatura (Criatividade)
-                                    </label>
-                                    <div style="display:flex;align-items:center;gap:12px;">
-                                        <input type="range" id="ai-temperature" class="cqb-input" min="0" max="1" step="0.1" value="0.7" style="flex:1;">
-                                        <span id="ai-temperature-value" style="min-width:40px;text-align:center;color:var(--text-primary);font-weight:500;">0.7</span>
-                                    </div>
-                                    <small style="color:var(--text-sub);">0 = Conservador, 1 = Criativo</small>
-                                </div>
-                                
-                                <div class="col-12">
-                                    <label class="cqb-label" for="ai-max-tokens">
-                                        <i class="fas fa-text-width"></i> Tokens Máximos
-                                    </label>
-                                    <input type="number" id="ai-max-tokens" class="cqb-input" placeholder="1000" min="100" max="4000" value="1000">
-                                    <small style="color:var(--text-sub);">Limite de tokens na resposta (100-4000)</small>
-                                </div>
-                                
+                                                                
                                 <div class="col-12">
                                     <button class="cqb-btn cqb-btn-primary cqb-btn-block" onclick="saveAIConfig()">
                                         <i class="fas fa-save"></i> Salvar Configuração
                                     </button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cqb-card" style="margin-top:16px;">
+                        <div class="cqb-card-header" style="cursor:pointer;" onclick="toggleModelGuide()">
+                            <i class="fas fa-info-circle hd-icon"></i> Guia de Modelos IA
+                            <i class="fas fa-chevron-down nav-arr" id="model-guide-toggle" style="float:right;transition:transform 0.3s;"></i>
+                        </div>
+                        <div class="cqb-card-body" id="model-guide-content" style="display:none;">
+                            <style>
+                                .model-guide-grid {
+                                    display: grid;
+                                    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                                    gap: 12px;
+                                    margin: 16px 0;
+                                }
+                                .model-guide-card {
+                                    border-radius: 8px;
+                                    padding: 12px;
+                                    border-left: 4px solid #28a745;
+                                    font-family: "Segoe UI", sans-serif;
+                                    transition: transform 0.2s;
+                                    cursor: pointer;
+                                    background: rgba(40,167,69,0.05);
+                                }
+                                .model-guide-card:hover {
+                                    transform: translateY(-2px);
+                                    background: rgba(40,167,69,0.1);
+                                }
+                                .model-guide-card.tier_max { border-color: #28a745; }
+                                .model-guide-card.tier_high { border-color: #2196f3; }
+                                .model-guide-card.tier_mid { border-color: #ffc107; }
+                                .model-guide-card.tier_low { border-color: #d32f2f; }
+                                .model-name {
+                                    font-weight: 700;
+                                    font-size: 0.85em;
+                                    color: #222;
+                                    margin-bottom: 4px;
+                                }
+                                .model-context {
+                                    display: inline-block;
+                                    padding: 2px 8px;
+                                    border-radius: 12px;
+                                    font-size: 0.75em;
+                                    font-weight: 700;
+                                    color: #fff;
+                                    margin-bottom: 6px;
+                                }
+                                .tier_max .model-context { background: #28a745; }
+                                .tier_high .model-context { background: #2196f3; }
+                                .tier_mid .model-context { background: #e6a800; }
+                                .tier_low .model-context { background: #d32f2f; }
+                                .model-words {
+                                    font-size: 0.75em;
+                                    color: #555;
+                                }
+                                .model-legend {
+                                    display: flex;
+                                    flex-wrap: wrap;
+                                    gap: 8px;
+                                    margin: 12px 0;
+                                    font-size: 0.8em;
+                                }
+                                .model-legend-item {
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 4px;
+                                    color: #333;
+                                }
+                                .model-dot {
+                                    width: 10px;
+                                    height: 10px;
+                                    border-radius: 50%;
+                                }
+                                .guide-intro {
+                                    font-size: 0.9em;
+                                    color: #555;
+                                    line-height: 1.6;
+                                    margin-bottom: 16px;
+                                }
+                                .guide-highlight {
+                                    background: rgba(255,193,7,0.1);
+                                    border-left: 4px solid #ffc107;
+                                    padding: 12px;
+                                    border-radius: 6px;
+                                    font-size: 0.85em;
+                                    color: #444;
+                                    margin: 12px 0;
+                                }
+                            </style>
+                            
+                            <div class="guide-intro">
+                                <strong>Escolha o modelo ideal para sua necessidade!</strong><br>
+                                Os modelos são classificados pelo tamanho do context window - quantos tokens conseguem processar de uma vez. Modelos com janelas maiores são melhores para documentos longos, históricos de conversa e análise completa.
+                            </div>
+                            
+                            <div class="model-legend">
+                                <div class="model-legend-item">
+                                    <div class="model-dot" style="background:#28a745"></div>
+                                    <span> Máximo (256K+)</span>
+                                </div>
+                                <div class="model-legend-item">
+                                    <div class="model-dot" style="background:#2196f3"></div>
+                                    <span> Alto (128K-200K)</span>
+                                </div>
+                                <div class="model-legend-item">
+                                    <div class="model-dot" style="background:#e6a800"></div>
+                                    <span> Médio (32K-65K)</span>
+                                </div>
+                                <div class="model-legend-item">
+                                    <div class="model-dot" style="background:#d32f2f"></div>
+                                    <span> Baixo (8K)</span>
+                                </div>
+                            </div>
+                            
+                            <div class="model-guide-grid" id="model-guide-grid">
+                                <!-- Cards serão gerados por JavaScript -->
+                            </div>
+                            
+                            <div class="guide-highlight">
+                                <strong>Recomendação @CanalQb:</strong> Para uso geral, comece com <strong>NVIDIA Nemotron 3 Super</strong> ou <strong>Google Gemma 4 31B</strong> - ambos oferecem 262K tokens e excelente performance gratuita. Para programação, experimente <strong>Qwen3 Coder 480B</strong>.
+                            </div>
+                            
+                            <div class="guide-intro" style="margin-top:16px;">
+                                <strong>Context Window em números:</strong><br>
+                                1 token = ~0,65 palavras em português<br>
+                                262K tokens = ~170K palavras (3 livros técnicos)<br>
+                                131K tokens = ~85K palavras (400 páginas)<br>
+                                65K tokens = ~42K palavras (PDF de 100 páginas)<br>
+                                32K tokens = ~21K palavras (contrato longo)<br>
+                                8K tokens = ~5K palavras (e-mail longo)
                             </div>
                         </div>
                     </div>
@@ -2158,15 +2272,8 @@
             },
             
             setupEventListeners() {
-                // Slider de temperatura
-                const tempSlider = document.getElementById('ai-temperature');
-                const tempValue = document.getElementById('ai-temperature-value');
-                
-                if (tempSlider && tempValue) {
-                    tempSlider.addEventListener('input', (e) => {
-                        tempValue.textContent = e.target.value;
-                    });
-                }
+                // Event listeners para o guia de modelos
+                this.populateModelGuide();
             },
             
             async loadConfig() {
@@ -2178,9 +2285,6 @@
                     if (config.ai) {
                         document.getElementById('ai-api-key').value = config.ai.apiKey || '';
                         document.getElementById('ai-model').value = config.ai.model || '';
-                        document.getElementById('ai-temperature').value = config.ai.temperature || 0.7;
-                        document.getElementById('ai-temperature-value').textContent = config.ai.temperature || 0.7;
-                        document.getElementById('ai-max-tokens').value = config.ai.maxTokens || 1000;
                         
                         // Mostrar indicador de configuração completa
                         if (config.ai.apiKey && config.ai.model) {
@@ -2192,7 +2296,7 @@
                 }
             },
             
-            async saveConfig(apiKey, model, temperature, maxTokens) {
+            async saveConfig(apiKey, model) {
                 try {
                     const response = await fetch(`http://${S.espIp}/api/config`, {
                         method: 'POST',
@@ -2202,9 +2306,7 @@
                         body: JSON.stringify({
                             ai: {
                                 apiKey: apiKey,
-                                model: model,
-                                temperature: parseFloat(temperature),
-                                maxTokens: parseInt(maxTokens)
+                                model: model
                             }
                         })
                     });
@@ -2220,7 +2322,7 @@
                 }
             },
             
-            async testAI(apiKey, model, prompt, temperature, maxTokens) {
+            async testAI(apiKey, model, prompt) {
                 try {
                     const startTime = Date.now();
                     
@@ -2239,9 +2341,7 @@
                                     role: 'user',
                                     content: prompt
                                 }
-                            ],
-                            temperature: parseFloat(temperature),
-                            max_tokens: parseInt(maxTokens)
+                            ]
                         })
                     });
                     
@@ -2277,6 +2377,71 @@
                 if (aiOk) {
                     aiOk.style.display = 'none';
                 }
+            },
+            
+            populateModelGuide() {
+                const grid = document.getElementById('model-guide-grid');
+                if (!grid) return;
+                
+                // Context window sizes para cada modelo
+                const modelContexts = {
+                    '/nvidia/nemotron-3-super-120b-a12b:free': { tokens: 262144, tier: 'max' },
+                    '/google/gemma-4-31b-it:free': { tokens: 262144, tier: 'max' },
+                    '/google/gemma-4-26b-a4b-it:free': { tokens: 262144, tier: 'max' },
+                    '/inclusionai/ling-2.6-flash:free': { tokens: 262144, tier: 'max' },
+                    '/qwen/qwen3-next-80b-a3b-instruct:free': { tokens: 262144, tier: 'max' },
+                    '/qwen/qwen3-coder:free': { tokens: 262000, tier: 'max' },
+                    '/nvidia/nemotron-3-nano-30b-a3b:free': { tokens: 256000, tier: 'max' },
+                    '/openrouter/free': { tokens: 200000, tier: 'high' },
+                    '/minimax/minimax-m2.5:free': { tokens: 196608, tier: 'high' },
+                    '/arcee-ai/trinity-large-preview:free': { tokens: 131000, tier: 'high' },
+                    '/z-ai/glm-4.5-air:free': { tokens: 131072, tier: 'high' },
+                    '/openai/gpt-oss-120b:free': { tokens: 131072, tier: 'high' },
+                    '/nvidia/llama-nemotron-embed-vl-1b-v2:free': { tokens: 131072, tier: 'high' },
+                    '/openai/gpt-oss-20b:free': { tokens: 131072, tier: 'high' },
+                    '/google/gemma-3-27b-it:free': { tokens: 131072, tier: 'high' },
+                    '/nousresearch/hermes-3-llama-3.1-405b:free': { tokens: 131072, tier: 'high' },
+                    '/meta-llama/llama-3.2-3b-instruct:free': { tokens: 131072, tier: 'high' },
+                    '/nvidia/nemotron-nano-9b-v2:free': { tokens: 128000, tier: 'high' },
+                    '/nvidia/nemotron-nano-12b-v2-vl:free': { tokens: 128000, tier: 'high' },
+                    '/meta-llama/llama-3.3-70b-instruct:free': { tokens: 65536, tier: 'mid' },
+                    '/liquid/lfm-2.5-1.2b-thinking:free': { tokens: 32768, tier: 'mid' },
+                    '/liquid/lfm-2.5-1.2b-instruct:free': { tokens: 32768, tier: 'mid' },
+                    '/cognitivecomputations/dolphin-mistral-24b-venice-edition:free': { tokens: 32768, tier: 'mid' },
+                    '/google/gemma-3-4b-it:free': { tokens: 32768, tier: 'mid' },
+                    '/google/gemma-3-12b-it:free': { tokens: 32768, tier: 'mid' },
+                    '/google/gemma-3n-e2b-it:free': { tokens: 8192, tier: 'low' },
+                    '/google/gemma-3n-e4b-it:free': { tokens: 8192, tier: 'low' }
+                };
+                
+                // Limpar grid
+                grid.innerHTML = '';
+                
+                // Criar cards para cada modelo
+                this.freeModels.forEach(model => {
+                    const context = modelContexts[model.id] || { tokens: 0, tier: 'low' };
+                    const words = Math.round(context.tokens * 0.65); // 1 token = 0.65 palavras PT-BR
+                    
+                    const card = document.createElement('div');
+                    card.className = `model-guide-card tier_${context.tier}`;
+                    card.onclick = () => this.selectModel(model.id);
+                    
+                    card.innerHTML = `
+                        <div class="model-name">${model.name.replace('(free)', '').trim()}</div>
+                        <span class="model-context">${context.tokens.toLocaleString()} tokens</span>
+                        <div class="model-words">~${words.toLocaleString()} palavras PT-BR</div>
+                    `;
+                    
+                    grid.appendChild(card);
+                });
+            },
+            
+            selectModel(modelId) {
+                const modelSelect = document.getElementById('ai-model');
+                if (modelSelect) {
+                    modelSelect.value = modelId;
+                    showToast('Modelo selecionado: ' + modelId, 'success');
+                }
             }
         };
         
@@ -2297,8 +2462,6 @@
         window.saveAIConfig = async function() {
             const apiKey = document.getElementById('ai-api-key').value.trim();
             const model = document.getElementById('ai-model').value;
-            const temperature = document.getElementById('ai-temperature').value;
-            const maxTokens = document.getElementById('ai-max-tokens').value;
             
             // Validação
             if (!apiKey) {
@@ -2319,7 +2482,7 @@
             try {
                 showToast('Salvando configuração...', 'info');
                 
-                await AIModule.saveConfig(apiKey, model, temperature, maxTokens);
+                await AIModule.saveConfig(apiKey, model);
                 
                 AIModule.showConfigured();
                 showToast('Configuração AI salva com sucesso!', 'success');
@@ -2333,8 +2496,6 @@
             const apiKey = document.getElementById('ai-api-key').value.trim();
             const model = document.getElementById('ai-model').value;
             const prompt = document.getElementById('ai-prompt').value.trim();
-            const temperature = document.getElementById('ai-temperature').value;
-            const maxTokens = document.getElementById('ai-max-tokens').value;
             const responseArea = document.getElementById('ai-response');
             const timeDisplay = document.getElementById('ai-response-time');
             
@@ -2365,7 +2526,7 @@
             timeDisplay.textContent = '';
             
             try {
-                const result = await AIModule.testAI(apiKey, model, prompt, temperature, maxTokens);
+                const result = await AIModule.testAI(apiKey, model, prompt);
                 
                 // Mostrar resposta
                 responseArea.value = result.content;
@@ -2397,6 +2558,19 @@
             }).catch(() => {
                 showToast('Erro ao copiar resposta', 'error');
             });
+        };
+        
+        window.toggleModelGuide = function() {
+            const content = document.getElementById('model-guide-content');
+            const toggle = document.getElementById('model-guide-toggle');
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                toggle.style.transform = 'rotate(180deg)';
+            } else {
+                content.style.display = 'none';
+                toggle.style.transform = 'rotate(0deg)';
+            }
         };
         
         // Inicializar módulo AI quando a página carregar
