@@ -114,53 +114,48 @@
 
                     <hr class="nav-divider">
 
-                    <p class="cqb-nav-section" style="margin-top:8px;">Configurações</p>
+                    <p class="cqb-nav-section" style="margin-top:8px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;" onclick="toggleSubMenu('nav-config-group', this)" role="button">
+                        Configurações
+                        <i class="fas fa-chevron-down nav-arr" style="font-size:0.7rem;"></i>
+                    </p>
 
-                    <a class="cqb-nav-link active" id="menu-rede" role="button" aria-expanded="true"
-                        onclick="toggleSubMenu('sub-rede', this)">
-                        <i class="fas fa-network-wired fa-icon"></i>
-                        <span class="nav-lbl">Configurações de Rede</span>
-                        <i class="fas fa-chevron-down nav-arr"></i>
-                    </a>
-                    <div class="cqb-submenu cqb-sub-open" id="sub-rede">
-                        <a class="cqb-nav-sub active" id="submenu-rede-wifi" onclick="showTab('rede','wifi')">
-                            <i class="fas fa-wifi"></i> Configurações de SSID
+                    <div class="cqb-submenu" id="nav-config-group">
+                        <a class="cqb-nav-link" id="menu-rede" role="button" aria-expanded="false"
+                            onclick="toggleSubMenu('sub-rede', this)">
+                            <i class="fas fa-network-wired fa-icon"></i>
+                            <span class="nav-lbl">Configurações de Rede</span>
+                            <i class="fas fa-chevron-down nav-arr"></i>
+                        </a>
+                        <div class="cqb-submenu" id="sub-rede">
+                            <a class="cqb-nav-sub" id="submenu-rede-wifi" onclick="showTab('rede','wifi')">
+                                <i class="fas fa-wifi"></i> Configurações de SSID
+                            </a>
+                        </div>
+
+                        <a class="cqb-nav-link" id="menu-google" onclick="showSection('google')" role="button">
+                            <i class="fas fa-cloud fa-icon"></i>
+                            <span class="nav-lbl">Configuração Google</span>
+                            <i class="fas fa-circle-check nav-arr" id="google-ok"
+                                style="font-size:0.75rem;color:var(--cqb-green);display:none;"></i>
+                        </a>
+
+                        <a class="cqb-nav-link" id="menu-bluetooth" onclick="showSection('bluetooth')" role="button">
+                            <i class="fab fa-bluetooth-b fa-icon"></i>
+                            <span class="nav-lbl">Configuração Bluetooth</span>
+                        </a>
+
+                        <a class="cqb-nav-link" id="menu-ai" onclick="showSection('ai')" role="button">
+                            <i class="fas fa-robot fa-icon"></i>
+                            <span class="nav-lbl">Configuração Ambiente AI</span>
+                            <i class="fas fa-circle-check nav-arr" id="ai-ok"
+                                style="font-size:0.75rem;color:var(--cqb-green);display:none;"></i>
+                        </a>
+
+                        <a class="cqb-nav-link" id="menu-config" onclick="showSection('config')" role="button">
+                            <i class="fas fa-shield-halved fa-icon"></i>
+                            <span class="nav-lbl">Reset de Fábrica e Backups</span>
                         </a>
                     </div>
-
-                    <a class="cqb-nav-link" id="menu-google" onclick="showSection('google')" role="button">
-                        <i class="fas fa-cloud fa-icon"></i>
-                        <span class="nav-lbl">Configuração Google</span>
-                        <i class="fas fa-circle-check nav-arr" id="google-ok"
-                            style="font-size:0.75rem;color:var(--cqb-green);display:none;"></i>
-                    </a>
-
-                    <a class="cqb-nav-link" id="menu-bluetooth" onclick="showSection('bluetooth')" role="button">
-                        <i class="fab fa-bluetooth-b fa-icon"></i>
-                        <span class="nav-lbl">Configuração Bluetooth</span>
-                    </a>
-
-                    <a class="cqb-nav-link" id="menu-ai" onclick="showSection('ai')" role="button">
-                        <i class="fas fa-robot fa-icon"></i>
-                        <span class="nav-lbl">Configuração Ambiente AI</span>
-                        <i class="fas fa-circle-check nav-arr" id="ai-ok"
-                            style="font-size:0.75rem;color:var(--cqb-green);display:none;"></i>
-                    </a>
-
-                    <a class="cqb-nav-link" id="menu-config" onclick="showSection('config')" role="button">
-                        <i class="fas fa-shield-halved fa-icon"></i>
-                        <span class="nav-lbl">Reset de Fábrica</span>
-                    </a>
-
-                    <a class="cqb-nav-link" id="menu-backup" onclick="showSection('backup')" role="button">
-                        <i class="fas fa-database fa-icon"></i>
-                        <span class="nav-lbl">Restauração de Configurações</span>
-                    </a>
-
-                    <a class="cqb-nav-link" id="menu-backup" onclick="showSection('backup')" role="button">
-                        <i class="fas fa-save fa-icon"></i>
-                        <span class="nav-lbl">Backup de Configurações</span>
-                    </a>
                 </div>
                 <hr class="nav-divider">
 
@@ -1269,7 +1264,7 @@
 
                 try { localStorage.setItem('cqb-active-section', id); } catch (e) { }
 
-                const lbl = { rede: 'Redes & Internet', google: 'Configuração Google', bluetooth: 'Bluetooth', ai: 'Configuração Ambiente AI', marketplace: 'Marketplace', chat: 'Canalqb AI', config: 'Configurações', backup: 'Backup e Restauração' };
+                const lbl = { rede: 'Redes & Internet', google: 'Configuração Google', bluetooth: 'Bluetooth', ai: 'Configuração Ambiente AI', marketplace: 'Marketplace', chat: 'Canalqb AI', config: 'Reset de Fábrica e Backups' };
                 document.getElementById('cqb-section-title').textContent = lbl[id] || id;
                 closeSidebar();
                 if (id === 'google') { document.getElementById('config-progress').style.display = 'block'; updateProgress(); }
