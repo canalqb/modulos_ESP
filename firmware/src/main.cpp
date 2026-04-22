@@ -348,7 +348,7 @@ const char setup_html[] PROGMEM = R"HTML(
                     <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#0f172a; color:white; font-family:sans-serif;">
                         <div class="spinner"></div>
                         <h2 style="margin-top:20px;">Carregando CanalQb Dashboard...</h2>
-                        <p style="color:#94a3b8; margin-top:10px;">Sincronizando com ESP_ambiente/main</p>
+                        <p style="color:#94a3b8; margin-top:10px;">Sincronizando com canalqb/ESP_ambiente@main</p>
                     </div>
                 `;
                 
