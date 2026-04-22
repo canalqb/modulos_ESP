@@ -966,9 +966,12 @@
                 // URI de callback agora é fixo no canalqb.com.br
             })();
 
-            loadSavedConfig();
+            loadSavedConfig().then(() => {
+                const savedSection = localStorage.getItem('cqb-active-section') || 'rede';
+                showSection(savedSection);
+            });
 
-            // Executar validação após carregar configurações salvas
+            // Executar validação extra após carregar configurações salvas
             setTimeout(() => {
                 checkGoogleConfigComplete();
             }, 3000);
@@ -1149,7 +1152,10 @@
                 if (sec) sec.classList.remove('d-none');
                 document.querySelectorAll('.cqb-nav-link').forEach(l => l.classList.remove('active'));
                 if (m) m.classList.add('active');
-                const lbl = { rede: 'Redes & Internet', google: 'Configuração Google', bluetooth: 'Bluetooth', ai: 'Configuração Ambiente AI', marketplace: 'Marketplace', chat: 'Canalqb AI', config: 'Configurações' };
+                
+                try { localStorage.setItem('cqb-active-section', id); } catch(e) {}
+                
+                const lbl = { rede: 'Redes & Internet', google: 'Configuração Google', bluetooth: 'Bluetooth', ai: 'Configuração Ambiente AI', marketplace: 'Marketplace', chat: 'Canalqb AI', config: 'Configurações', backup: 'Backup e Restauração' };
                 document.getElementById('cqb-section-title').textContent = lbl[id] || id;
                 closeSidebar();
                 if (id === 'google') { document.getElementById('config-progress').style.display = 'block'; updateProgress(); }
